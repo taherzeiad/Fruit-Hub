@@ -3,9 +3,6 @@ package com.example.fruithub.screens.welcome
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,7 +19,6 @@ import com.example.fruithub.R
 import com.example.fruithub.commonComponent.ButtonOrange
 import com.example.fruithub.ui.theme.OrangePrimary
 
-
 @Composable
 fun WelcomeScreen(navController: NavController) {
     Column(
@@ -34,40 +30,47 @@ fun WelcomeScreen(navController: NavController) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1.2f) // زيادة الوزن قليلاً لتأخذ مساحة أكبر كالتصميم
+                .weight(0.9f) // تقليل الوزن قليلاً لإعطاء مساحة أكبر للنص
                 .background(OrangePrimary)
         ) {
-            // 1. صورة الفاكهة الصغيرة في أعلى اليمين
+            // 1. صورة الفاكهة الصغيرة في أعلى اليمين (بتعديل المسافة)
             Image(
                 painter = painterResource(id = R.drawable.smallfruit),
                 contentDescription = null,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .padding(top = 60.dp, end = 40.dp) // موازنة المكان
-                    .size(40.dp)
+                    .padding(top = 40.dp, end = 30.dp) // تعديل المسافات العلوية والجانبية
+                    .size(45.dp)
             )
 
-            // 2. سلة الفواكه والظل (مرتبين عمودياً داخل Box)
+            // 2. مجموعة سلة الفواكه والظل في المنتصف
             Column(
-                modifier = Modifier.align(Alignment.Center),
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier
+                    .align(Alignment.Center) // تغيير من BottomCenter إلى Center
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
+                // صورة سلة الفواكه
                 Image(
                     painter = painterResource(id = R.drawable.fruit_basket),
                     contentDescription = "Fruit Basket",
                     modifier = Modifier
-                        .width(301.dp)
-                        .height(260.dp),
+                        .width(320.dp)
+                        .height(280.dp),
                     contentScale = ContentScale.Fit
                 )
 
-                // 3. الظل تحت السلة مباشرة
+                // مسافة صغيرة بين السلة والظل
+                Spacer(modifier = Modifier.height(4.dp))
+
+                // صورة الظل (بتوسيطها تحت السلة مباشرة)
                 Image(
                     painter = painterResource(id = R.drawable.basket_shadow),
                     contentDescription = null,
                     modifier = Modifier
-                        .width(301.dp)
-                        .height(12.dp),
+                        .width(280.dp)
+                        .height(14.dp),
                     contentScale = ContentScale.FillBounds
                 )
             }
@@ -77,32 +80,38 @@ fun WelcomeScreen(navController: NavController) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(0.8f)
-                .padding(horizontal = 24.dp, vertical = 32.dp),
-            horizontalAlignment = Alignment.Start, // النصوص في التصميم تبدأ من اليسار (أو حسب اللغة)
-            verticalArrangement = Arrangement.Top
+                .weight(0.7f) // تعديل الوزن
+                .padding(horizontal = 24.dp)
+                .padding(top = 16.dp, bottom = 24.dp), // تعديل الباديينغ
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.SpaceBetween // توزيع المسافات بين العناصر
         ) {
-            Text(
-                text = "Get The Freshest Fruit Salad Combo",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF27214D),
-                textAlign = TextAlign.Start
-            )
+            // حاوية النصوص
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.Start
+            ) {
+                Text(
+                    text = "Get The Freshest Fruit Salad Combo",
+                    fontSize = 24.sp, // تكبير الخط قليلاً
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF27214D),
+                    textAlign = TextAlign.Start,
+                    lineHeight = 32.sp // تحسين قراءة النص
+                )
 
-            Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Text(
-                text = "We deliver the best and freshest fruit salad in town. Order for a combo today!!!",
-                fontSize = 16.sp,
-                color = Color(0xFF5D577E),
-                lineHeight = 24.sp,
-                textAlign = TextAlign.Start
-            )
+                Text(
+                    text = "We deliver the best and freshest fruit salad in town. Order for a combo today!!!",
+                    fontSize = 16.sp,
+                    color = Color(0xFF5D577E),
+                    lineHeight = 24.sp,
+                    textAlign = TextAlign.Start
+                )
+            }
 
-            Spacer(modifier = Modifier.weight(1f)) // دفع الزر للأسفل
-
-            // زر الاستمرار
+            // الزر في الأسفل
             ButtonOrange(
                 onClick = { navController.navigate("authentication") },
                 modifier = Modifier
@@ -116,8 +125,6 @@ fun WelcomeScreen(navController: NavController) {
                     fontWeight = FontWeight.Medium
                 )
             }
-
-            Spacer(modifier = Modifier.height(20.dp)) // مسافة أمان في الأسفل
         }
     }
 }
