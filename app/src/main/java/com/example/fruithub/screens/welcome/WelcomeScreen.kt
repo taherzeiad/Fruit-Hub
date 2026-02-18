@@ -33,6 +33,7 @@ fun WelcomeScreen(navController: NavController) {
                 .weight(0.9f) // تقليل الوزن قليلاً لإعطاء مساحة أكبر للنص
                 .background(OrangePrimary)
         ) {
+
             // 1. صورة الفاكهة الصغيرة في أعلى اليمين (بتعديل المسافة)
             Image(
                 painter = painterResource(id = R.drawable.smallfruit),
