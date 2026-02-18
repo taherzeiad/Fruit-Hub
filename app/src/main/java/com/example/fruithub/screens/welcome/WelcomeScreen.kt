@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.fruithub.R
+import com.example.fruithub.commonComponent.ButtonOrange
 import com.example.fruithub.ui.theme.OrangePrimary
 
 
@@ -29,59 +30,84 @@ fun WelcomeScreen(navController: NavController) {
             .fillMaxSize()
             .background(Color.White)
     ) {
-        // الجزء العلوي: الخلفية البرتقالية والصورة
+        // الجزء العلوي: الخلفية البرتقالية مع الصور
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f) // يأخذ نصف الشاشة تقريباً
-                .background(OrangePrimary), contentAlignment = Alignment.Center
+                .weight(1.2f) // زيادة الوزن قليلاً لتأخذ مساحة أكبر كالتصميم
+                .background(OrangePrimary)
         ) {
+            // 1. صورة الفاكهة الصغيرة في أعلى اليمين
             Image(
-                painter = painterResource(id = R.drawable.ic_launcher_background), // تأكد من اسم الصورة لديك
-                contentDescription = "Fruit Basket",
-                modifier = Modifier.size(300.dp),
-                contentScale = ContentScale.Fit
+                painter = painterResource(id = R.drawable.smallfruit),
+                contentDescription = null,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = 60.dp, end = 40.dp) // موازنة المكان
+                    .size(40.dp)
             )
+
+            // 2. سلة الفواكه والظل (مرتبين عمودياً داخل Box)
+            Column(
+                modifier = Modifier.align(Alignment.Center),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.fruit_basket),
+                    contentDescription = "Fruit Basket",
+                    modifier = Modifier
+                        .width(301.dp)
+                        .height(260.dp),
+                    contentScale = ContentScale.Fit
+                )
+
+                // 3. الظل تحت السلة مباشرة
+                Image(
+                    painter = painterResource(id = R.drawable.basket_shadow),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .width(301.dp)
+                        .height(12.dp),
+                    contentScale = ContentScale.FillBounds
+                )
+            }
         }
 
         // الجزء السفلي: النصوص والزر
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(0.8f) // الجزء المتبقي
-                .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+                .weight(0.8f)
+                .padding(horizontal = 24.dp, vertical = 32.dp),
+            horizontalAlignment = Alignment.Start, // النصوص في التصميم تبدأ من اليسار (أو حسب اللغة)
+            verticalArrangement = Arrangement.Top
         ) {
             Text(
                 text = "Get The Freshest Fruit Salad Combo",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF27214D), // اللون الداكن للنص
-                textAlign = TextAlign.Center
+                color = Color(0xFF27214D),
+                textAlign = TextAlign.Start
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             Text(
                 text = "We deliver the best and freshest fruit salad in town. Order for a combo today!!!",
                 fontSize = 16.sp,
                 color = Color(0xFF5D577E),
-                textAlign = TextAlign.Center
+                lineHeight = 24.sp,
+                textAlign = TextAlign.Start
             )
 
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.weight(1f)) // دفع الزر للأسفل
 
             // زر الاستمرار
-            Button(
-                onClick = {
-                    navController.navigate("authentication")
-                },
+            ButtonOrange(
+                onClick = { navController.navigate("authentication") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = OrangePrimary),
-                shape = RoundedCornerShape(10.dp)
+                    .height(56.dp)
             ) {
                 Text(
                     text = "Let’s Continue",
@@ -90,6 +116,8 @@ fun WelcomeScreen(navController: NavController) {
                     fontWeight = FontWeight.Medium
                 )
             }
+
+            Spacer(modifier = Modifier.height(20.dp)) // مسافة أمان في الأسفل
         }
     }
 }
