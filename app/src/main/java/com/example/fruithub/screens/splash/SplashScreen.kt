@@ -1,12 +1,10 @@
 package com.example.fruithub.screens.splash
 
-import android.R.attr.color
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,7 +31,7 @@ fun SplashScreen(onTimeout: () -> Unit) {
     // أنيميشن نصف قطر الدائرة
     val circleRadius by animateFloatAsState(
         targetValue = if (expandCircle) 2500f else 0f, // قيمة كبيرة لتغطية الشاشة بالكامل
-        animationSpec = tween(durationMillis = 800, easing = FastOutSlowInEasing),
+        animationSpec = tween(durationMillis = 3000, easing = FastOutSlowInEasing),
         label = "CircleExpand"
     )
 
@@ -77,7 +75,7 @@ fun SplashScreen(onTimeout: () -> Unit) {
         startText = true
 
         // ⏱️ انتظر قليلاً بعد ظهور الشعار ثم ابدأ الدائرة البرتقالية
-        delay(1500)
+        delay(1150)
         expandCircle = true
 
         // انتظر حتى يكتمل أنيميشن الدائرة قبل الانتقال
