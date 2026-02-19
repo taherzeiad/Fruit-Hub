@@ -43,7 +43,7 @@ fun AuthenticationScreen(navController: NavController) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1.01f) // تقليل الوزن قليلاً لإعطاء مساحة أكبر للنص
+                .weight(1.2f) // تقليل الوزن قليلاً لإعطاء مساحة أكبر للنص
                 .background(OrangePrimary)
         ) {
 
@@ -90,6 +90,8 @@ fun AuthenticationScreen(navController: NavController) {
                 )
             }
         }
+        Spacer(modifier = Modifier.height(63.dp))
+
 
 
         // الجزء السفلي (الكارد الأبيض)
@@ -131,6 +133,8 @@ fun AuthenticationScreen(navController: NavController) {
                     )
                 )
             }
+            Spacer(modifier = Modifier.height(35.dp))
+
 
             // نفس الزر السابق
             ButtonOrange(
@@ -146,6 +150,8 @@ fun AuthenticationScreen(navController: NavController) {
                     fontWeight = FontWeight.Medium
                 )
             }
+            Spacer(modifier = Modifier.height(18.dp))
+
         }
     }
 }
