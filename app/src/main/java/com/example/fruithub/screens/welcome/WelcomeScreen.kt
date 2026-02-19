@@ -40,9 +40,9 @@ fun WelcomeScreen(navController: NavController) {
 
     // 2. مقياس حجم السلة (Scaling)
     val basketScale by animateFloatAsState(
-        targetValue = if (isBasketVisible) 1f else 0f,
-        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow),
-        label = "BasketScale"
+        targetValue = if (isBasketVisible) 1f else 0f, animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow
+        ), label = "BasketScale"
     )
 
     // 3. تشغيل الحركات بالتتابع عند دخول الشاشة
@@ -83,7 +83,9 @@ fun WelcomeScreen(navController: NavController) {
                     .align(Alignment.BottomCenter)
                     .padding(bottom = 40.dp)
                     .fillMaxWidth()
-                    .graphicsLayer(scaleX = basketScale, scaleY = basketScale), // 👈 تحريك الحجم هنا
+                    .graphicsLayer(
+                        scaleX = basketScale, scaleY = basketScale
+                    ), // 👈 تحريك الحجم هنا
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
