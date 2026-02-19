@@ -77,6 +77,8 @@ fun WelcomeScreen(navController: NavController) {
             }
         }
 
+        Spacer(modifier = Modifier.height(38.dp))   // 👈 هذه تضيف مسافة بين البرتقالي والنص
+
         // الجزء السفلي: النصوص والزر
         Column(
             modifier = Modifier
@@ -89,12 +91,11 @@ fun WelcomeScreen(navController: NavController) {
         ) {
             // حاوية النصوص
             Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.Start
+                modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.Start
             ) {
                 Text(
                     text = "Get The Freshest Fruit Salad Combo",
-                    fontSize = 24.sp, // تكبير الخط قليلاً
+                    fontSize = 20.sp, // تكبير الخط قليلاً
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF27214D),
                     textAlign = TextAlign.Start,
@@ -126,6 +127,7 @@ fun WelcomeScreen(navController: NavController) {
                     fontWeight = FontWeight.Medium
                 )
             }
+            Spacer(modifier = Modifier.height(18.dp))
         }
     }
 }
