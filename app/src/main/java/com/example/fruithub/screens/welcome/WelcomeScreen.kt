@@ -40,14 +40,15 @@ fun WelcomeScreen(navController: NavController) {
                 contentDescription = null,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .padding(top = 40.dp, end = 30.dp) // تعديل المسافات العلوية والجانبية
+                    .padding(top = 85.dp, end = 10.dp) // تعديل المسافات العلوية والجانبية
                     .size(45.dp)
             )
 
             // 2. مجموعة سلة الفواكه والظل في المنتصف
             Column(
                 modifier = Modifier
-                    .align(Alignment.Center) // تغيير من BottomCenter إلى Center
+                    .align(Alignment.BottomCenter)   // 👈 ينزل المحتوى للأسفل
+                    .padding(bottom = 40.dp)         // 👈 تحكم دقيق بالمسافة
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
@@ -83,11 +84,11 @@ fun WelcomeScreen(navController: NavController) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(0.7f) // تعديل الوزن
+                .weight(0.7f)
                 .padding(horizontal = 24.dp)
-                .padding(top = 16.dp, bottom = 24.dp), // تعديل الباديينغ
+                .padding(top = 16.dp, bottom = 24.dp),
             horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.SpaceBetween // توزيع المسافات بين العناصر
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
             // حاوية النصوص
             Column(
@@ -99,7 +100,7 @@ fun WelcomeScreen(navController: NavController) {
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF27214D),
                     textAlign = TextAlign.Start,
-                    lineHeight = 32.sp // تحسين قراءة النص
+                    lineHeight = 32.sp
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
