@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.fruithub.screens.authentication.AuthenticationScreen
 import com.example.fruithub.screens.splash.SplashScreen
 import com.example.fruithub.screens.welcome.WelcomeScreen
 
@@ -12,21 +13,25 @@ fun FruitHubNavGraph() {
     val navController = rememberNavController()
 
     NavHost(
-        navController = navController, startDestination = "splash" // نقطة البداية
+        navController = navController,
+        startDestination = "splash"
     ) {
-        // واجهة السبلاش
+
         composable("splash") {
             SplashScreen(onTimeout = {
-                // الانتقال إلى واجهة الترحيب وحذف السبلاش من الـ Backstack
                 navController.navigate("welcome") {
                     popUpTo("splash") { inclusive = true }
                 }
             })
         }
 
-        // واجهة الترحيب (Welcome Screen)
         composable("welcome") {
-            WelcomeScreen(navController) // سنقوم ببرمجتها لاحقاً
+            WelcomeScreen(navController)
+        }
+
+        // 👇 أضف هذه
+        composable("authentication") {
+            AuthenticationScreen(navController)
         }
     }
 }

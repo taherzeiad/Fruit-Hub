@@ -12,6 +12,7 @@ import com.example.fruithub.ui.theme.FruitHubTheme
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.fruithub.screens.authentication.AuthenticationScreen
 import com.example.fruithub.screens.splash.SplashScreen
 import com.example.fruithub.screens.welcome.WelcomeScreen // تأكد من صحة مسار الـ package
 
@@ -45,7 +46,7 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable("authentication") {
-                            // سنضع واجهة الـ Auth هنا لاحقاً
+                            AuthenticationScreen(navController = navController)
                         }
 
                         // أضف باقي الواجهات هنا بنفس الطريقة
