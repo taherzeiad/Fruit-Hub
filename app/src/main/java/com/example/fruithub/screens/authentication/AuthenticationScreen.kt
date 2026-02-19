@@ -43,7 +43,7 @@ fun AuthenticationScreen(navController: NavController) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(0.9f) // تقليل الوزن قليلاً لإعطاء مساحة أكبر للنص
+                .weight(1.01f) // تقليل الوزن قليلاً لإعطاء مساحة أكبر للنص
                 .background(OrangePrimary)
         ) {
 
@@ -98,7 +98,7 @@ fun AuthenticationScreen(navController: NavController) {
                 .fillMaxWidth()
                 .weight(1f)
                 .background(
-                    Color(0xFFF6F6F6), shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
+                    Color(0xFFFFFFFF), shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
                 )
                 .padding(horizontal = 24.dp, vertical = 28.dp),
             verticalArrangement = Arrangement.SpaceBetween
