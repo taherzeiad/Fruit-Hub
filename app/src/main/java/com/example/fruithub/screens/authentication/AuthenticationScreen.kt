@@ -45,6 +45,9 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun AuthenticationScreen(navController: NavController) {
+
+    var userName by remember { mutableStateOf("") }
+
     // 1. حالات التحكم في بدء ظهور العناصر (States)
     var startBasketAnimation by remember { mutableStateOf(false) }
     var startTextAnimation by remember { mutableStateOf(false) }
@@ -151,8 +154,8 @@ fun AuthenticationScreen(navController: NavController) {
                     Spacer(modifier = Modifier.height(16.dp))
 
                     TextField(
-                        value = "",
-                        onValueChange = {},
+                        value = userName, // نربط القيمة بالمتغير
+                        onValueChange = { userName = it }, // تحديث المتغير عند الكتابة
                         placeholder = { Text("Tony") },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -177,8 +180,15 @@ fun AuthenticationScreen(navController: NavController) {
             ) {
                 Column {
                     ButtonOrange(
-                        onClick = { /* navController.navigate("home") */ },
-                        modifier = Modifier
+                        onClick = {
+                            if (userName.isNotBlank()) {
+                                // الانتقال لشاشة الهوم وتمرير الاسم كـ Argument (اختياري)
+                                navController.navigate("home/$userName") {
+                                    // حذف شاشة التحقق من سجل التنقل حتى لا يعود إليها المستخدم
+                                    popUpTo("authentication") { inclusive = true }
+                                }
+                            }
+                        }, modifier = Modifier
                             .fillMaxWidth()
                             .height(56.dp)
                     ) {

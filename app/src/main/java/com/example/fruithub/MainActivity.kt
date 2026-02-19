@@ -13,6 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.fruithub.screens.authentication.AuthenticationScreen
+import com.example.fruithub.screens.homepage.FruitSaladHomeScreen
 import com.example.fruithub.screens.splash.SplashScreen
 import com.example.fruithub.screens.welcome.WelcomeScreen // تأكد من صحة مسار الـ package
 
@@ -48,8 +49,13 @@ class MainActivity : ComponentActivity() {
                         composable("authentication") {
                             AuthenticationScreen(navController = navController)
                         }
+                        composable("home/{userName}") { backStackEntry ->
+                            // 1. استلام الاسم من الرابط
+                            val name = backStackEntry.arguments?.getString("userName") ?: "User"
 
-                        // أضف باقي الواجهات هنا بنفس الطريقة
+                            // 2. استدعاء شاشة الهوم التي صممناها سابقاً وتمرير الاسم لها
+                            FruitSaladHomeScreen(userName = name)
+                        }
                     }
                 }
             }
