@@ -60,7 +60,7 @@ fun FruitSaladHomeScreen(userName: String) {
                     painter = painterResource(id = R.drawable.mybasket),
                     contentDescription = "Basket",
                     tint = OrangePrimary,
-                    modifier = Modifier.size(160.dp) // 👈 تم تعديل الحجم من 160 إلى 24 ليكون منطقياً
+                    modifier = Modifier.size(24.dp) // 👈 تم تعديل الحجم من 160 إلى 24 ليكون منطقياً
                 )
                 Spacer(modifier = Modifier.height(4.dp)) // مسافة صغيرة جداً بين الأيقونة والنص
                 Text(
