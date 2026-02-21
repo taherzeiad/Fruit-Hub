@@ -65,7 +65,7 @@ fun FruitSaladHomeScreen(userName: String) {
                 )
                 Text(
                     text = "My basket",
-                    fontSize = 15.sp,
+                    fontSize = 10.sp,
                     color = PrimaryColor,
                     fontWeight = FontWeight.Medium
                 )
@@ -267,7 +267,9 @@ fun HottestCard(name: String, price: String, bgColor: Color) {
     Card(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = bgColor),
-        modifier = Modifier.width(150.dp)
+        modifier = Modifier
+            .width(160.dp)
+            .height(190.dp)   // ← ثبت الارتفاع
     ) {
         Column(
             modifier = Modifier.padding(12.dp), horizontalAlignment = Alignment.CenterHorizontally
@@ -284,7 +286,7 @@ fun HottestCard(name: String, price: String, bgColor: Color) {
                     .background(Color.LightGray, RoundedCornerShape(35.dp))
             )
             Spacer(modifier = Modifier.height(8.dp))
-            Text(name, fontWeight = FontWeight.Bold, color = PrimaryColor, fontSize = 14.sp)
+            Text(name, fontWeight = FontWeight.Bold, color = PrimaryColor, fontSize = 12.sp)
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
