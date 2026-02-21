@@ -55,15 +55,15 @@ fun FruitSaladHomeScreen(userName: String) {
 
             // العمود الذي يحتوي على السلة والنص (اليمين)
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally // توسيط النص تحت الأيقونة
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.wrapContentSize() // لضمان عدم وجود مساحة وهمية
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.mybasket),
                     contentDescription = "Basket",
-                    tint = OrangePrimary,
-                    modifier = Modifier.size(160.dp)
+                    tint = SecondaryColor, // 👈 استخدم tint بدلاً من color
+                    modifier = Modifier.size(24.dp) // 👈 قمنا بتصغير الحجم ليتناسب مع التصميم ويحذف الفراغ
                 )
-                Spacer(modifier = Modifier.height(4.dp)) // مسافة صغيرة جداً بين الأيقونة والنص
                 Text(
                     text = "My basket",
                     fontSize = 10.sp,
