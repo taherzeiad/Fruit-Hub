@@ -65,7 +65,7 @@ fun FruitSaladHomeScreen(userName: String) {
                 )
                 Text(
                     text = "My basket",
-                    fontSize = 10.sp,
+                    fontSize = 15.sp,
                     color = PrimaryColor,
                     fontWeight = FontWeight.Medium
                 )
@@ -79,7 +79,10 @@ fun FruitSaladHomeScreen(userName: String) {
             text = "Hello $userName, What fruit salad combo do you want today?",
             modifier = Modifier.padding(horizontal = 24.dp),
             style = MaterialTheme.typography.headlineSmall.copy(
-                fontWeight = FontWeight.Bold, color = PrimaryColor, lineHeight = 32.sp
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                color = PrimaryColor,
+                lineHeight = 32.sp
             )
         )
 
