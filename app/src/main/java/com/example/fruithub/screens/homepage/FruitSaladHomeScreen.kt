@@ -13,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -60,7 +61,7 @@ fun FruitSaladHomeScreen(userName: String) {
                     painter = painterResource(id = R.drawable.mybasket),
                     contentDescription = "Basket",
                     tint = OrangePrimary,
-                    modifier = Modifier.size(24.dp) // 👈 تم تعديل الحجم من 160 إلى 24 ليكون منطقياً
+                    modifier = Modifier.size(160.dp)
                 )
                 Spacer(modifier = Modifier.height(4.dp)) // مسافة صغيرة جداً بين الأيقونة والنص
                 Text(
@@ -110,9 +111,10 @@ fun FruitSaladHomeScreen(userName: String) {
             )
             Spacer(modifier = Modifier.width(16.dp))
             Icon(
-                painter = painterResource(id = android.R.drawable.ic_menu_preferences),
-                contentDescription = "Filter",
-                modifier = Modifier.size(24.dp)
+                painter = painterResource(id = R.drawable.settings),
+                contentDescription = "Settings",
+                modifier = Modifier.size(24.dp),
+                tint = Color.Black // 👈 هنا تضع اللون الذي تريده
             )
         }
 
@@ -180,36 +182,78 @@ fun FruitSaladHomeScreen(userName: String) {
 @Composable
 fun RecommendedCard(name: String, price: String, bgColor: Color) {
     Card(
+        modifier = Modifier
+            .width(160.dp)
+            .height(210.dp) // 👈 قمنا بتحديد ارتفاع ثابت لجميع البطاقات
+            .shadow(
+                elevation = 4.dp, // 👈 قللنا القيمة من 20 ليكون الظل ناعماً
+                shape = RoundedCornerShape(16.dp),
+                clip = false,
+                ambientColor = Color.Black.copy(alpha = 0.05f),
+                spotColor = Color.Black.copy(alpha = 0.05f)
+            ),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = bgColor),
-        elevation = CardDefaults.cardElevation(4.dp),
-        modifier = Modifier.width(160.dp)
+        elevation = CardDefaults.cardElevation(0.dp)
     ) {
         Column(
-            modifier = Modifier.padding(12.dp), horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier
+                .fillMaxSize() // لتعبئة مساحة البطاقة المحددة
+                .padding(12.dp), horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // أيقونة القلب
             Icon(
                 Icons.Default.FavoriteBorder,
                 contentDescription = null,
                 tint = SecondaryColor,
-                modifier = Modifier.align(Alignment.End)
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .size(20.dp)
             )
-            // صورة تجريبية
+
+            // صورة المنتج
             Box(
                 modifier = Modifier
                     .size(80.dp)
-                    .background(Color.LightGray, RoundedCornerShape(40.dp))
+                    .background(Color(0xFFF3F4F9), RoundedCornerShape(40.dp))
             )
+
             Spacer(modifier = Modifier.height(8.dp))
-            Text(name, fontWeight = FontWeight.Bold, color = PrimaryColor, fontSize = 14.sp)
+
+            // اسم المنتج - استخدمنا weight لضمان محاذاة العناصر التي تحته
+            Text(
+                text = name,
+                fontWeight = FontWeight.Bold,
+                color = PrimaryColor,
+                fontSize = 14.sp,
+                modifier = Modifier.weight(1f) // 👈 يجعل النص يأخذ المساحة المتاحة ويوحد مكان السعر
+            )
+
+            // السطر السفلي (السعر والزر)
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("₦ $price", color = SecondaryColor, fontWeight = FontWeight.Bold)
-                IconButton(onClick = {}, modifier = Modifier.size(24.dp)) {
-                    Icon(Icons.Default.Add, contentDescription = null, tint = SecondaryColor)
+                Text(
+                    text = "₦ $price",
+                    color = SecondaryColor,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp
+                )
+
+                Box(
+                    modifier = Modifier
+                        .size(24.dp)
+                        .background(Color(0xFFFFFAEB), RoundedCornerShape(12.dp))
+                        .clickable { /* logic */ }, contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        Icons.Default.Add,
+                        contentDescription = null,
+                        tint = SecondaryColor,
+                        modifier = Modifier.size(16.dp)
+                    )
                 }
             }
         }

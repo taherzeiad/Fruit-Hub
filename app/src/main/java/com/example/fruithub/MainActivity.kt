@@ -23,17 +23,18 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FruitHubTheme {
-                // إنشاء وحدة التحكم في التنقل
                 val navController = rememberNavController()
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    // الـ NavHost هو المسؤول عن عرض الواجهة المناسبة بناءً على المسار (Route)
                     NavHost(
                         navController = navController,
-                        startDestination = "splash", // نقطة البداية هي السبلاش
+                        // غير هذا السطر للواجهة التي تريد العمل عليها
+                        startDestination = "home/Mohamed", // مثال: تشغيل الهوم مباشرة
+                        // startDestination = "welcome" // مثال: تشغيل مرحباً
+                        // startDestination = "authentication" // مثال: تشغيل المصادقة
+                        // startDestination = "splash" // الأصلية
                         modifier = Modifier.padding(innerPadding)
                     ) {
-                        // تعريف مسارات الواجهات
                         composable("splash") {
                             SplashScreen(onTimeout = {
                                 navController.navigate("welcome") {
@@ -49,16 +50,15 @@ class MainActivity : ComponentActivity() {
                         composable("authentication") {
                             AuthenticationScreen(navController = navController)
                         }
-                        composable("home/{userName}") { backStackEntry ->
-                            // 1. استلام الاسم من الرابط
-                            val name = backStackEntry.arguments?.getString("userName") ?: "User"
 
-                            // 2. استدعاء شاشة الهوم التي صممناها سابقاً وتمرير الاسم لها
+                        composable("home/{userName}") { backStackEntry ->
+                            val name = backStackEntry.arguments?.getString("userName") ?: "User"
                             FruitSaladHomeScreen(userName = name)
                         }
                     }
                 }
             }
         }
+    
     }
 }
