@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -39,13 +40,9 @@ fun FruitSaladHomeScreen(userName: String) {
     // Animation states
     val infiniteTransition = rememberInfiniteTransition(label = "menu_transition")
     val menuAlpha by infiniteTransition.animateFloat(
-        initialValue = 0.3f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(2000, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "menu_alpha"
+        initialValue = 0.3f, targetValue = 1f, animationSpec = infiniteRepeatable(
+            animation = tween(2000, easing = FastOutSlowInEasing), repeatMode = RepeatMode.Reverse
+        ), label = "menu_alpha"
     )
 
     // States for sequential animations
@@ -101,8 +98,7 @@ fun FruitSaladHomeScreen(userName: String) {
 
             // Basket with slide up animation
             AnimatedVisibility(
-                visible = startBasket,
-                enter = slideInVertically(
+                visible = startBasket, enter = slideInVertically(
                     initialOffsetY = { it },
                     animationSpec = tween(600, easing = FastOutSlowInEasing)
                 ) + fadeIn(animationSpec = tween(800, easing = FastOutSlowInEasing))
@@ -131,8 +127,7 @@ fun FruitSaladHomeScreen(userName: String) {
 
         // 2. Greeting Text with slide up animation
         AnimatedVisibility(
-            visible = startGreeting,
-            enter = slideInVertically(
+            visible = startGreeting, enter = slideInVertically(
                 initialOffsetY = { it * 2 },
                 animationSpec = tween(600, easing = FastOutSlowInEasing)
             ) + fadeIn(animationSpec = tween(800, easing = FastOutSlowInEasing))
@@ -153,8 +148,7 @@ fun FruitSaladHomeScreen(userName: String) {
 
         // 3. Search Bar with slide up animation
         AnimatedVisibility(
-            visible = startSearch,
-            enter = slideInVertically(
+            visible = startSearch, enter = slideInVertically(
                 initialOffsetY = { it * 2 },
                 animationSpec = tween(600, easing = FastOutSlowInEasing)
             ) + fadeIn(animationSpec = tween(800, easing = FastOutSlowInEasing))
@@ -232,7 +226,13 @@ fun FruitSaladHomeScreen(userName: String) {
                         animationSpec = tween(800, easing = FastOutSlowInEasing),
                         label = "recommended_card1_scale"
                     )
-                    RecommendedCard("Honey lime combo", "2,000", Color.White, scale)
+                    RecommendedCard(
+                        name = "Honey lime combo",
+                        price = "2,000",
+                        imageRes = R.drawable.honeylime,
+                        bgColor = Color.White,
+                        scale = scale
+                    )
                 }
                 item {
                     val scale by animateFloatAsState(
@@ -240,7 +240,13 @@ fun FruitSaladHomeScreen(userName: String) {
                         animationSpec = tween(800, easing = FastOutSlowInEasing),
                         label = "recommended_card2_scale"
                     )
-                    RecommendedCard("Berry mango combo", "8,000", Color.White, scale)
+                    RecommendedCard(
+                        name = "Berry mango combo",
+                        price = "8,000",
+                        imageRes = R.drawable.berryfruit,
+                        bgColor = Color.White,
+                        scale = scale
+                    )
                 }
             }
         }
@@ -297,12 +303,24 @@ fun FruitSaladHomeScreen(userName: String) {
                         )
                     }
                 }
-                Text("Popular", color = Color.Gray, fontSize = 16.sp,
-                    modifier = Modifier.graphicsLayer(alpha = popularAlpha))
-                Text("New combo", color = Color.Gray, fontSize = 16.sp,
-                    modifier = Modifier.graphicsLayer(alpha = newAlpha))
-                Text("Top", color = Color.Gray, fontSize = 16.sp,
-                    modifier = Modifier.graphicsLayer(alpha = topAlpha))
+                Text(
+                    "Popular",
+                    color = Color.Gray,
+                    fontSize = 16.sp,
+                    modifier = Modifier.graphicsLayer(alpha = popularAlpha)
+                )
+                Text(
+                    "New combo",
+                    color = Color.Gray,
+                    fontSize = 16.sp,
+                    modifier = Modifier.graphicsLayer(alpha = newAlpha)
+                )
+                Text(
+                    "Top",
+                    color = Color.Gray,
+                    fontSize = 16.sp,
+                    modifier = Modifier.graphicsLayer(alpha = topAlpha)
+                )
             }
         }
 
@@ -323,7 +341,13 @@ fun FruitSaladHomeScreen(userName: String) {
                         animationSpec = tween(800, delayMillis = 100, easing = FastOutSlowInEasing),
                         label = "hottest_card1_scale"
                     )
-                    HottestCard("Quinoa fruit salad", "10,000", CardBackground1, scale)
+                    HottestCard(
+                        name = "Quinoa fruit salad",
+                        price = "10,000",
+                        imageRes = R.drawable.breakfast,
+                        bgColor = CardBackground1,
+                        scale = scale
+                    )
                 }
                 item {
                     val scale by animateFloatAsState(
@@ -331,7 +355,13 @@ fun FruitSaladHomeScreen(userName: String) {
                         animationSpec = tween(800, delayMillis = 300, easing = FastOutSlowInEasing),
                         label = "hottest_card2_scale"
                     )
-                    HottestCard("Tropical fruit salad", "10,000", CardBackground2, scale)
+                    HottestCard(
+                        name = "Tropical fruit salad",
+                        price = "10,000",
+                        imageRes = R.drawable.bestever,
+                        bgColor = CardBackground2,
+                        scale = scale
+                    )
                 }
             }
         }
@@ -341,7 +371,9 @@ fun FruitSaladHomeScreen(userName: String) {
 }
 
 @Composable
-fun RecommendedCard(name: String, price: String, bgColor: Color, scale: Float = 1f) {
+fun RecommendedCard(
+    name: String, price: String, imageRes: Int, bgColor: Color, scale: Float = 1f
+) {
     Card(
         modifier = Modifier
             .width(160.dp)
@@ -373,10 +405,13 @@ fun RecommendedCard(name: String, price: String, bgColor: Color, scale: Float = 
                     .size(20.dp)
             )
 
-            Box(
+            Image(
+                painter = painterResource(id = imageRes),
+                contentDescription = name,
                 modifier = Modifier
                     .size(80.dp)
-                    .background(Color(0xFFF3F4F9), RoundedCornerShape(40.dp))
+                    .clip(RoundedCornerShape(40.dp)),
+                contentScale = ContentScale.Crop
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -405,8 +440,7 @@ fun RecommendedCard(name: String, price: String, bgColor: Color, scale: Float = 
                     modifier = Modifier
                         .size(24.dp)
                         .background(Color(0xFFFFFAEB), RoundedCornerShape(12.dp))
-                        .clickable { /* logic */ },
-                    contentAlignment = Alignment.Center
+                        .clickable { /* logic */ }, contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         Icons.Default.Add,
@@ -421,7 +455,9 @@ fun RecommendedCard(name: String, price: String, bgColor: Color, scale: Float = 
 }
 
 @Composable
-fun HottestCard(name: String, price: String, bgColor: Color, scale: Float = 1f) {
+fun HottestCard(
+    name: String, price: String, imageRes: Int, bgColor: Color, scale: Float = 1f
+) {
     Card(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = bgColor),
@@ -431,8 +467,7 @@ fun HottestCard(name: String, price: String, bgColor: Color, scale: Float = 1f) 
             .scale(scale)
     ) {
         Column(
-            modifier = Modifier.padding(12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier.padding(12.dp), horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Icon(
                 Icons.Default.FavoriteBorder,
@@ -440,11 +475,15 @@ fun HottestCard(name: String, price: String, bgColor: Color, scale: Float = 1f) 
                 tint = SecondaryColor,
                 modifier = Modifier.align(Alignment.End)
             )
-            Box(
+            Image(
+                painter = painterResource(id = imageRes),
+                contentDescription = name,
                 modifier = Modifier
                     .size(70.dp)
-                    .background(Color.LightGray, RoundedCornerShape(35.dp))
+                    .clip(RoundedCornerShape(35.dp)),
+                contentScale = ContentScale.Crop
             )
+
             Spacer(modifier = Modifier.height(8.dp))
             Text(name, fontWeight = FontWeight.Bold, color = PrimaryColor, fontSize = 12.sp)
             Row(
