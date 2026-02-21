@@ -25,7 +25,6 @@ import com.example.fruithub.ui.theme.CardBackground2
 import com.example.fruithub.ui.theme.PrimaryColor
 import com.example.fruithub.ui.theme.SecondaryColor
 import com.example.fruithub.R
-import com.example.fruithub.ui.theme.OrangePrimary
 
 
 @Composable
@@ -129,7 +128,7 @@ fun FruitSaladHomeScreen(userName: String) {
             )
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         LazyRow(
             contentPadding = PaddingValues(horizontal = 24.dp),
@@ -184,13 +183,13 @@ fun RecommendedCard(name: String, price: String, bgColor: Color) {
     Card(
         modifier = Modifier
             .width(160.dp)
-            .height(210.dp) // 👈 قمنا بتحديد ارتفاع ثابت لجميع البطاقات
+            .height(210.dp)
             .shadow(
-                elevation = 4.dp, // 👈 قللنا القيمة من 20 ليكون الظل ناعماً
+                elevation = 10.dp,
                 shape = RoundedCornerShape(16.dp),
                 clip = false,
-                ambientColor = Color.Black.copy(alpha = 0.05f),
-                spotColor = Color.Black.copy(alpha = 0.05f)
+                ambientColor = Color.Black.copy(alpha = 0.1f),
+                spotColor = Color.Black.copy(alpha = 0.15f)
             ),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = bgColor),
