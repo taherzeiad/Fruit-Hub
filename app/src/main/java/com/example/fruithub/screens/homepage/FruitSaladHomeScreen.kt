@@ -248,6 +248,20 @@ fun FruitSaladHomeScreen(userName: String) {
                         scale = scale
                     )
                 }
+                item {
+                    val scale by animateFloatAsState(
+                        targetValue = if (startRecommendedCards) 1f else 0.5f,
+                        animationSpec = tween(800, easing = FastOutSlowInEasing),
+                        label = "recommended_card2_scale"
+                    )
+                    RecommendedCard(
+                        name = "Berry mango combo",
+                        price = "8,000",
+                        imageRes = R.drawable.berryfruit,
+                        bgColor = Color.White,
+                        scale = scale
+                    )
+                }
             }
         }
 
@@ -349,6 +363,21 @@ fun FruitSaladHomeScreen(userName: String) {
                         scale = scale
                     )
                 }
+                item {
+                    val scale by animateFloatAsState(
+                        targetValue = if (startHottestCards) 1f else 0.5f,
+                        animationSpec = tween(800, delayMillis = 300, easing = FastOutSlowInEasing),
+                        label = "hottest_card2_scale"
+                    )
+                    HottestCard(
+                        name = "Tropical fruit salad",
+                        price = "10,000",
+                        imageRes = R.drawable.bestever,
+                        bgColor = CardBackground2,
+                        scale = scale
+                    )
+                }
+
                 item {
                     val scale by animateFloatAsState(
                         targetValue = if (startHottestCards) 1f else 0.5f,
