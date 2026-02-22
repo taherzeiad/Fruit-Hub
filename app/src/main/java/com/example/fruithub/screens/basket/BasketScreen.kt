@@ -58,7 +58,7 @@ fun BasketScreen(onBackClick: () -> Unit) {
                         .clip(RoundedCornerShape(20.dp))
                         .background(Color.White)
                         .clickable { onBackClick() }
-                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                        .padding(horizontal = 10.dp, vertical = 8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
@@ -71,7 +71,7 @@ fun BasketScreen(onBackClick: () -> Unit) {
                     Text("Go back", fontSize = 12.sp, color = Color.Black)
                 }
 
-                Spacer(modifier = Modifier.weight(0.5f))
+                Spacer(modifier = Modifier.weight(0.3f))
 
                 Text(
                     text = "My Basket",
@@ -134,7 +134,10 @@ fun BasketScreen(onBackClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column {
-                Text(text = "Total", fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                Text(
+                    text = "Total", fontSize = 16.sp, fontWeight = FontWeight.Bold,
+                    color = Color(0xFF27214D)
+                )
                 Text(
                     text = "₦ 60,000",
                     fontSize = 22.sp,
@@ -148,7 +151,7 @@ fun BasketScreen(onBackClick: () -> Unit) {
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFA451)),
                 shape = RoundedCornerShape(10.dp),
                 modifier = Modifier
-                    .width(180.dp)
+                    .width(199.dp)
                     .height(56.dp)
             ) {
                 Text("Checkout", color = Color.White, fontSize = 16.sp)

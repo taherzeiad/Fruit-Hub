@@ -53,8 +53,7 @@ class MainActivity : ComponentActivity() {
                             // نمررNavController أو دالة الانتقال
                             FruitSaladHomeScreen(
                                 userName = name,
-                                onBasketClick = { navController.navigate("basket") }
-                            )
+                                onBasketClick = { navController.navigate("basket") })
                         }
 
                         // الوجهة الجديدة للسلة

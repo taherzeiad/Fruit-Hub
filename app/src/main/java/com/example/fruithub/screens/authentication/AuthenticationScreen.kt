@@ -156,11 +156,14 @@ fun AuthenticationScreen(navController: NavController) {
                     TextField(
                         value = userName,
                         onValueChange = { userName = it },
-                        placeholder = { Text("Tony", color = Color.Gray) }, // جعل الـ Placeholder باهتًا
+                        placeholder = {
+                            Text(
+                                "Tony", color = Color.Gray
+                            )
+                        }, // جعل الـ Placeholder باهتًا
                         textStyle = androidx.compose.ui.text.TextStyle(
                             color = Color(0xFF27214D), // 👈 هذا هو اللون الغامق المطلوب للنص عند الكتابة
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Medium
+                            fontSize = 16.sp, fontWeight = FontWeight.Medium
                         ),
                         modifier = Modifier
                             .fillMaxWidth()
