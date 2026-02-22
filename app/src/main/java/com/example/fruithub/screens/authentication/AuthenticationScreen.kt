@@ -154,16 +154,23 @@ fun AuthenticationScreen(navController: NavController) {
                     Spacer(modifier = Modifier.height(16.dp))
 
                     TextField(
-                        value = userName, // نربط القيمة بالمتغير
-                        onValueChange = { userName = it }, // تحديث المتغير عند الكتابة
-                        placeholder = { Text("Tony") },
+                        value = userName,
+                        onValueChange = { userName = it },
+                        placeholder = { Text("Tony", color = Color.Gray) }, // جعل الـ Placeholder باهتًا
+                        textStyle = androidx.compose.ui.text.TextStyle(
+                            color = Color(0xFF27214D), // 👈 هذا هو اللون الغامق المطلوب للنص عند الكتابة
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium
+                        ),
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(56.dp),
                         shape = RoundedCornerShape(12.dp),
                         colors = TextFieldDefaults.colors(
-                            unfocusedContainerColor = Color(0xFFEDEDED),
-                            focusedContainerColor = Color(0xFFEDEDED),
+                            focusedTextColor = Color(0xFF27214D),   // 👈 لضمان اللون عند التركيز
+                            unfocusedTextColor = Color(0xFF27214D), // 👈 لضمان اللون بعد انتهاء التركيز
+                            unfocusedContainerColor = Color(0xFFF3F3F3),
+                            focusedContainerColor = Color(0xFFF3F3F3),
                             unfocusedIndicatorColor = Color.Transparent,
                             focusedIndicatorColor = Color.Transparent
                         )
