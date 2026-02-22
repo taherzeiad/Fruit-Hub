@@ -36,7 +36,8 @@ import kotlin.math.roundToInt
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun FruitSaladHomeScreen(userName: String) {
+fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit) {
+
     // Animation states
     val infiniteTransition = rememberInfiniteTransition(label = "menu_transition")
     val menuAlpha by infiniteTransition.animateFloat(
@@ -105,8 +106,9 @@ fun FruitSaladHomeScreen(userName: String) {
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.wrapContentSize()
-                ) {
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .clickable { onBasketClick() }) {
                     Icon(
                         painter = painterResource(id = R.drawable.mybasket),
                         contentDescription = "Basket",
@@ -311,7 +313,7 @@ fun FruitSaladHomeScreen(userName: String) {
                     if (hottestAlpha > 0.8f) {
                         Box(
                             modifier = Modifier
-                                .width(40.dp)
+                                .width(20.dp)
                                 .height(2.dp)
                                 .background(SecondaryColor)
                         )

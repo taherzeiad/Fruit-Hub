@@ -8,13 +8,15 @@ import com.example.fruithub.screens.authentication.AuthenticationScreen
 import com.example.fruithub.screens.homepage.FruitSaladHomeScreen
 import com.example.fruithub.screens.splash.SplashScreen
 import com.example.fruithub.screens.welcome.WelcomeScreen
+import com.example.fruithub.screens.basket.BasketScreen
 
 @Composable
 fun FruitHubNavGraph() {
     val navController = rememberNavController()
 
     NavHost(
-        navController = navController, startDestination = "splash"
+        navController = navController,
+        startDestination = "splash"
     ) {
 
         composable("splash") {
@@ -29,17 +31,21 @@ fun FruitHubNavGraph() {
             WelcomeScreen(navController)
         }
 
-        // 👇 أضف هذه
         composable("authentication") {
             AuthenticationScreen(navController)
         }
-        // التعديل هنا: يجب إضافة /{userName} لكي يتعرف النظام على المسار الديناميكي
+
         composable("home/{userName}") { backStackEntry ->
-            // استخراج الاسم من المسار
             val userName = backStackEntry.arguments?.getString("userName") ?: "Tony"
 
-            // استدعاء شاشة الهوم وتمرير الاسم لها
-            FruitSaladHomeScreen(userName = userName)
+            FruitSaladHomeScreen(
+                userName = userName,
+                onBasketClick = { navController.navigate("basket") }
+            )
+        }
+
+        composable("basket") {
+            BasketScreen(onBackClick = { navController.popBackStack() })
         }
     }
 }

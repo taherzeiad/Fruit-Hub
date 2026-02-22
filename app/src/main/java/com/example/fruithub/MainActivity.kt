@@ -15,7 +15,8 @@ import androidx.navigation.compose.composable
 import com.example.fruithub.screens.authentication.AuthenticationScreen
 import com.example.fruithub.screens.homepage.FruitSaladHomeScreen
 import com.example.fruithub.screens.splash.SplashScreen
-import com.example.fruithub.screens.welcome.WelcomeScreen // تأكد من صحة مسار الـ package
+import com.example.fruithub.screens.welcome.WelcomeScreen
+import com.example.fruithub.screens.basket.BasketScreen // تأكد من إنشاء هذا الملف
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,11 +29,7 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     NavHost(
                         navController = navController,
-                        // غير هذا السطر للواجهة التي تريد العمل عليها
-                        startDestination = "home/Mohamed", // مثال: تشغيل الهوم مباشرة
-                        // startDestination = "welcome" // مثال: تشغيل مرحباً
-                        // startDestination = "authentication" // مثال: تشغيل المصادقة
-                        // startDestination = "splash" // الأصلية
+                        startDestination = "home/Mohamed",
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         composable("splash") {
@@ -53,12 +50,20 @@ class MainActivity : ComponentActivity() {
 
                         composable("home/{userName}") { backStackEntry ->
                             val name = backStackEntry.arguments?.getString("userName") ?: "User"
-                            FruitSaladHomeScreen(userName = name)
+                            // نمررNavController أو دالة الانتقال
+                            FruitSaladHomeScreen(
+                                userName = name,
+                                onBasketClick = { navController.navigate("basket") }
+                            )
+                        }
+
+                        // الوجهة الجديدة للسلة
+                        composable("basket") {
+                            BasketScreen(onBackClick = { navController.popBackStack() })
                         }
                     }
                 }
             }
         }
-
     }
 }
