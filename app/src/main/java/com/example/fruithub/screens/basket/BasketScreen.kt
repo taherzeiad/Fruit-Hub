@@ -48,20 +48,15 @@ import com.example.fruithub.ui.theme.SecondaryColor
 
 @Composable
 fun BasketScreen(onBackClick: () -> Unit) {
-    // 1. زيادة مدة الأنميشن والتحكم في الحالة
     var startAnimations by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        // تأخير بسيط جداً قبل البدء لضمان استقرار الشاشة
         startAnimations = true
     }
 
-    // 2. تعديل أنيميشن الارتفاع (تصغير الجزء البرتقالي)
     val headerHeight by animateDpAsState(
-        // جعل الارتفاع الابتدائي 1000dp لضمان تغطية الشاشة بالكامل (أو استخدام LocalConfiguration)
         targetValue = if (startAnimations) 110.dp else 1000.dp, animationSpec = tween(
-            durationMillis = 1500, // 👈 تم زيادة المدة لثانية ونصف لجعل الحركة أبطأ وأوضح
-            easing = FastOutSlowInEasing
+            durationMillis = 1500, easing = FastOutSlowInEasing
         ), label = "HeaderHeight"
     )
 
@@ -79,7 +74,6 @@ fun BasketScreen(onBackClick: () -> Unit) {
                 .padding(start = 24.dp, end = 24.dp, bottom = 20.dp),
             contentAlignment = Alignment.BottomCenter
         ) {
-            // تظهر المحتويات فقط عندما يقترب الهيدر من حجمه النهائي
             androidx.compose.animation.AnimatedVisibility(
                 visible = startAnimations && headerHeight < 300.dp,
                 enter = fadeIn(tween(800)) + slideInVertically { it / 2 }) {
@@ -141,7 +135,7 @@ fun BasketScreen(onBackClick: () -> Unit) {
                     visible = startAnimations && headerHeight < 400.dp, // تبدأ بعد تقلص الهيدر قليلاً
                     enter = slideInHorizontally(
                         initialOffsetX = { if (isLeftToRight) -it else it }, animationSpec = tween(
-                            durationMillis = 1000, // 👈 جعل حركة العناصر أبطأ أيضاً
+                            durationMillis = 1000,
                             delayMillis = 500 + (index * 200) // تأخير إضافي ليتناسب مع حركة الهيدر
                         )
                     ) + fadeIn(tween(800))
