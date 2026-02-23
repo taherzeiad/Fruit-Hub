@@ -24,7 +24,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.IntOffset
 import com.example.fruithub.ui.theme.BackgroundColor
 import com.example.fruithub.ui.theme.CardBackground1
 import com.example.fruithub.ui.theme.CardBackground2
@@ -32,7 +31,6 @@ import com.example.fruithub.ui.theme.PrimaryColor
 import com.example.fruithub.ui.theme.SecondaryColor
 import com.example.fruithub.R
 import kotlinx.coroutines.delay
-import kotlin.math.roundToInt
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -83,11 +81,12 @@ fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 24.dp, vertical = 8.dp),
+                .padding(horizontal = 24.dp, vertical = 8.dp)
+                .height(56.dp), //  تثبيت الارتفاع يمنع أي حركة رأسية عند ظهور الأيقونة
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.Top
+            verticalAlignment = Alignment.CenterVertically //  جعل العناصر في المنتصف دائماً
         ) {
-            // Menu icon with fade animation
+            // Menu icon
             Icon(
                 painter = painterResource(id = android.R.drawable.ic_menu_sort_by_size),
                 contentDescription = "Menu",
@@ -97,35 +96,33 @@ fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit) {
                     .graphicsLayer(alpha = menuAlpha)
             )
 
-            // Basket with slide up animation
-            AnimatedVisibility(
-                visible = startBasket, enter = slideInVertically(
-                    initialOffsetY = { it },
-                    animationSpec = tween(600, easing = FastOutSlowInEasing)
-                ) + fadeIn(animationSpec = tween(800, easing = FastOutSlowInEasing))
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .wrapContentSize()
-                        .clickable { onBasketClick() }) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.mybasket),
-                        contentDescription = "Basket",
-                        tint = SecondaryColor,
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Text(
-                        text = "My basket",
-                        fontSize = 10.sp,
-                        color = PrimaryColor,
-                        fontWeight = FontWeight.Medium
-                    )
+            // سلة المشتريات
+            Box(modifier = Modifier.wrapContentSize()) { // 👈 وضعها داخل Box يحافظ على استقرار المكان
+                androidx.compose.animation.AnimatedVisibility(
+                    visible = startBasket,
+                    enter = slideInVertically(initialOffsetY = { it }) + fadeIn(tween(800)),
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .wrapContentSize()
+                            .clickable { onBasketClick() }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.mybasket),
+                            contentDescription = "Basket",
+                            tint = SecondaryColor,
+                            modifier = Modifier.size(24.dp)
+                        )
+                        Text(
+                            text = "My basket",
+                            fontSize = 10.sp,
+                            color = PrimaryColor,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
                 }
             }
         }
-
-        Spacer(modifier = Modifier.height(24.dp))
 
         // 2. Greeting Text with slide up animation
         AnimatedVisibility(
@@ -135,13 +132,13 @@ fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit) {
             ) + fadeIn(animationSpec = tween(800, easing = FastOutSlowInEasing))
         ) {
             Text(
-                text = "Hello $userName, What fruit salad combo do you want today?",
+                text = "Hello $userName, What fruit salad \ncombo do you want today?",
                 modifier = Modifier.padding(horizontal = 24.dp),
                 style = MaterialTheme.typography.headlineSmall.copy(
-                    fontSize = 20.sp,
+                    fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = PrimaryColor,
-                    lineHeight = 32.sp
+                    lineHeight = 28.sp
                 )
             )
         }
