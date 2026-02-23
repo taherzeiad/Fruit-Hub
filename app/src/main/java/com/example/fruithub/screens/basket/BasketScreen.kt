@@ -1,5 +1,12 @@
 package com.example.fruithub.screens.basket
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,6 +30,11 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,60 +43,83 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.times
 import com.example.fruithub.R
+import com.example.fruithub.ui.theme.SecondaryColor
 
 @Composable
 fun BasketScreen(onBackClick: () -> Unit) {
+    // 1. زيادة مدة الأنميشن والتحكم في الحالة
+    var startAnimations by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        // تأخير بسيط جداً قبل البدء لضمان استقرار الشاشة
+        startAnimations = true
+    }
+
+    // 2. تعديل أنيميشن الارتفاع (تصغير الجزء البرتقالي)
+    val headerHeight by animateDpAsState(
+        // جعل الارتفاع الابتدائي 1000dp لضمان تغطية الشاشة بالكامل (أو استخدام LocalConfiguration)
+        targetValue = if (startAnimations) 110.dp else 1000.dp, animationSpec = tween(
+            durationMillis = 1500, // 👈 تم زيادة المدة لثانية ونصف لجعل الحركة أبطأ وأوضح
+            easing = FastOutSlowInEasing
+        ), label = "HeaderHeight"
+    )
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
     ) {
-        // --- 1. الجزء العلوي البرتقالي (Header) ---
+        // --- الهيدر البرتقالي ---
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color(0xFFFFA451)) // لون برتقالي أساسي
-                .padding(top = 40.dp, bottom = 30.dp, start = 24.dp, end = 24.dp)
+                .height(headerHeight) // الارتفاع المتغير
+                .background(SecondaryColor)
+                .padding(start = 24.dp, end = 24.dp, bottom = 20.dp),
+            contentAlignment = Alignment.BottomCenter
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                // زر Go back
+            // تظهر المحتويات فقط عندما يقترب الهيدر من حجمه النهائي
+            androidx.compose.animation.AnimatedVisibility(
+                visible = startAnimations && headerHeight < 300.dp,
+                enter = fadeIn(tween(800)) + slideInVertically { it / 2 }) {
                 Row(
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .clip(RoundedCornerShape(20.dp))
-                        .background(Color.White)
-                        .clickable { onBackClick() }
-                        .padding(horizontal = 10.dp, vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                        .fillMaxWidth()
+                        .padding(bottom = 10.dp)
                 ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.backicon), // أيقونة سهم بسيطة
-                        contentDescription = null,
-                        modifier = Modifier.size(20.dp),
-                        tint = Color.Black
+                    // زر الرجوع
+                    Row(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(20.dp))
+                            .background(Color.White)
+                            .clickable { onBackClick() }
+                            .padding(horizontal = 10.dp, vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.backicon),
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp),
+                            tint = Color.Black
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("Go back", fontSize = 12.sp, color = Color.Black)
+                    }
+
+                    Spacer(modifier = Modifier.weight(0.3f))
+                    Text(
+                        text = "My Basket",
+                        color = Color.White,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
                     )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text("Go back", fontSize = 12.sp, color = Color.Black)
+                    Spacer(modifier = Modifier.weight(1f))
                 }
-
-                Spacer(modifier = Modifier.weight(0.3f))
-
-                Text(
-                    text = "My Basket",
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-
-                Spacer(modifier = Modifier.weight(1f))
             }
         }
 
-        // --- 2. قائمة العناصر (بيانات وهمية مباشرة) ---
+        // --- القائمة بتأخير يتناسب مع حركة الهيدر ---
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -93,68 +128,73 @@ fun BasketScreen(onBackClick: () -> Unit) {
         ) {
             Spacer(modifier = Modifier.height(24.dp))
 
-            // العنصر الأول
-            BasketRow(
-                name = "Quinoa fruit salad",
-                quantity = "2packs",
-                price = "20,000",
-                imgRes = R.drawable.quinoa_salad, // تأكد من وجود هذه الأسماء في drawable
-                bgColor = Color(0xFFFFFAEB)
+            val items = listOf(
+                Triple("Quinoa fruit salad", R.drawable.quinoa_salad, Color(0xFFFFFAEB)),
+                Triple("Melon fruit salad", R.drawable.melon_salad, Color(0xFFF3F4F9)),
+                Triple("Tropical fruit salad", R.drawable.tropical_salad, Color(0xFFFFF2F2))
             )
 
-            Divider(modifier = Modifier.padding(vertical = 16.dp), color = Color(0xFFF3F3F3))
+            items.forEachIndexed { index, item ->
+                val isLeftToRight = index % 2 == 0
 
-            // العنصر الثاني
-            BasketRow(
-                name = "Melon fruit salad",
-                quantity = "2packs",
-                price = "20,000",
-                imgRes = R.drawable.melon_salad,
-                bgColor = Color(0xFFF3F4F9)
-            )
-
-            Divider(modifier = Modifier.padding(vertical = 16.dp), color = Color(0xFFF3F3F3))
-
-            // العنصر الثالث
-            BasketRow(
-                name = "Tropical fruit salad",
-                quantity = "2packs",
-                price = "20,000",
-                imgRes = R.drawable.tropical_salad,
-                bgColor = Color(0xFFFFF2F2)
-            )
+                AnimatedVisibility(
+                    visible = startAnimations && headerHeight < 400.dp, // تبدأ بعد تقلص الهيدر قليلاً
+                    enter = slideInHorizontally(
+                        initialOffsetX = { if (isLeftToRight) -it else it }, animationSpec = tween(
+                            durationMillis = 1000, // 👈 جعل حركة العناصر أبطأ أيضاً
+                            delayMillis = 500 + (index * 200) // تأخير إضافي ليتناسب مع حركة الهيدر
+                        )
+                    ) + fadeIn(tween(800))
+                ) {
+                    Column {
+                        BasketRow(item.first, "2packs", "20,000", item.second, item.third)
+                        Divider(
+                            modifier = Modifier.padding(vertical = 16.dp), color = Color(0xFFF3F3F3)
+                        )
+                    }
+                }
+            }
         }
 
-        // --- 3. الجزء السفلي (السعر والزر) ---
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(24.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+        // --- الجزء السفلي بحركة بطيئة ---
+        AnimatedVisibility(
+            visible = startAnimations && headerHeight < 300.dp, enter = slideInVertically(
+                initialOffsetY = { it },
+                animationSpec = tween(durationMillis = 1200, delayMillis = 1000)
+            ) + fadeIn()
         ) {
-            Column {
-                Text(
-                    text = "Total", fontSize = 16.sp, fontWeight = FontWeight.Bold,
-                    color = Color(0xFF27214D)
-                )
-                Text(
-                    text = "₦ 60,000",
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF27214D)
-                )
-            }
-
-            Button(
-                onClick = { /* logic */ },
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFA451)),
-                shape = RoundedCornerShape(10.dp),
+            Row(
                 modifier = Modifier
-                    .width(199.dp)
-                    .height(56.dp)
+                    .fillMaxWidth()
+                    .padding(24.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("Checkout", color = Color.White, fontSize = 16.sp)
+                Column {
+                    Text(
+                        "Total",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF27214D)
+                    )
+                    Text(
+                        "₦ 60,000",
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF27214D)
+                    )
+                }
+
+                Button(
+                    onClick = { /* logic */ },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFA451)),
+                    shape = RoundedCornerShape(10.dp),
+                    modifier = Modifier
+                        .width(199.dp)
+                        .height(56.dp)
+                ) {
+                    Text("Checkout", color = Color.White, fontSize = 16.sp)
+                }
             }
         }
     }
@@ -163,8 +203,7 @@ fun BasketScreen(onBackClick: () -> Unit) {
 @Composable
 fun BasketRow(name: String, quantity: String, price: String, imgRes: Int, bgColor: Color) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
+        modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
     ) {
         // صورة المنتج بخلفية ملونة
         Box(
