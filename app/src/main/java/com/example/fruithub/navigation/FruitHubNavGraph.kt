@@ -16,40 +16,40 @@ fun FruitHubNavGraph() {
     val navController = rememberNavController()
 
     NavHost(
-        navController = navController, startDestination = "splash"
+        navController = navController,
+        startDestination = Screen.Splash.route // 👈 استخدام الـ Route من الكائن
     ) {
 
-        composable("splash") {
+        composable(Screen.Splash.route) {
             SplashScreen(onTimeout = {
-                navController.navigate("welcome") {
-                    popUpTo("splash") { inclusive = true }
+                navController.navigate(Screen.Welcome.route) {
+                    popUpTo(Screen.Splash.route) { inclusive = true }
                 }
             })
         }
 
-        composable("welcome") {
+        composable(Screen.Welcome.route) {
             WelcomeScreen(navController)
         }
 
-        composable("authentication") {
+        composable(Screen.Authentication.route) {
             AuthenticationScreen(navController)
         }
 
-        composable("home/{userName}") { backStackEntry ->
+        composable(Screen.Home.route) { backStackEntry ->
             val name = backStackEntry.arguments?.getString("userName") ?: "User"
             FruitSaladHomeScreen(
                 userName = name,
-                onBasketClick = { navController.navigate("basket") },
-                onProductClick = { navController.navigate("product details") } // 👈 أضف هذا السطر هنا
-            )
+                onBasketClick = { navController.navigate(Screen.Basket.route) },
+                onProductClick = { navController.navigate(Screen.ProductDetails.route) })
         }
 
-        composable("basket") {
+        composable(Screen.Basket.route) {
             BasketScreen(onBackClick = { navController.popBackStack() })
         }
-        composable("product details") {
+
+        composable(Screen.ProductDetails.route) {
             ProductDetailsScreen(onBackClick = { navController.popBackStack() })
         }
     }
-
 }

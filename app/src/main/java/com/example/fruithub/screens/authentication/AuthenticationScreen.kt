@@ -41,6 +41,7 @@ import androidx.navigation.NavController
 import com.example.fruithub.commonComponent.ButtonOrange
 import com.example.fruithub.ui.theme.OrangePrimary
 import com.example.fruithub.R
+import com.example.fruithub.navigation.Screen
 import kotlinx.coroutines.delay
 
 @Composable
@@ -193,9 +194,9 @@ fun AuthenticationScreen(navController: NavController) {
                         onClick = {
                             if (userName.isNotBlank()) {
                                 // الانتقال لشاشة الهوم وتمرير الاسم كـ Argument (اختياري)
-                                navController.navigate("home/$userName") {
+                                navController.navigate(Screen.Home.createRoute(userName)) {
                                     // حذف شاشة التحقق من سجل التنقل حتى لا يعود إليها المستخدم
-                                    popUpTo("authentication") { inclusive = true }
+                                    popUpTo(Screen.Authentication.route) { inclusive = true }
                                 }
                             }
                         }, modifier = Modifier
