@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     NavHost(
                         navController = navController,
-                        startDestination = "productdetails",
+                        startDestination = "splash",
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         composable("splash") {
@@ -53,9 +53,11 @@ class MainActivity : ComponentActivity() {
                             val name = backStackEntry.arguments?.getString("userName") ?: "User"
                             FruitSaladHomeScreen(
                                 userName = name,
-                                onBasketClick = { navController.navigate("basket") })
+                                onBasketClick = { navController.navigate("basket") },
+                                onProductClick = { navController.navigate("product details") } // 👈 أضف هذا السطر هنا
+                            )
                         }
-                        composable("productdetails") {
+                        composable("product details") {
                             ProductDetailsScreen(onBackClick = { navController.popBackStack() })
                         }
                         composable("basket") {

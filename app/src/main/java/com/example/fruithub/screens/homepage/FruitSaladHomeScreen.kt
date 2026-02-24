@@ -34,7 +34,7 @@ import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit) {
+fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit, onProductClick: () -> Unit) {
 
     // Animation states
     val infiniteTransition = rememberInfiniteTransition(label = "menu_transition")
@@ -359,7 +359,8 @@ fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit) {
                         price = "10,000",
                         imageRes = R.drawable.breakfast,
                         bgColor = CardBackground1,
-                        scale = scale
+                        scale = scale,
+                        onClick = onProductClick
                     )
                 }
                 item {
@@ -373,7 +374,8 @@ fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit) {
                         price = "10,000",
                         imageRes = R.drawable.bestever,
                         bgColor = CardBackground2,
-                        scale = scale
+                        scale = scale,
+                        onClick = onProductClick
                     )
                 }
 
@@ -388,7 +390,8 @@ fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit) {
                         price = "10,000",
                         imageRes = R.drawable.bestever,
                         bgColor = CardBackground2,
-                        scale = scale
+                        scale = scale,
+                        onClick = onProductClick
                     )
                 }
             }
@@ -484,7 +487,12 @@ fun RecommendedCard(
 
 @Composable
 fun HottestCard(
-    name: String, price: String, imageRes: Int, bgColor: Color, scale: Float = 1f
+    name: String,
+    price: String,
+    imageRes: Int,
+    bgColor: Color,
+    scale: Float = 1f,
+    onClick: () -> Unit
 ) {
     Card(
         shape = RoundedCornerShape(16.dp),
@@ -493,7 +501,7 @@ fun HottestCard(
             .width(160.dp)
             .height(190.dp)
             .scale(scale)
-    ) {
+            .clickable { onClick() }) {
         Column(
             modifier = Modifier.padding(12.dp), horizontalAlignment = Alignment.CenterHorizontally
         ) {

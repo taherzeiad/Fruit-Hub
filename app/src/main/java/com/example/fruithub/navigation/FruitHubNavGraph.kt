@@ -36,16 +36,18 @@ fun FruitHubNavGraph() {
         }
 
         composable("home/{userName}") { backStackEntry ->
-            val userName = backStackEntry.arguments?.getString("userName") ?: "Tony"
-
+            val name = backStackEntry.arguments?.getString("userName") ?: "User"
             FruitSaladHomeScreen(
-                userName = userName, onBasketClick = { navController.navigate("basket") })
+                userName = name,
+                onBasketClick = { navController.navigate("basket") },
+                onProductClick = { navController.navigate("product details") } // 👈 أضف هذا السطر هنا
+            )
         }
 
         composable("basket") {
             BasketScreen(onBackClick = { navController.popBackStack() })
         }
-        composable("productdetails") {
+        composable("product details") {
             ProductDetailsScreen(onBackClick = { navController.popBackStack() })
         }
     }
