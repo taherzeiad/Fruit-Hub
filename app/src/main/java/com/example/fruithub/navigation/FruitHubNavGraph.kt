@@ -1,6 +1,9 @@
 package com.example.fruithub.navigation
 
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -15,46 +18,57 @@ import com.example.fruithub.screens.productdetails.ProductDetailsScreen
 fun FruitHubNavGraph() {
     val navController = rememberNavController()
 
-    NavHost(
-        navController = navController,
-        startDestination = Screen.Splash.route // 👈 استخدام الـ Route من الكائن
-    ) {
+    // وضع الـ Scaffold هنا يحمي الشاشات من التداخل مع شريط الحالة أو أزرار النظام
+    Scaffold { innerPadding ->
+        NavHost(
+            navController = navController,
+            startDestination = Screen.Splash.route,
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            // 1. Splash
+            composable(Screen.Splash.route) {
+                SplashScreen(onTimeout = {
+                    navController.navigate(Screen.Welcome.route) {
+                        popUpTo(Screen.Splash.route) { inclusive = true }
+                    }
+                })
+            }
 
-        composable(Screen.Splash.route) {
-            SplashScreen(onTimeout = {
-                navController.navigate(Screen.Welcome.route) {
-                    popUpTo(Screen.Splash.route) { inclusive = true }
-                }
-            })
-        }
+            // 2. Welcome
+            composable(Screen.Welcome.route) {
+                WelcomeScreen(onContinueClick = {
+                    navController.navigate(Screen.Authentication.route)
+                })
+            }
 
-        composable(Screen.Welcome.route) {
-            WelcomeScreen(navController)
-        }
-
-        composable(Screen.Authentication.route) {
-            AuthenticationScreen(
-                onLoginSuccess = { name ->
+            // 3. Authentication
+            composable(Screen.Authentication.route) {
+                AuthenticationScreen(onLoginSuccess = { name ->
                     navController.navigate(Screen.Home.createRoute(name)) {
                         popUpTo(Screen.Authentication.route) { inclusive = true }
                     }
                 })
-        }
+            }
 
-        composable(Screen.Home.route) { backStackEntry ->
-            val name = backStackEntry.arguments?.getString("userName") ?: "User"
-            FruitSaladHomeScreen(
-                userName = name,
-                onBasketClick = { navController.navigate(Screen.Basket.route) },
-                onProductClick = { navController.navigate(Screen.ProductDetails.route) })
-        }
+            // 4. Home
+            composable(Screen.Home.route) { backStackEntry ->
+                val name = backStackEntry.arguments?.getString("userName") ?: "User"
+                FruitSaladHomeScreen(
+                    userName = name,
+                    onBasketClick = { navController.navigate(Screen.Basket.route) },
+                    onProductClick = { navController.navigate(Screen.ProductDetails.route) }
+                )
+            }
 
-        composable(Screen.Basket.route) {
-            BasketScreen(onBackClick = { navController.popBackStack() })
-        }
+            // 5. Product Details
+            composable(Screen.ProductDetails.route) {
+                ProductDetailsScreen(onBackClick = { navController.popBackStack() })
+            }
 
-        composable(Screen.ProductDetails.route) {
-            ProductDetailsScreen(onBackClick = { navController.popBackStack() })
+            // 6. Basket
+            composable(Screen.Basket.route) {
+                BasketScreen(onBackClick = { navController.popBackStack() })
+            }
         }
     }
 }

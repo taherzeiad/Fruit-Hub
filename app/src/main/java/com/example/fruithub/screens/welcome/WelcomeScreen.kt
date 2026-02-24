@@ -25,14 +25,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.example.fruithub.R
 import com.example.fruithub.commonComponent.ButtonOrange
 import com.example.fruithub.ui.theme.OrangePrimary
 import kotlinx.coroutines.delay
 
 @Composable
-fun WelcomeScreen(navController: NavController) {
+fun WelcomeScreen(onContinueClick: () -> Unit) {
     // 1. تعريف حالات التحكم في ظهور العناصر (States)
     var isBasketVisible by remember { mutableStateOf(false) }
     var isTextVisible by remember { mutableStateOf(false) }
@@ -152,8 +151,7 @@ fun WelcomeScreen(navController: NavController) {
                 enter = slideInVertically(initialOffsetY = { it }) + fadeIn()
             ) {
                 ButtonOrange(
-                    onClick = { navController.navigate("authentication") },
-                    modifier = Modifier
+                    onClick = onContinueClick, modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp)
                 ) {

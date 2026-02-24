@@ -12,6 +12,7 @@ import com.example.fruithub.ui.theme.FruitHubTheme
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.fruithub.navigation.FruitHubNavGraph
 import com.example.fruithub.navigation.Screen
 import com.example.fruithub.screens.authentication.AuthenticationScreen
 import com.example.fruithub.screens.homepage.FruitSaladHomeScreen
@@ -26,53 +27,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FruitHubTheme {
-                val navController = rememberNavController()
-
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    NavHost(
-                        navController = navController,
-                        startDestination = "splash",
-                        modifier = Modifier.padding(innerPadding)
-                    ) {
-                        composable("splash") {
-                            SplashScreen(onTimeout = {
-                                navController.navigate("welcome") {
-                                    popUpTo("splash") { inclusive = true }
-                                }
-                            })
-                        }
-
-                        composable("welcome") {
-                            WelcomeScreen(navController = navController)
-                        }
-
-                        composable(Screen.Authentication.route) {
-                            AuthenticationScreen(
-                                onLoginSuccess = { name ->
-                                    navController.navigate(Screen.Home.createRoute(name)) {
-                                        popUpTo(Screen.Authentication.route) { inclusive = true }
-                                    }
-                                }
-                            )
-                        }
-
-                        composable("home/{userName}") { backStackEntry ->
-                            val name = backStackEntry.arguments?.getString("userName") ?: "User"
-                            FruitSaladHomeScreen(
-                                userName = name,
-                                onBasketClick = { navController.navigate("basket") },
-                                onProductClick = { navController.navigate("product details") } // 👈 أضف هذا السطر هنا
-                            )
-                        }
-                        composable("product details") {
-                            ProductDetailsScreen(onBackClick = { navController.popBackStack() })
-                        }
-                        composable("basket") {
-                            BasketScreen(onBackClick = { navController.popBackStack() })
-                        }
-
-                    }
-                }
+                FruitHubNavGraph()
             }
         }
     }
