@@ -9,7 +9,6 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,13 +21,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -38,7 +34,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
@@ -48,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import com.example.fruithub.R
 import com.example.fruithub.commonComponent.BackButton
 import com.example.fruithub.ui.theme.SecondaryColor
+import androidx.compose.foundation.shape.RoundedCornerShape
 
 @Composable
 fun BasketScreen(onBackClick: () -> Unit) {
@@ -96,8 +92,17 @@ fun BasketScreen(onBackClick: () -> Unit) {
                     Triple("Tropical fruit salad", R.drawable.tropical_salad, Color(0xFFFFF2F2))
                 )
 
-                items.forEachIndexed { index, item ->
+                items.forEachIndexed { index, tripleItem -> // غيرت الاسم لـ tripleItem للوضوح
                     val isLeftToRight = index % 2 == 0
+
+                    // تحويل الـ Triple إلى كائن BasketItem
+                    val basketItem = BasketItem(
+                        name = tripleItem.first,
+                        imageRes = tripleItem.second,
+                        bgColor = tripleItem.third,
+                        price = "20,000", // قيمة افتراضية أو يمكنك إضافتها للـ Triple
+                        quantity = "2 packs"
+                    )
 
                     AnimatedVisibility(
                         visible = startAnimations && headerHeight < 400.dp,
@@ -107,7 +112,9 @@ fun BasketScreen(onBackClick: () -> Unit) {
                         ) + fadeIn(tween(800))
                     ) {
                         Column {
-                            BasketRow(item.first, "2packs", "20,000", item.second, item.third)
+                            // الاستدعاء الصحيح الآن هو تمرير الكائن فقط
+                            BasketRow(item = basketItem)
+
                             Divider(
                                 modifier = Modifier.padding(vertical = 16.dp),
                                 color = Color(0xFFF3F3F3)
@@ -197,18 +204,18 @@ fun BasketScreen(onBackClick: () -> Unit) {
 }
 
 @Composable
-fun BasketRow(name: String, quantity: String, price: String, imgRes: Int, bgColor: Color) {
+fun BasketRow(item: BasketItem) {
     Row(
         modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
             modifier = Modifier
                 .size(65.dp)
-                .background(bgColor, RoundedCornerShape(10.dp)),
+                .background(item.bgColor, RoundedCornerShape(10.dp)),
             contentAlignment = Alignment.Center
         ) {
             Image(
-                painter = painterResource(id = imgRes),
+                painter = painterResource(id = item.imageRes),
                 contentDescription = null,
                 modifier = Modifier.size(45.dp)
             )
@@ -218,16 +225,16 @@ fun BasketRow(name: String, quantity: String, price: String, imgRes: Int, bgColo
 
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = name,
+                text = item.name,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
                 color = Color(0xFF27214D)
             )
-            Text(text = quantity, fontSize = 14.sp, color = Color.Gray)
+            Text(text = item.quantity, fontSize = 14.sp, color = Color.Gray)
         }
 
         Text(
-            text = "₦ $price",
+            text = "₦ ${item.price}",
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp,
             color = Color(0xFF27214D)

@@ -21,9 +21,10 @@ fun BackButton(
     onBackClick: () -> Unit
 ) {
     Surface(
+        onClick = onBackClick,
         color = Color.White,
         shape = RoundedCornerShape(25.dp),
-        modifier = modifier.clickable { onBackClick() }
+        modifier = modifier
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
@@ -36,11 +37,7 @@ fun BackButton(
                 tint = Color.Black
             )
             Spacer(modifier = Modifier.width(4.dp))
-            Text(
-                text = "Go back",
-                fontSize = 14.sp,
-                color = Color.Black
-            )
+            Text(text = "Go back", fontSize = 14.sp, color = Color.Black)
         }
     }
 }

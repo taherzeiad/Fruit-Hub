@@ -12,6 +12,7 @@ import com.example.fruithub.ui.theme.FruitHubTheme
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.fruithub.navigation.Screen
 import com.example.fruithub.screens.authentication.AuthenticationScreen
 import com.example.fruithub.screens.homepage.FruitSaladHomeScreen
 import com.example.fruithub.screens.splash.SplashScreen
@@ -45,8 +46,14 @@ class MainActivity : ComponentActivity() {
                             WelcomeScreen(navController = navController)
                         }
 
-                        composable("authentication") {
-                            AuthenticationScreen(navController = navController)
+                        composable(Screen.Authentication.route) {
+                            AuthenticationScreen(
+                                onLoginSuccess = { name ->
+                                    navController.navigate(Screen.Home.createRoute(name)) {
+                                        popUpTo(Screen.Authentication.route) { inclusive = true }
+                                    }
+                                }
+                            )
                         }
 
                         composable("home/{userName}") { backStackEntry ->

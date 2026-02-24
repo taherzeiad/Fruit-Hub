@@ -33,7 +33,12 @@ fun FruitHubNavGraph() {
         }
 
         composable(Screen.Authentication.route) {
-            AuthenticationScreen(navController)
+            AuthenticationScreen(
+                onLoginSuccess = { name ->
+                    navController.navigate(Screen.Home.createRoute(name)) {
+                        popUpTo(Screen.Authentication.route) { inclusive = true }
+                    }
+                })
         }
 
         composable(Screen.Home.route) { backStackEntry ->

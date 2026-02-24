@@ -37,6 +37,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.fruithub.commonComponent.ButtonOrange
 import com.example.fruithub.ui.theme.OrangePrimary
@@ -45,33 +46,29 @@ import com.example.fruithub.navigation.Screen
 import kotlinx.coroutines.delay
 
 @Composable
-fun AuthenticationScreen(navController: NavController) {
-
-    var userName by remember { mutableStateOf("") }
-
-    // 1. حالات التحكم في بدء ظهور العناصر (States)
+fun AuthenticationScreen(
+    viewModel: AuthenticationViewModel = viewModel(), // استخدام ViewModel
+    onLoginSuccess: (String) -> Unit // تمرير دالة بدلاً من NavController
+) {
+    // منطق التحريك (الأنميشن) يبقى هنا لأنه خاص بالـ UI فقط
     var startBasketAnimation by remember { mutableStateOf(false) }
     var startTextAnimation by remember { mutableStateOf(false) }
     var startButtonAnimation by remember { mutableStateOf(false) }
 
-    // 2. تعريف حركة التكبير (Scaling) للسلة والظل
     val basketScale by animateFloatAsState(
         targetValue = if (startBasketAnimation) 1f else 0f, animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy, // تأثير ارتداد عند الوصول للحجم المطلوب
-            stiffness = Spring.StiffnessLow
-        ), label = "BasketScale"
+            dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow
+        )
     )
 
-    // 3. ترتيب زمن ظهور العناصر (Sequence)
     LaunchedEffect(Unit) {
-        delay(200) // انتظار بسيط جداً
-        startBasketAnimation = true // تبدأ السلة بالنمو
-        delay(700) // بعد نمو السلة، يظهر النص والحقل
+        delay(200)
+        startBasketAnimation = true
+        delay(700)
         startTextAnimation = true
-        delay(400) // أخيراً يظهر الزر
+        delay(400)
         startButtonAnimation = true
     }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -155,8 +152,8 @@ fun AuthenticationScreen(navController: NavController) {
                     Spacer(modifier = Modifier.height(16.dp))
 
                     TextField(
-                        value = userName,
-                        onValueChange = { userName = it },
+                        value = viewModel.userName,
+                        onValueChange = { viewModel.updateUserName(it) },
                         placeholder = {
                             Text(
                                 "Tony", color = Color.Gray
@@ -190,27 +187,25 @@ fun AuthenticationScreen(navController: NavController) {
                 enter = slideInVertically(initialOffsetY = { it }) + fadeIn()
             ) {
                 Column {
-                    ButtonOrange(
-                        onClick = {
-                            if (userName.isNotBlank()) {
-                                // الانتقال لشاشة الهوم وتمرير الاسم كـ Argument (اختياري)
-                                navController.navigate(Screen.Home.createRoute(userName)) {
-                                    // حذف شاشة التحقق من سجل التنقل حتى لا يعود إليها المستخدم
-                                    popUpTo(Screen.Authentication.route) { inclusive = true }
+                    AnimatedVisibility(visible = startButtonAnimation) {
+                        ButtonOrange(
+                            onClick = {
+                                if (viewModel.isInputValid()) {
+                                    onLoginSuccess(viewModel.userName)
                                 }
-                            }
-                        }, modifier = Modifier
-                            .fillMaxWidth()
-                            .height(56.dp)
-                    ) {
-                        Text(
-                            text = "Start Ordering",
-                            color = Color.White,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Medium
-                        )
+                            }, modifier = Modifier
+                                .fillMaxWidth()
+                                .height(56.dp)
+                        ) {
+                            Text(
+                                text = "Start Ordering",
+                                color = Color.White,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(18.dp))
                     }
-                    Spacer(modifier = Modifier.height(18.dp))
                 }
             }
         }
