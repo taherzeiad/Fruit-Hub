@@ -9,14 +9,14 @@ import com.example.fruithub.screens.homepage.FruitSaladHomeScreen
 import com.example.fruithub.screens.splash.SplashScreen
 import com.example.fruithub.screens.welcome.WelcomeScreen
 import com.example.fruithub.screens.basket.BasketScreen
+import com.example.fruithub.screens.productdetails.ProductDetailsScreen
 
 @Composable
 fun FruitHubNavGraph() {
     val navController = rememberNavController()
 
     NavHost(
-        navController = navController,
-        startDestination = "splash"
+        navController = navController, startDestination = "splash"
     ) {
 
         composable("splash") {
@@ -39,13 +39,15 @@ fun FruitHubNavGraph() {
             val userName = backStackEntry.arguments?.getString("userName") ?: "Tony"
 
             FruitSaladHomeScreen(
-                userName = userName,
-                onBasketClick = { navController.navigate("basket") }
-            )
+                userName = userName, onBasketClick = { navController.navigate("basket") })
         }
 
         composable("basket") {
             BasketScreen(onBackClick = { navController.popBackStack() })
         }
+        composable("productdetails") {
+            ProductDetailsScreen(onBackClick = { navController.popBackStack() })
+        }
     }
+
 }

@@ -17,6 +17,7 @@ import com.example.fruithub.screens.homepage.FruitSaladHomeScreen
 import com.example.fruithub.screens.splash.SplashScreen
 import com.example.fruithub.screens.welcome.WelcomeScreen
 import com.example.fruithub.screens.basket.BasketScreen // تأكد من إنشاء هذا الملف
+import com.example.fruithub.screens.productdetails.ProductDetailsScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,7 +30,7 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     NavHost(
                         navController = navController,
-                        startDestination = "home/Mohammed",
+                        startDestination = "productdetails",
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         composable("splash") {
@@ -50,16 +51,17 @@ class MainActivity : ComponentActivity() {
 
                         composable("home/{userName}") { backStackEntry ->
                             val name = backStackEntry.arguments?.getString("userName") ?: "User"
-                            // نمررNavController أو دالة الانتقال
                             FruitSaladHomeScreen(
                                 userName = name,
                                 onBasketClick = { navController.navigate("basket") })
                         }
-
-                        // الوجهة الجديدة للسلة
+                        composable("productdetails") {
+                            ProductDetailsScreen(onBackClick = { navController.popBackStack() })
+                        }
                         composable("basket") {
                             BasketScreen(onBackClick = { navController.popBackStack() })
                         }
+
                     }
                 }
             }

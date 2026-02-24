@@ -46,6 +46,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.fruithub.R
+import com.example.fruithub.commonComponent.BackButton
 import com.example.fruithub.ui.theme.SecondaryColor
 
 @Composable
@@ -176,24 +177,10 @@ fun BasketScreen(onBackClick: () -> Unit) {
                         .padding(bottom = 10.dp)
                 ) {
                     // زر الرجوع
-                    Surface(
-                        color = Color.White,
-                        shape = RoundedCornerShape(20.dp),
-                        modifier = Modifier.clickable { onBackClick() }) {
-                        Row(
-                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.backicon),
-                                contentDescription = null,
-                                modifier = Modifier.size(20.dp),
-                                tint = Color.Black
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text("Go back", fontSize = 12.sp, color = Color.Black)
-                        }
-                    }
+                    BackButton(
+                        onBackClick = { onBackClick() },
+                        modifier = Modifier.padding(bottom = 10.dp) // يمكنك إضافة padding إضافي هنا
+                    )
 
                     Spacer(modifier = Modifier.weight(0.3f))
                     Text(
