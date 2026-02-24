@@ -90,8 +90,7 @@ fun ProductDetailsScreen(onBackClick: () -> Unit) {
                         // زر ناقص
                         IconButton(
                             onClick = { if (quantity > 1) quantity-- },
-                            modifier = Modifier
-                                .size(32.dp)
+                            modifier = Modifier.size(32.dp)
                         ) {
                             Icon(
                                 painterResource(R.drawable.remove),
@@ -153,6 +152,14 @@ fun ProductDetailsScreen(onBackClick: () -> Unit) {
                     fontSize = 13.sp,
                     color = PrimaryColor,
                     lineHeight = 24.sp
+                )
+
+                Spacer(modifier = Modifier.height(30.dp))
+
+                Text(
+                    text = "If you are looking for a new fruit salad to eat today, \n quinoa is the perfect brunch for you. make ",
+                    fontSize = 11.sp,
+                    lineHeight = 20.sp
                 )
 
                 Spacer(modifier = Modifier.weight(1f))
