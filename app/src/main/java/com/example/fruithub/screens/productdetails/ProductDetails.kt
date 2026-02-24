@@ -150,7 +150,7 @@ fun ProductDetailsScreen(onBackClick: () -> Unit) {
 
                 Text(
                     text = "Red Quinoa, Lime, Honey, Blueberries, Strawberries, Mango, Fresh mint.",
-                    fontSize = 16.sp,
+                    fontSize = 13.sp,
                     color = PrimaryColor,
                     lineHeight = 24.sp
                 )
