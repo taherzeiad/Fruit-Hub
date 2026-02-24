@@ -157,8 +157,9 @@ fun ProductDetailsScreen(onBackClick: () -> Unit) {
                 Spacer(modifier = Modifier.height(30.dp))
 
                 Text(
-                    text = "If you are looking for a new fruit salad to eat today, \n quinoa is the perfect brunch for you. make ",
+                    text = "If you are looking for a new fruit salad to eat today, \nquinoa is the perfect brunch for you. make ",
                     fontSize = 11.sp,
+                    color = Color.Black,
                     lineHeight = 20.sp
                 )
 
