@@ -73,7 +73,7 @@ fun ProductDetailsScreen(onBackClick: () -> Unit) {
                 // اسم المنتج
                 Text(
                     text = "Quinoa Fruit Salad",
-                    fontSize = 32.sp,
+                    fontSize = 25.sp,
                     fontWeight = FontWeight.Bold,
                     color = PrimaryColor
                 )
@@ -133,7 +133,7 @@ fun ProductDetailsScreen(onBackClick: () -> Unit) {
                 // المكونات
                 Text(
                     text = "One Pack Contains:",
-                    fontSize = 20.sp,
+                    fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = PrimaryColor
                 )
