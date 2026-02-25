@@ -5,7 +5,8 @@ sealed class Screen(val route: String) {
     object Welcome : Screen("welcome")
     object Authentication : Screen("authentication")
     object Basket : Screen("basket")
-    object ProductDetails : Screen("product_details") // استخدمت underscore بدلاً من المسافة
+    object ProductDetails : Screen("product_details")
+    object CompleteOrder : Screen("complete_order")
 
     // الشاشات التي تحتوي على بارامترات
     object Home : Screen("home/{userName}") {

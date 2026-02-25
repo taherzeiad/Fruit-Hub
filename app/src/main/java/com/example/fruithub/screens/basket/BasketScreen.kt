@@ -36,7 +36,7 @@ data class BasketItem(
 )
 
 @Composable
-fun BasketScreen(onBackClick: () -> Unit) {
+fun BasketScreen(onBackClick: () -> Unit, onNavigateToSuccess: () -> Unit) {
     var startAnimations by remember { mutableStateOf(false) }
 
     // الحالة الخاصة بإظهار الـ BottomSheet
@@ -193,31 +193,26 @@ fun BasketScreen(onBackClick: () -> Unit) {
                 modifier = Modifier
                     .fillMaxSize()
                     .background(Color.Black.copy(alpha = 0.4f))
-                    .clickable { showCheckoutSheet = false }
-            )
+                    .clickable { showCheckoutSheet = false })
         }
 
         AnimatedVisibility(
             visible = showCheckoutSheet,
             enter = slideInVertically(
-                initialOffsetY = { it },
-                animationSpec = tween(
-                    1500,
-                    easing = FastOutSlowInEasing
+                initialOffsetY = { it }, animationSpec = tween(
+                    1500, easing = FastOutSlowInEasing
                 )
             ) + fadeIn(),
             exit = slideOutVertically(targetOffsetY = { it }, animationSpec = tween(800)),
             modifier = Modifier.fillMaxSize()
         ) {
             Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.BottomCenter
+                modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter
             ) {
-                CheckoutDialogContent(
-                    onDismiss = { showCheckoutSheet = false },
-                    onPayOnDelivery = { /*logic*/ },
-                    onPayWithCard = { /*logic*/ }
-                )
+                CheckoutDialogContent(onDismiss = { showCheckoutSheet = false }, onPayOnDelivery = {
+                    showCheckoutSheet = false
+                    onNavigateToSuccess()
+                }, onPayWithCard = { /*logic*/ })
             }
         }
     }
