@@ -10,6 +10,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -25,9 +26,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.fruithub.R
 import com.example.fruithub.commonComponent.BackButton
-import com.example.fruithub.commonComponent.CheckoutBottomSheet // تأكد من عمل Import للمكون الجديد
 import com.example.fruithub.ui.theme.SecondaryColor
 import androidx.compose.foundation.shape.RoundedCornerShape
+import com.example.fruithub.commonComponent.CheckoutDialogContent
 
 // كائن البيانات للسلة
 data class BasketItem(
@@ -187,24 +188,38 @@ fun BasketScreen(onBackClick: () -> Unit) {
             }
         }
 
+        if (showCheckoutSheet) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.4f))
+                    .clickable { showCheckoutSheet = false }
+            )
+        }
 
-        // --- 3. استدعاء الـ BottomSheet عند الحاجة ---
         AnimatedVisibility(
             visible = showCheckoutSheet,
             enter = slideInVertically(
                 initialOffsetY = { it },
-                animationSpec = tween(3000) // 👈 تحكم كامل في البطء هنا
+                animationSpec = tween(
+                    1500,
+                    easing = FastOutSlowInEasing
+                )
             ) + fadeIn(),
-            exit = slideOutVertically(targetOffsetY = { it }, animationSpec = tween(800))
-        ){
-        if (showCheckoutSheet) {
-            CheckoutBottomSheet(onDismiss = { showCheckoutSheet = false }, onPayOnDelivery = {
-                showCheckoutSheet = false
-                // هنا نضع الكود للانتقال لشاشة النجاح لاحقاً
-            }, onPayWithCard = {
-                showCheckoutSheet = false
-            })
-        }}
+            exit = slideOutVertically(targetOffsetY = { it }, animationSpec = tween(800)),
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+                CheckoutDialogContent(
+                    onDismiss = { showCheckoutSheet = false },
+                    onPayOnDelivery = { /*logic*/ },
+                    onPayWithCard = { /*logic*/ }
+                )
+            }
+        }
     }
 }
 

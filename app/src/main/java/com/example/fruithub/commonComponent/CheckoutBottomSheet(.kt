@@ -1,7 +1,5 @@
 package com.example.fruithub.commonComponent
 
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -19,35 +17,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.fruithub.ui.theme.SecondaryColor
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CheckoutBottomSheet(
-    onDismiss: () -> Unit, onPayOnDelivery: () -> Unit, onPayWithCard: () -> Unit
+fun CheckoutDialogContent(
+    onDismiss: () -> Unit,
+    onPayOnDelivery: () -> Unit,
+    onPayWithCard: () -> Unit
 ) {
-
-    val sheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true, confirmValueChange = { true })
-
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = sheetState,
-        shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp),
-        containerColor = Color.White,
-        dragHandle = null // سنقوم بعمل إغلاق مخصص كما في الصورة
+    // نستخدم Box هنا لترتيب زر الإغلاق فوق جسم الديلاوج
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight(),
+        contentAlignment = Alignment.BottomCenter
     ) {
-        Box(modifier = Modifier.fillMaxWidth()) {
-            // زر الإغلاق (X) المخصص فوق الـ Sheet
-            IconButton(
-                onClick = onDismiss,
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .offset(y = (-70).dp) // لرفعه فوق الجزء الأبيض
-                    .background(Color.White, CircleShape)
-                    .size(48.dp)
-            ) {
-                Icon(Icons.Default.Close, contentDescription = "Close", tint = Color(0xFF27214D))
-            }
-
+        // جسم الديلاوج الأبيض (استخدمنا Surface بدلاً من ModalBottomSheet)
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp),
+            color = Color.White,
+            shadowElevation = 8.dp // لإعطاء عمق بسيط
+        ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -62,13 +51,13 @@ fun CheckoutBottomSheet(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // حقل العنوان
                 OutlinedTextField(
                     value = "",
                     onValueChange = {},
                     placeholder = {
                         Text(
-                            "10th avenue, Lekki, Lagos State", color = Color.LightGray
+                            "10th avenue, Lekki, Lagos State",
+                            color = Color.LightGray
                         )
                     },
                     modifier = Modifier.fillMaxWidth(),
@@ -92,7 +81,6 @@ fun CheckoutBottomSheet(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // حقل الرقم
                 OutlinedTextField(
                     value = "",
                     onValueChange = {},
@@ -109,7 +97,6 @@ fun CheckoutBottomSheet(
 
                 Spacer(modifier = Modifier.height(40.dp))
 
-                // أزرار الدفع
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -140,6 +127,18 @@ fun CheckoutBottomSheet(
                 }
                 Spacer(modifier = Modifier.height(20.dp))
             }
+        }
+
+        // زر الإغلاق (X) المخصص - يوضع خارج الـ Surface ليكون عائماً
+        IconButton(
+            onClick = onDismiss,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .offset(y = (-70).dp)
+                .background(Color.White, CircleShape)
+                .size(48.dp)
+        ) {
+            Icon(Icons.Default.Close, contentDescription = "Close", tint = Color(0xFF27214D))
         }
     }
 }
