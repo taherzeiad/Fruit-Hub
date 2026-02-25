@@ -29,7 +29,8 @@ import com.example.fruithub.ui.theme.PrimaryColor
 import com.example.fruithub.ui.theme.SecondaryColor
 
 @Composable
-fun ProductDetailsScreen(onBackClick: () -> Unit) {
+fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit) {
+
     var quantity by remember { mutableStateOf(1) }
 
     // --- 1. تعريف حالات التحريك (State) ---
@@ -221,7 +222,7 @@ fun ProductDetailsScreen(onBackClick: () -> Unit) {
 
                     // تحريك الزر من اليمين (Offset X)
                     Button(
-                        onClick = { /* Logic */ },
+                        onClick = { onAddToBasketClick() },
                         modifier = Modifier
                             .offset(x = buttonOffsetX)
                             .fillMaxWidth()

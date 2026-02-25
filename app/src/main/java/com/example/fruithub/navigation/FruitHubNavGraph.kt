@@ -22,7 +22,7 @@ fun FruitHubNavGraph() {
     Scaffold { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.Splash.route,
+            startDestination = Screen.Basket.route,
             modifier = Modifier.padding(innerPadding)
         ) {
             // 1. Splash
@@ -62,7 +62,13 @@ fun FruitHubNavGraph() {
 
             // 5. Product Details
             composable(Screen.ProductDetails.route) {
-                ProductDetailsScreen(onBackClick = { navController.popBackStack() })
+                ProductDetailsScreen(
+                    onBackClick = { navController.popBackStack() },
+                    onAddToBasketClick = {
+                        // الانتقال إلى شاشة السلة
+                        navController.navigate(Screen.Basket.route)
+                    }
+                )
             }
 
             // 6. Basket

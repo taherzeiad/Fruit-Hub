@@ -7,31 +7,14 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,42 +25,45 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.fruithub.R
 import com.example.fruithub.commonComponent.BackButton
+import com.example.fruithub.commonComponent.CheckoutBottomSheet // تأكد من عمل Import للمكون الجديد
 import com.example.fruithub.ui.theme.SecondaryColor
 import androidx.compose.foundation.shape.RoundedCornerShape
+
+// كائن البيانات للسلة
+data class BasketItem(
+    val name: String, val imageRes: Int, val bgColor: Color, val price: String, val quantity: String
+)
 
 @Composable
 fun BasketScreen(onBackClick: () -> Unit) {
     var startAnimations by remember { mutableStateOf(false) }
 
-    // الحصول على ارتفاع الشاشة الفعلي لضمان التغطية الكاملة دون مبالغة
+    // الحالة الخاصة بإظهار الـ BottomSheet
+    var showCheckoutSheet by remember { mutableStateOf(false) }
+
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
 
     LaunchedEffect(Unit) {
         startAnimations = true
     }
 
-    // أنيميشن الارتفاع - أبطأ وأكثر سلاسة
     val headerHeight by animateDpAsState(
-        targetValue = if (startAnimations) 110.dp else screenHeight, animationSpec = tween(
-            durationMillis = 1500, easing = FastOutSlowInEasing
-        ), label = "HeaderHeight"
+        targetValue = if (startAnimations) 110.dp else screenHeight,
+        animationSpec = tween(durationMillis = 1500, easing = FastOutSlowInEasing),
+        label = "HeaderHeight"
     )
 
-    // الحاوية الرئيسية (Box تضمن وضع العناصر فوق بعضها)
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
     ) {
-
-        // --- 1. طبقة المحتوى (القائمة والجزء السفلي) ---
-        // جعلناها في Column منفصل يبدأ بعد المسافة النهائية للهيدر
+        // --- 1. طبقة المحتوى ---
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 110.dp) // مساحة ثابتة للهيدر النهائي
+                .padding(top = 110.dp)
         ) {
-            // القائمة القابلة للتمرير
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -87,23 +73,29 @@ fun BasketScreen(onBackClick: () -> Unit) {
                 Spacer(modifier = Modifier.height(24.dp))
 
                 val items = listOf(
-                    Triple("Quinoa fruit salad", R.drawable.quinoa_salad, Color(0xFFFFFAEB)),
-                    Triple("Melon fruit salad", R.drawable.melon_salad, Color(0xFFF3F4F9)),
-                    Triple("Tropical fruit salad", R.drawable.tropical_salad, Color(0xFFFFF2F2))
+                    BasketItem(
+                        "Quinoa fruit salad",
+                        R.drawable.quinoa_salad,
+                        Color(0xFFFFFAEB),
+                        "20,000",
+                        "2 packs"
+                    ), BasketItem(
+                        "Melon fruit salad",
+                        R.drawable.melon_salad,
+                        Color(0xFFF3F4F9),
+                        "20,000",
+                        "2 packs"
+                    ), BasketItem(
+                        "Tropical fruit salad",
+                        R.drawable.tropical_salad,
+                        Color(0xFFFFF2F2),
+                        "20,000",
+                        "2 packs"
+                    )
                 )
 
-                items.forEachIndexed { index, tripleItem -> // غيرت الاسم لـ tripleItem للوضوح
+                items.forEachIndexed { index, item ->
                     val isLeftToRight = index % 2 == 0
-
-                    // تحويل الـ Triple إلى كائن BasketItem
-                    val basketItem = BasketItem(
-                        name = tripleItem.first,
-                        imageRes = tripleItem.second,
-                        bgColor = tripleItem.third,
-                        price = "20,000", // قيمة افتراضية أو يمكنك إضافتها للـ Triple
-                        quantity = "2 packs"
-                    )
-
                     AnimatedVisibility(
                         visible = startAnimations && headerHeight < 400.dp,
                         enter = slideInHorizontally(
@@ -112,9 +104,7 @@ fun BasketScreen(onBackClick: () -> Unit) {
                         ) + fadeIn(tween(800))
                     ) {
                         Column {
-                            // الاستدعاء الصحيح الآن هو تمرير الكائن فقط
-                            BasketRow(item = basketItem)
-
+                            BasketRow(item = item)
                             Divider(
                                 modifier = Modifier.padding(vertical = 16.dp),
                                 color = Color(0xFFF3F3F3)
@@ -124,7 +114,7 @@ fun BasketScreen(onBackClick: () -> Unit) {
                 }
             }
 
-            // --- الجزء السفلي (السعر والزر) ---
+            // --- الجزء السفلي (السعر وزر Checkout) ---
             AnimatedVisibility(
                 visible = startAnimations && headerHeight < 300.dp, enter = slideInVertically(
                     initialOffsetY = { it }, animationSpec = tween(1200, delayMillis = 800)
@@ -153,7 +143,7 @@ fun BasketScreen(onBackClick: () -> Unit) {
                     }
 
                     Button(
-                        onClick = { /* logic */ },
+                        onClick = { showCheckoutSheet = true }, // تفعيل ظهور الـ BottomSheet
                         colors = ButtonDefaults.buttonColors(containerColor = SecondaryColor),
                         shape = RoundedCornerShape(10.dp),
                         modifier = Modifier
@@ -166,7 +156,7 @@ fun BasketScreen(onBackClick: () -> Unit) {
             }
         }
 
-        // --- 2. طبقة الهيدر البرتقالي (توضع هنا لتكون فوق المحتوى Z-Index) ---
+        // --- 2. طبقة الهيدر البرتقالي ---
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -175,7 +165,6 @@ fun BasketScreen(onBackClick: () -> Unit) {
                 .padding(start = 24.dp, end = 24.dp, bottom = 20.dp),
             contentAlignment = Alignment.BottomCenter
         ) {
-            // تظهر العناصر فقط عندما يصغر الهيدر كفاية
             if (headerHeight < 250.dp) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -183,12 +172,9 @@ fun BasketScreen(onBackClick: () -> Unit) {
                         .fillMaxWidth()
                         .padding(bottom = 10.dp)
                 ) {
-                    // زر الرجوع
                     BackButton(
-                        onBackClick = { onBackClick() },
-                        modifier = Modifier.padding(bottom = 10.dp) // يمكنك إضافة padding إضافي هنا
+                        onBackClick = onBackClick, modifier = Modifier.padding(bottom = 10.dp)
                     )
-
                     Spacer(modifier = Modifier.weight(0.3f))
                     Text(
                         text = "My Basket",
@@ -200,6 +186,25 @@ fun BasketScreen(onBackClick: () -> Unit) {
                 }
             }
         }
+
+
+        // --- 3. استدعاء الـ BottomSheet عند الحاجة ---
+        AnimatedVisibility(
+            visible = showCheckoutSheet,
+            enter = slideInVertically(
+                initialOffsetY = { it },
+                animationSpec = tween(3000) // 👈 تحكم كامل في البطء هنا
+            ) + fadeIn(),
+            exit = slideOutVertically(targetOffsetY = { it }, animationSpec = tween(800))
+        ){
+        if (showCheckoutSheet) {
+            CheckoutBottomSheet(onDismiss = { showCheckoutSheet = false }, onPayOnDelivery = {
+                showCheckoutSheet = false
+                // هنا نضع الكود للانتقال لشاشة النجاح لاحقاً
+            }, onPayWithCard = {
+                showCheckoutSheet = false
+            })
+        }}
     }
 }
 
