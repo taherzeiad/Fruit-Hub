@@ -26,8 +26,7 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun OrderSuccessScreen(
-    onTrackOrderClick: () -> Unit,
-    onContinueShoppingClick: () -> Unit
+    onTrackOrderClick: () -> Unit, onContinueShoppingClick: () -> Unit
 ) {
     // حالات التحكم في الأنميشن
     var startIconAnimation by remember { mutableStateOf(false) }
@@ -47,12 +46,9 @@ fun OrderSuccessScreen(
 
     // أنميشن الأيقونة (حجم وشفافية)
     val iconScale by animateFloatAsState(
-        targetValue = if (startIconAnimation) 1f else 0.3f,
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessLow
-        ),
-        label = "IconScale"
+        targetValue = if (startIconAnimation) 1f else 0.3f, animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow
+        ), label = "IconScale"
     )
     val iconAlpha by animateFloatAsState(
         targetValue = if (startIconAnimation) 1f else 0f,
@@ -113,12 +109,10 @@ fun OrderSuccessScreen(
 
         // --- 2. النصوص (محجوزة المساحة) ---
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.graphicsLayer {
+            horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.graphicsLayer {
                 alpha = textAlpha
                 translationY = textTranslationY
-            }
-        ) {
+            }) {
             Text(
                 text = "Congratulations!!!",
                 fontSize = 25.sp,
