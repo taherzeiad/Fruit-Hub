@@ -101,33 +101,33 @@ fun DeliveryStatusScreen(onBackClick: () -> Unit) {
                 isCompleted = false,
                 trailingContent = {
                     IconButton(
-                        onClick = { },
-                        modifier = Modifier
+                        onClick = { }, modifier = Modifier
                             .background(
-                                SecondaryColor.copy(alpha = 0.2f),
-                                CircleShape
+                                SecondaryColor.copy(alpha = 0.2f), CircleShape
                             )
                             .size(40.dp)
                     ) {
                         Icon(Icons.Default.Phone, null, tint = SecondaryColor)
                     }
-                }
-            )
+                })
 
             TimelineDots()
 
             // MAP
-            Image(
-                painter = painterResource(R.drawable.rectangle),
-                contentDescription = null,
-                modifier = Modifier
-                    .padding(start = 84.dp, top = 6.dp, bottom = 24.dp)
-                    .fillMaxWidth()
-                    .height(150.dp)
-                    .clip(RoundedCornerShape(12.dp)),
-                contentScale = ContentScale.Crop
-            )
-
+            Row(
+                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.rectangle),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .padding(top = 6.dp, bottom = 24.dp)
+                        .width(327.dp)
+                        .height(128.dp)
+                        .clip(RoundedCornerShape(12.dp)),
+                    contentScale = ContentScale.Crop
+                )
+            }
             TimelineItem(
                 title = "Order Received",
                 iconRes = Icons.Default.Check,
@@ -142,14 +142,12 @@ fun DeliveryStatusScreen(onBackClick: () -> Unit) {
                                     .padding(horizontal = 3.dp)
                                     .size(6.dp)
                                     .background(
-                                        SecondaryColor.copy(alpha = 0.4f),
-                                        CircleShape
+                                        SecondaryColor.copy(alpha = 0.4f), CircleShape
                                     )
                             )
                         }
                     }
-                }
-            )
+                })
         }
     }
 }
@@ -181,16 +179,11 @@ fun TimelineItem(
         ) {
             when (iconRes) {
                 is Int -> Image(
-                    painterResource(iconRes),
-                    null,
-                    modifier = Modifier.size(40.dp)
+                    painterResource(iconRes), null, modifier = Modifier.size(40.dp)
                 )
 
                 is ImageVector -> Icon(
-                    iconRes,
-                    null,
-                    tint = Color(0xFF4CD964),
-                    modifier = Modifier.size(40.dp)
+                    iconRes, null, tint = Color(0xFF4CD964), modifier = Modifier.size(40.dp)
                 )
             }
         }
@@ -216,9 +209,7 @@ fun TimelineItem(
                 when {
                     trailingContent != null -> trailingContent()
                     isCompleted -> Icon(
-                        Icons.Default.CheckCircle,
-                        null,
-                        tint = Color(0xFF4CD964)
+                        Icons.Default.CheckCircle, null, tint = Color(0xFF4CD964)
                     )
                 }
             }
