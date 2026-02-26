@@ -14,6 +14,7 @@ import com.example.fruithub.screens.welcome.WelcomeScreen
 import com.example.fruithub.screens.basket.BasketScreen
 import com.example.fruithub.screens.completeorder.OrderSuccessScreen
 import com.example.fruithub.screens.productdetails.ProductDetailsScreen
+import com.example.fruithub.screens.trackorder.DeliveryStatusScreen
 
 @Composable
 fun FruitHubNavGraph() {
@@ -81,17 +82,21 @@ fun FruitHubNavGraph() {
                 })
             }
 
-            // 7. OrderSuccess
+            // 7. CompleteOrder
             composable(Screen.CompleteOrder.route) {
                 OrderSuccessScreen(onTrackOrderClick = {
-                    // يمكنك إضافة شاشة تتبع الطلب لاحقاً هنا
+                    navController.navigate(Screen.TrackOrder.route)
                 }, onContinueShoppingClick = {
-                    // العودة إلى الصفحة الرئيسية عند الضغط على "مواصلة التسوق"
                     navController.navigate(Screen.Home.createRoute("User")) {
-                        // مسح الشاشات السابقة ليعود وكأنه دخل التطبيق حديثاً للصفحة الرئيسية
-                        popUpTo(Screen.Home.route) { inclusive = true }
+                        popUpTo(0)
                     }
                 })
+            }
+
+            // 8. TrackOrder
+            composable(Screen.TrackOrder.route) {
+                DeliveryStatusScreen(
+                    onBackClick = { navController.popBackStack() })
             }
         }
 
