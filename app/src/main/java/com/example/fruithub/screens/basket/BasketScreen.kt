@@ -443,12 +443,19 @@ fun CheckoutDialogContent(
 fun CardDetailsDialogContent(
     onDismiss: () -> Unit, onCompleteOrder: () -> Unit
 ) {
+    // حالة للتحكم في بدء الأنميشن عند ظهور المكون
+    var showItems by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        showItems = true
+    }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight(),
-        contentAlignment = Alignment.BottomCenter
+        contentAlignment = Alignment.BottomCenter // لجعل المحتوى يرتكز في الأسفل
     ) {
+        // --- 1. حاوية المحتوى (الخلفية البيضاء والحقول) ---
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp),
@@ -458,101 +465,149 @@ fun CardDetailsDialogContent(
             Column(
                 modifier = Modifier.fillMaxWidth()
             ) {
+                // حاوية الحقول مع Padding جانبي
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 32.dp, start = 24.dp, end = 24.dp)
                 ) {
-                    Text(
-                        text = "Card Holders Name",
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = PrimaryColor
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    CardTextField(placeholder = "Adolphus Chris")
-
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    Text(
-                        text = "Card Number",
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = PrimaryColor
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    CardTextField(placeholder = "1234 5678 9012 1314")
-
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        Column(modifier = Modifier.weight(1f)) {
+                    // 1. أنميشن الاسم (يظهر أولاً)
+                    AnimatedVisibility(
+                        visible = showItems,
+                        enter = slideInVertically(
+                            initialOffsetY = { 50 },
+                            animationSpec = tween(600)
+                        ) + fadeIn(tween(600))
+                    ) {
+                        Column {
                             Text(
-                                text = "Date",
+                                text = "Card Holders Name",
                                 fontSize = 15.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = PrimaryColor
                             )
                             Spacer(modifier = Modifier.height(16.dp))
-                            CardTextField(placeholder = "10/30")
+                            CardTextField(placeholder = "Adolphus Chris")
                         }
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Column(modifier = Modifier.weight(1f)) {
+                    }
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // 2. أنميشن رقم البطاقة (يظهر بتأخير 200ms)
+                    AnimatedVisibility(
+                        visible = showItems,
+                        enter = slideInVertically(
+                            initialOffsetY = { 50 },
+                            animationSpec = tween(600, delayMillis = 200)
+                        ) + fadeIn(tween(600, delayMillis = 200))
+                    ) {
+                        Column {
                             Text(
-                                text = "CCV",
+                                text = "Card Number",
                                 fontSize = 15.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = PrimaryColor
                             )
                             Spacer(modifier = Modifier.height(16.dp))
-                            CardTextField(placeholder = "123")
+                            CardTextField(placeholder = "1234 5678 9012 1314")
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // 3. أنميشن التاريخ والـ CCV (يظهر بتأخير 400ms)
+                    AnimatedVisibility(
+                        visible = showItems,
+                        enter = slideInVertically(
+                            initialOffsetY = { 50 },
+                            animationSpec = tween(600, delayMillis = 400)
+                        ) + fadeIn(tween(600, delayMillis = 400))
+                    ) {
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = "Date",
+                                    fontSize = 15.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = PrimaryColor
+                                )
+                                Spacer(modifier = Modifier.height(16.dp))
+                                CardTextField(placeholder = "10/30")
+                            }
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = "CCV",
+                                    fontSize = 15.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = PrimaryColor
+                                )
+                                Spacer(modifier = Modifier.height(16.dp))
+                                CardTextField(placeholder = "123")
+                            }
                         }
                     }
                 }
 
                 Spacer(modifier = Modifier.height(45.dp))
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(90.dp) // ارتفاع الزر ليكون واضحاً في الأسفل
-                        .background(
-                            color = SecondaryColor,
-                            // جعل الحواف العلوية مستديرة والسفلية حادة للالتصاق بالأسفل
-                            shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
-                        )
-                        .clickable { onCompleteOrder() }, contentAlignment = Alignment.Center
+                // 4. أنميشن الزر السفلي (يظهر بتأخير 600ms)
+                AnimatedVisibility(
+                    visible = showItems,
+                    enter = slideInVertically(
+                        initialOffsetY = { 100 },
+                        animationSpec = tween(600, delayMillis = 600)
+                    ) + fadeIn(tween(600, delayMillis = 600))
                 ) {
-                    // الزر الأبيض الصغير داخل المساحة البرتقالية
-                    Surface(
-                        color = Color.White,
-                        shape = RoundedCornerShape(10.dp),
-                        modifier = Modifier.padding(horizontal = 24.dp)
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(90.dp)
+                            .background(
+                                color = SecondaryColor,
+                                shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
+                            )
+                            .clickable { onCompleteOrder() }, contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            text = "Complete Order",
-                            color = SecondaryColor,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Medium,
-                            modifier = Modifier.padding(horizontal = 30.dp, vertical = 12.dp)
-                        )
+                        Surface(
+                            color = Color.White,
+                            shape = RoundedCornerShape(10.dp),
+                            modifier = Modifier.padding(horizontal = 24.dp)
+                        ) {
+                            Text(
+                                text = "Complete Order",
+                                color = SecondaryColor,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Medium,
+                                modifier = Modifier.padding(horizontal = 30.dp, vertical = 12.dp)
+                            )
+                        }
                     }
                 }
             }
         }
 
-        // زر الإغلاق (X) فوق الديلاوج
-        IconButton(
-            onClick = onDismiss,
+        // --- 2. زر الإغلاق (X) طافٍ فوق الـ Surface ---
+        // وضعناه هنا ليكون تابعاً للـ Box الأساسي ومحاذاته TopCenter مستقلة
+        AnimatedVisibility(
+            visible = showItems,
             modifier = Modifier
-                .align(Alignment.TopCenter)
-                .offset(y = (-70).dp)
-                .background(Color.White, CircleShape)
-                .size(48.dp)
+                .align(Alignment.TopCenter) // المحاذاة بالنسبة للـ Box وليس الـ Column
+                .offset(y = (-70).dp),      // رفعه للأعلى ليظهر فوق حافة الديلاوج
+            enter = fadeIn(tween(800, delayMillis = 800))
         ) {
-            Icon(
-                imageVector = Icons.Default.Close, contentDescription = "Close", tint = PrimaryColor
-            )
+            IconButton(
+                onClick = onDismiss,
+                modifier = Modifier
+                    .background(Color.White, CircleShape)
+                    .size(48.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = "Close",
+                    tint = PrimaryColor
+                )
+            }
         }
     }
 }
