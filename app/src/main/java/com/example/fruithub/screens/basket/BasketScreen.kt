@@ -1,5 +1,6 @@
 package com.example.fruithub.screens.basket
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
@@ -8,11 +9,13 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -28,19 +31,22 @@ import com.example.fruithub.R
 import com.example.fruithub.commonComponent.BackButton
 import com.example.fruithub.ui.theme.SecondaryColor
 import androidx.compose.foundation.shape.RoundedCornerShape
-import com.example.fruithub.commonComponent.CheckoutDialogContent
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import com.example.fruithub.ui.theme.PrimaryColor
 
 // كائن البيانات للسلة
 data class BasketItem(
     val name: String, val imageRes: Int, val bgColor: Color, val price: String, val quantity: String
 )
 
+@SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun BasketScreen(onBackClick: () -> Unit, onNavigateToSuccess: () -> Unit) {
     var startAnimations by remember { mutableStateOf(false) }
 
-    // الحالة الخاصة بإظهار الـ BottomSheet
     var showCheckoutSheet by remember { mutableStateOf(false) }
+    var showCardDetails by remember { mutableStateOf(false) }
 
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
 
@@ -133,13 +139,13 @@ fun BasketScreen(onBackClick: () -> Unit, onNavigateToSuccess: () -> Unit) {
                             "Total",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF27214D)
+                            color = PrimaryColor
                         )
                         Text(
                             "₦ 60,000",
                             fontSize = 22.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF27214D)
+                            color = PrimaryColor
                         )
                     }
 
@@ -197,7 +203,7 @@ fun BasketScreen(onBackClick: () -> Unit, onNavigateToSuccess: () -> Unit) {
         }
 
         AnimatedVisibility(
-            visible = showCheckoutSheet,
+            visible = showCheckoutSheet && !showCardDetails,
             enter = slideInVertically(
                 initialOffsetY = { it }, animationSpec = tween(
                     1500, easing = FastOutSlowInEasing
@@ -212,7 +218,27 @@ fun BasketScreen(onBackClick: () -> Unit, onNavigateToSuccess: () -> Unit) {
                 CheckoutDialogContent(onDismiss = { showCheckoutSheet = false }, onPayOnDelivery = {
                     showCheckoutSheet = false
                     onNavigateToSuccess()
-                }, onPayWithCard = { /*logic*/ })
+                }, onPayWithCard = { showCardDetails = true })
+            }
+        }
+        // 2. ديلاوج بيانات البطاقة
+        AnimatedVisibility(
+            visible = showCheckoutSheet && showCardDetails,
+            enter = slideInVertically(
+                initialOffsetY = { it }, animationSpec = tween(1000)
+            ) + fadeIn(),
+            exit = slideOutVertically(targetOffsetY = { it }, animationSpec = tween(800)),
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Box(contentAlignment = Alignment.BottomCenter) {
+                CardDetailsDialogContent(onDismiss = {
+                    showCardDetails = false
+                    showCheckoutSheet = false
+                }, onCompleteOrder = {
+                    showCardDetails = false
+                    showCheckoutSheet = false
+                    onNavigateToSuccess()
+                })
             }
         }
     }
@@ -243,7 +269,7 @@ fun BasketRow(item: BasketItem) {
                 text = item.name,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
-                color = Color(0xFF27214D)
+                color = PrimaryColor
             )
             Text(text = item.quantity, fontSize = 14.sp, color = Color.Gray)
         }
@@ -252,7 +278,299 @@ fun BasketRow(item: BasketItem) {
             text = "₦ ${item.price}",
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp,
-            color = Color(0xFF27214D)
+            color = PrimaryColor
         )
     }
+}
+
+@Composable
+fun CheckoutDialogContent(
+    onDismiss: () -> Unit, onPayOnDelivery: () -> Unit, onPayWithCard: () -> Unit
+) {
+    // حالة لبدء الأنميشن الداخلي عند ظهور المكون
+    var showContent by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        showContent = true
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight(),
+        contentAlignment = Alignment.BottomCenter
+    ) {
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp),
+            color = Color.White,
+            shadowElevation = 8.dp
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp, vertical = 32.dp)
+            ) {
+                // 1. أنميشن الجزء الأول (العنوان + الحقل) من الأسفل
+                AnimatedVisibility(
+                    visible = showContent, enter = slideInVertically(
+                        initialOffsetY = { it }, animationSpec = tween(1500)
+                    ) + fadeIn()
+                ) {
+                    Column {
+                        Text(
+                            text = "Delivery address",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = PrimaryColor
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        OutlinedTextField(
+                            value = "",
+                            onValueChange = {},
+                            placeholder = {
+                                Text(
+                                    "10th avenue, Lekki, Lagos State", color = Color.LightGray
+                                )
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(10.dp),
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = Color(0xFFF3F3F3),
+                                unfocusedContainerColor = Color(0xFFF3F3F3),
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent
+                            )
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // 2. أنميشن الجزء الثاني بتأخير بسيط (delay) ومن الأسفل
+                AnimatedVisibility(
+                    visible = showContent, enter = slideInVertically(
+                        initialOffsetY = { it }, animationSpec = tween(800, delayMillis = 200)
+                    ) + fadeIn()
+                ) {
+                    Column {
+                        Text(
+                            text = "Number we can call",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = PrimaryColor
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        OutlinedTextField(
+                            value = "",
+                            onValueChange = {},
+                            placeholder = { Text("09090605708", color = Color.LightGray) },
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(10.dp),
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = Color(0xFFF3F3F3),
+                                unfocusedContainerColor = Color(0xFFF3F3F3),
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent
+                            )
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(40.dp))
+
+                // 3. أنميشن الأزرار (يسار من اليسار، يمين من اليمين)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    // الزر الأيسر (من جهة اليسار)
+                    AnimatedVisibility(
+                        visible = showContent,
+                        modifier = Modifier.weight(1f),
+                        enter = slideInHorizontally(
+                            initialOffsetX = { -it }, animationSpec = tween(800, delayMillis = 400)
+                        ) + fadeIn()
+                    ) {
+                        OutlinedButton(
+                            onClick = onPayOnDelivery,
+                            modifier = Modifier.height(56.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            border = BorderStroke(1.dp, SecondaryColor)
+                        ) {
+                            Text("Pay on delivery", color = SecondaryColor, fontSize = 16.sp)
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.width(16.dp))
+
+                    // الزر الأيمن (من جهة اليمين)
+                    AnimatedVisibility(
+                        visible = showContent,
+                        modifier = Modifier.weight(1f),
+                        enter = slideInHorizontally(
+                            initialOffsetX = { it }, animationSpec = tween(800, delayMillis = 400)
+                        ) + fadeIn()
+                    ) {
+                        OutlinedButton(
+                            onClick = onPayWithCard,
+                            modifier = Modifier.height(56.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            border = BorderStroke(1.dp, SecondaryColor)
+                        ) {
+                            Text("Pay with card", color = SecondaryColor, fontSize = 16.sp)
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.height(15.dp))
+            }
+        }
+
+        // زر الإغلاق مع أنميشن ظهور بسيط
+        AnimatedVisibility(
+            visible = showContent,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .offset(y = (-70).dp),
+            enter = fadeIn(animationSpec = tween(1000, delayMillis = 600))
+        ) {
+            IconButton(
+                onClick = onDismiss,
+                modifier = Modifier
+                    .background(Color.White, CircleShape)
+                    .size(48.dp)
+            ) {
+                Icon(Icons.Default.Close, contentDescription = "Close", tint = PrimaryColor)
+            }
+        }
+    }
+}
+
+@Composable
+fun CardDetailsDialogContent(
+    onDismiss: () -> Unit, onCompleteOrder: () -> Unit
+) {
+    var showContent by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) { showContent = true }
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight(),
+        contentAlignment = Alignment.BottomCenter
+    ) {
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp),
+            color = Color.White,
+            shadowElevation = 8.dp
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp, vertical = 32.dp)
+            ) {
+                // اسم صاحب البطاقة
+                Text(
+                    text = "Card Holders Name",
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = PrimaryColor
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                CardTextField(placeholder = "Adolphus Chris")
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // رقم البطاقة
+                Text(
+                    text = "Card Number",
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = PrimaryColor
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                CardTextField(placeholder = "1234 5678 9012 1314")
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // التاريخ والـ CCV
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "Date",
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = PrimaryColor
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        CardTextField(placeholder = "10/30")
+                    }
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "CCV",
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = PrimaryColor
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        CardTextField(placeholder = "123")
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(40.dp))
+
+                // زر Complete Order السفلي
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(80.dp)
+                        .background(SecondaryColor, RoundedCornerShape(20.dp))
+                        .clickable { onCompleteOrder() }, contentAlignment = Alignment.Center
+                ) {
+                    Surface(
+                        color = Color.White,
+                        shape = RoundedCornerShape(10.dp),
+                        modifier = Modifier.padding(vertical = 12.dp, horizontal = 24.dp)
+                    ) {
+                        Text(
+                            text = "Complete Order",
+                            color = SecondaryColor,
+                            fontSize = 16.sp,
+                            modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp)
+                        )
+                    }
+                }
+            }
+        }
+
+        // زر الإغلاق (X)
+        IconButton(
+            onClick = onDismiss,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .offset(y = (-70).dp)
+                .background(Color.White, CircleShape)
+                .size(48.dp)
+        ) {
+            Icon(Icons.Default.Close, contentDescription = "Close", tint = PrimaryColor)
+        }
+    }
+}
+
+@Composable
+fun CardTextField(placeholder: String) {
+    OutlinedTextField(
+        value = "",
+        onValueChange = {},
+        placeholder = { Text(placeholder, color = Color.LightGray) },
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(10.dp),
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = Color(0xFFF3F3F3),
+            unfocusedContainerColor = Color(0xFFF3F3F3),
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent
+        )
+    )
 }
