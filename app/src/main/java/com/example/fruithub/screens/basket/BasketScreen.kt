@@ -287,7 +287,6 @@ fun BasketRow(item: BasketItem) {
 fun CheckoutDialogContent(
     onDismiss: () -> Unit, onPayOnDelivery: () -> Unit, onPayWithCard: () -> Unit
 ) {
-    // حالة لبدء الأنميشن الداخلي عند ظهور المكون
     var showContent by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
         showContent = true
@@ -310,7 +309,6 @@ fun CheckoutDialogContent(
                     .fillMaxWidth()
                     .padding(horizontal = 24.dp, vertical = 32.dp)
             ) {
-                // 1. أنميشن الجزء الأول (العنوان + الحقل) من الأسفل
                 AnimatedVisibility(
                     visible = showContent, enter = slideInVertically(
                         initialOffsetY = { it }, animationSpec = tween(1500)
@@ -346,7 +344,6 @@ fun CheckoutDialogContent(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // 2. أنميشن الجزء الثاني بتأخير بسيط (delay) ومن الأسفل
                 AnimatedVisibility(
                     visible = showContent, enter = slideInVertically(
                         initialOffsetY = { it }, animationSpec = tween(800, delayMillis = 200)
@@ -378,12 +375,10 @@ fun CheckoutDialogContent(
 
                 Spacer(modifier = Modifier.height(40.dp))
 
-                // 3. أنميشن الأزرار (يسار من اليسار، يمين من اليمين)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    // الزر الأيسر (من جهة اليسار)
                     AnimatedVisibility(
                         visible = showContent,
                         modifier = Modifier.weight(1f),
@@ -403,7 +398,6 @@ fun CheckoutDialogContent(
 
                     Spacer(modifier = Modifier.width(16.dp))
 
-                    // الزر الأيمن (من جهة اليمين)
                     AnimatedVisibility(
                         visible = showContent,
                         modifier = Modifier.weight(1f),
@@ -449,9 +443,6 @@ fun CheckoutDialogContent(
 fun CardDetailsDialogContent(
     onDismiss: () -> Unit, onCompleteOrder: () -> Unit
 ) {
-    var showContent by remember { mutableStateOf(false) }
-    LaunchedEffect(Unit) { showContent = true }
-
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -465,86 +456,92 @@ fun CardDetailsDialogContent(
             shadowElevation = 8.dp
         ) {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 32.dp)
+                modifier = Modifier.fillMaxWidth()
             ) {
-                // اسم صاحب البطاقة
-                Text(
-                    text = "Card Holders Name",
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = PrimaryColor
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                CardTextField(placeholder = "Adolphus Chris")
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 32.dp, start = 24.dp, end = 24.dp)
+                ) {
+                    Text(
+                        text = "Card Holders Name",
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = PrimaryColor
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    CardTextField(placeholder = "Adolphus Chris")
 
-                Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
 
-                // رقم البطاقة
-                Text(
-                    text = "Card Number",
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = PrimaryColor
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                CardTextField(placeholder = "1234 5678 9012 1314")
+                    Text(
+                        text = "Card Number",
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = PrimaryColor
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    CardTextField(placeholder = "1234 5678 9012 1314")
 
-                Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
 
-                // التاريخ والـ CCV
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = "Date",
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = PrimaryColor
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        CardTextField(placeholder = "10/30")
-                    }
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = "CCV",
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = PrimaryColor
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        CardTextField(placeholder = "123")
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = "Date",
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = PrimaryColor
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            CardTextField(placeholder = "10/30")
+                        }
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = "CCV",
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = PrimaryColor
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            CardTextField(placeholder = "123")
+                        }
                     }
                 }
 
-                Spacer(modifier = Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(45.dp))
 
-                // زر Complete Order السفلي
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(80.dp)
-                        .background(SecondaryColor, RoundedCornerShape(20.dp))
+                        .height(90.dp) // ارتفاع الزر ليكون واضحاً في الأسفل
+                        .background(
+                            color = SecondaryColor,
+                            // جعل الحواف العلوية مستديرة والسفلية حادة للالتصاق بالأسفل
+                            shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
+                        )
                         .clickable { onCompleteOrder() }, contentAlignment = Alignment.Center
                 ) {
+                    // الزر الأبيض الصغير داخل المساحة البرتقالية
                     Surface(
                         color = Color.White,
                         shape = RoundedCornerShape(10.dp),
-                        modifier = Modifier.padding(vertical = 12.dp, horizontal = 24.dp)
+                        modifier = Modifier.padding(horizontal = 24.dp)
                     ) {
                         Text(
                             text = "Complete Order",
                             color = SecondaryColor,
                             fontSize = 16.sp,
-                            modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp)
+                            fontWeight = FontWeight.Medium,
+                            modifier = Modifier.padding(horizontal = 30.dp, vertical = 12.dp)
                         )
                     }
                 }
             }
         }
 
-        // زر الإغلاق (X)
+        // زر الإغلاق (X) فوق الديلاوج
         IconButton(
             onClick = onDismiss,
             modifier = Modifier
@@ -553,7 +550,9 @@ fun CardDetailsDialogContent(
                 .background(Color.White, CircleShape)
                 .size(48.dp)
         ) {
-            Icon(Icons.Default.Close, contentDescription = "Close", tint = PrimaryColor)
+            Icon(
+                imageVector = Icons.Default.Close, contentDescription = "Close", tint = PrimaryColor
+            )
         }
     }
 }

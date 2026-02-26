@@ -2,10 +2,6 @@ package com.example.fruithub.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val OrangePrimary: Color = Color(0xFFFFA451)
-
-// الألوان المستخدمة في التصميم
-// الألوان المستخدمة في التصميم
 val PrimaryColor = Color(0xFF27214D)
 val SecondaryColor = Color(0xFFFFA451)
 val BackgroundColor = Color(0xFFFFFFFF)

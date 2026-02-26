@@ -14,7 +14,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import com.example.fruithub.R
-import com.example.fruithub.ui.theme.OrangePrimary
+import com.example.fruithub.ui.theme.SecondaryColor
 
 @Composable
 fun SplashScreen(onTimeout: () -> Unit) {
@@ -149,7 +149,7 @@ fun SplashScreen(onTimeout: () -> Unit) {
         }
         Canvas(modifier = Modifier.fillMaxSize()) {
             drawCircle(
-                color = OrangePrimary, // استخدم لون OrangePrimary الخاص بك
+                color = SecondaryColor, // استخدم لون OrangePrimary الخاص بك
                 radius = circleRadius, center = androidx.compose.ui.geometry.Offset(
                     x = size.width + 100f, // خارج الشاشة قليلاً جهة اليمين
                     y = size.height + 100f // خارج الشاشة قليلاً جهة الأسفل

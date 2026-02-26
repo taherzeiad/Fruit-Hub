@@ -11,7 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.fruithub.ui.theme.OrangePrimary
+import com.example.fruithub.ui.theme.SecondaryColor
 
 @Composable
 fun ButtonOrange(
@@ -20,7 +20,7 @@ fun ButtonOrange(
     Button(
         onClick = onClick,
         modifier = modifier,
-        colors = ButtonDefaults.buttonColors(containerColor = OrangePrimary),
+        colors = ButtonDefaults.buttonColors(containerColor = SecondaryColor),
         shape = RoundedCornerShape(10.dp),
         content = content
     )

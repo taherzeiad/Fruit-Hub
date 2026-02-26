@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.fruithub.R
 import com.example.fruithub.commonComponent.ButtonOrange
-import com.example.fruithub.ui.theme.OrangePrimary
+import com.example.fruithub.ui.theme.SecondaryColor
 import kotlinx.coroutines.delay
 
 @Composable
@@ -64,7 +64,7 @@ fun WelcomeScreen(onContinueClick: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(0.9f)
-                .background(OrangePrimary)
+                .background(SecondaryColor)
         ) {
             // صورة الفاكهة الصغيرة (تظهر مباشرة كما طلبت)
             Image(

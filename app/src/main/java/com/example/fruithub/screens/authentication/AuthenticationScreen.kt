@@ -38,11 +38,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.example.fruithub.commonComponent.ButtonOrange
-import com.example.fruithub.ui.theme.OrangePrimary
 import com.example.fruithub.R
-import com.example.fruithub.navigation.Screen
+import com.example.fruithub.ui.theme.SecondaryColor
 import kotlinx.coroutines.delay
 
 @Composable
@@ -79,7 +77,7 @@ fun AuthenticationScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1.2f)
-                .background(OrangePrimary)
+                .background(SecondaryColor)
         ) {
             // صورة الفاكهة الصغيرة - تظل ظاهرة من البداية كما طلبت
             Image(
