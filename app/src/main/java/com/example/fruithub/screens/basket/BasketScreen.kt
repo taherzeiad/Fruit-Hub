@@ -33,6 +33,7 @@ import com.example.fruithub.ui.theme.SecondaryColor
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.HorizontalDivider
 import com.example.fruithub.ui.theme.PrimaryColor
 
 // كائن البيانات للسلة

@@ -7,8 +7,9 @@ sealed class Screen(val route: String) {
     object Basket : Screen("basket")
     object ProductDetails : Screen("product_details")
     object CompleteOrder : Screen("complete_order")
+    object TrackOrder : Screen("track_order")
 
-    // الشاشات التي تحتوي على بارامترات
+
     object Home : Screen("home/{userName}") {
         fun createRoute(userName: String) = "home/$userName"
     }
