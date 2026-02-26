@@ -33,12 +33,14 @@ import com.example.fruithub.ui.theme.PrimaryColor
 
 @Composable
 fun DeliveryStatusScreen(onBackClick: () -> Unit) {
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
     ) {
-        // --- 1. الهيدر البرتقالي ---
+
+        // HEADER
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -54,7 +56,7 @@ fun DeliveryStatusScreen(onBackClick: () -> Unit) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 BackButton(onBackClick = onBackClick)
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(Modifier.width(16.dp))
                 Text(
                     text = "Delivery Status",
                     color = Color.White,
@@ -64,83 +66,90 @@ fun DeliveryStatusScreen(onBackClick: () -> Unit) {
             }
         }
 
-        // --- 2. محتوى الخط الزمني (Scrollable) ---
+        // BODY
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(24.dp)
+                .padding(horizontal = 24.dp)
                 .verticalScroll(rememberScrollState())
         ) {
 
-            // الحالة 1: Order Taken
             TimelineItem(
-                title = "Order Taken", iconRes = R.drawable.takenorder, // استبدل بأيقوناتك
-                iconBg = Color(0xFFFFFAEB), isCompleted = true, showLine = true
+                title = "Order Taken",
+                iconRes = R.drawable.takenorder,
+                iconBg = Color(0xFFFFFAEB),
+                isCompleted = true
             )
 
-            // الحالة 2: Order Is Being Prepared
+            TimelineDots()
+
             TimelineItem(
                 title = "Order Is Being Prepared",
                 iconRes = R.drawable.removebgpreview,
                 iconBg = Color(0xFFF3F4F9),
-                isCompleted = true,
-                showLine = true
+                isCompleted = true
             )
 
-            // الحالة 3: Order Is Being Delivered + الاتصال + الخريطة
+            TimelineDots()
+
+            // DELIVERY STEP
             TimelineItem(
                 title = "Order Is Being Delivered",
                 subtitle = "Your delivery agent is coming",
                 iconRes = R.drawable.deliveryman,
                 iconBg = Color(0xFFFFF2F2),
                 isCompleted = false,
-                showLine = true,
                 trailingContent = {
-                    // أيقونة الاتصال البرتقالية
                     IconButton(
-                        onClick = { /* Call logic */ }, modifier = Modifier
+                        onClick = { },
+                        modifier = Modifier
                             .background(
-                                SecondaryColor.copy(alpha = 0.2f), CircleShape
+                                SecondaryColor.copy(alpha = 0.2f),
+                                CircleShape
                             )
                             .size(40.dp)
                     ) {
-                        Icon(Icons.Default.Phone, contentDescription = null, tint = SecondaryColor)
+                        Icon(Icons.Default.Phone, null, tint = SecondaryColor)
                     }
-                },
-                extraContent = {
-                    Image(
-                        painter = painterResource(id = R.drawable.rectangle),
-                        contentDescription = "Map",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(150.dp)
-                            .padding(vertical = 16.dp)
-                            .clip(RoundedCornerShape(10.dp)),
-                        contentScale = ContentScale.Crop
-                    )
-                })
+                }
+            )
 
-            // الحالة 4: Order Received
+            TimelineDots()
+
+            // MAP
+            Image(
+                painter = painterResource(R.drawable.rectangle),
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(start = 84.dp, top = 6.dp, bottom = 24.dp)
+                    .fillMaxWidth()
+                    .height(150.dp)
+                    .clip(RoundedCornerShape(12.dp)),
+                contentScale = ContentScale.Crop
+            )
+
             TimelineItem(
                 title = "Order Received",
                 iconRes = Icons.Default.Check,
                 iconBg = Color(0xFFE0FFE5),
                 isCompleted = false,
                 isFinal = true,
-                showLine = false,
                 trailingContent = {
-                    // النقاط الثلاث
                     Row {
                         repeat(3) {
                             Box(
                                 modifier = Modifier
-                                    .padding(horizontal = 2.dp)
-                                    .size(8.dp)
-                                    .background(SecondaryColor.copy(alpha = 0.3f), CircleShape)
+                                    .padding(horizontal = 3.dp)
+                                    .size(6.dp)
+                                    .background(
+                                        SecondaryColor.copy(alpha = 0.4f),
+                                        CircleShape
+                                    )
                             )
                         }
                     }
-                })
+                }
+            )
         }
     }
 }
@@ -152,100 +161,85 @@ fun TimelineItem(
     iconBg: Color,
     isCompleted: Boolean,
     subtitle: String? = null,
-    showLine: Boolean = false,
     isFinal: Boolean = false,
-    trailingContent: @Composable (() -> Unit)? = null,
-    extraContent: @Composable (() -> Unit)? = null
+    trailingContent: @Composable (() -> Unit)? = null
 ) {
-    Row(modifier = Modifier.fillMaxWidth()) {
-        // الجزء الأيسر: الأيقونة والخط المنقط
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Box(
-                modifier = Modifier
-                    .size(64.dp)
-                    .background(iconBg, RoundedCornerShape(10.dp)),
-                contentAlignment = Alignment.Center
-            ) {
-                when (iconRes) {
-                    is Int -> {
-                        Image(
-                            painter = painterResource(id = iconRes),
-                            contentDescription = null,
-                            modifier = Modifier.size(40.dp)
-                        )
-                    }
 
-                    is ImageVector -> {
-                        Icon(
-                            imageVector = iconRes,
-                            contentDescription = null,
-                            modifier = Modifier.size(40.dp),
-                            tint = Color(0xFF4CD964) // لون علامة الصح الخضراء
-                        )
-                    }
-                }
-            }
-            if (showLine) {
-                Spacer(modifier = Modifier.height(9.dp))
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 24.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
 
-                Canvas(
-                    modifier = Modifier
-                        .width(2.dp)
-                        .height(70.dp)
-                ) {
-                    drawLine(
-                        color = SecondaryColor,
-                        start = Offset(size.width / 2, 0f),
-                        end = Offset(size.width / 2, size.height),
-                        strokeWidth = size.width,
-                        pathEffect = PathEffect.dashPathEffect(floatArrayOf(12f, 12f), 0f)
-                    )
-                }
+        // ICON
+        Box(
+            modifier = Modifier
+                .size(64.dp)
+                .background(iconBg, RoundedCornerShape(12.dp)),
+            contentAlignment = Alignment.Center
+        ) {
+            when (iconRes) {
+                is Int -> Image(
+                    painterResource(iconRes),
+                    null,
+                    modifier = Modifier.size(40.dp)
+                )
+
+                is ImageVector -> Icon(
+                    iconRes,
+                    null,
+                    tint = Color(0xFF4CD964),
+                    modifier = Modifier.size(40.dp)
+                )
             }
         }
 
-        Spacer(modifier = Modifier.width(20.dp))
+        Spacer(Modifier.width(20.dp))
 
-        // الجزء الأوسط والأيمن: النصوص والحالات
+        // TEXT AREA
         Column(modifier = Modifier.weight(1f)) {
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = title,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = PrimaryColor
-                    )
-                    if (subtitle != null) {
-                        Text(
-                            text = subtitle,
-                            fontSize = 14.sp,
-                            color = PrimaryColor.copy(alpha = 0.7f)
-                        )
+
+                Column {
+                    Text(title, fontWeight = FontWeight.Bold, color = PrimaryColor)
+                    subtitle?.let {
+                        Text(it, fontSize = 13.sp, color = PrimaryColor.copy(.7f))
                     }
                 }
 
-                if (trailingContent != null) {
-                    trailingContent()
-                } else if (isCompleted) {
-                    Icon(
-                        imageVector = Icons.Default.CheckCircle,
-                        contentDescription = null,
-                        tint = Color(0xFF4CD964),
-                        modifier = Modifier.size(24.dp)
+                when {
+                    trailingContent != null -> trailingContent()
+                    isCompleted -> Icon(
+                        Icons.Default.CheckCircle,
+                        null,
+                        tint = Color(0xFF4CD964)
                     )
                 }
             }
+        }
+    }
+}
 
-            if (extraContent != null) {
-                extraContent()
-            }
+@Composable
+fun TimelineDots() {
 
-            if (!isFinal) Spacer(modifier = Modifier.height(20.dp))
+    Column(
+        modifier = Modifier.padding(start = 30.dp, top = 4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        repeat(3) {
+            Box(
+                modifier = Modifier
+                    .padding(vertical = 3.dp)
+                    .size(5.dp)
+                    .background(SecondaryColor, CircleShape)
+            )
         }
     }
 }
