@@ -33,6 +33,7 @@ import com.example.fruithub.ui.theme.SecondaryColor
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.HorizontalDivider
 import com.example.fruithub.ui.theme.PrimaryColor
 
 // كائن البيانات للسلة
@@ -473,10 +474,8 @@ fun CardDetailsDialogContent(
                 ) {
                     // 1. أنميشن الاسم (يظهر أولاً)
                     AnimatedVisibility(
-                        visible = showItems,
-                        enter = slideInVertically(
-                            initialOffsetY = { 50 },
-                            animationSpec = tween(600)
+                        visible = showItems, enter = slideInVertically(
+                            initialOffsetY = { 50 }, animationSpec = tween(600)
                         ) + fadeIn(tween(600))
                     ) {
                         Column {
@@ -495,10 +494,8 @@ fun CardDetailsDialogContent(
 
                     // 2. أنميشن رقم البطاقة (يظهر بتأخير 200ms)
                     AnimatedVisibility(
-                        visible = showItems,
-                        enter = slideInVertically(
-                            initialOffsetY = { 50 },
-                            animationSpec = tween(600, delayMillis = 200)
+                        visible = showItems, enter = slideInVertically(
+                            initialOffsetY = { 50 }, animationSpec = tween(600, delayMillis = 200)
                         ) + fadeIn(tween(600, delayMillis = 200))
                     ) {
                         Column {
@@ -517,10 +514,8 @@ fun CardDetailsDialogContent(
 
                     // 3. أنميشن التاريخ والـ CCV (يظهر بتأخير 400ms)
                     AnimatedVisibility(
-                        visible = showItems,
-                        enter = slideInVertically(
-                            initialOffsetY = { 50 },
-                            animationSpec = tween(600, delayMillis = 400)
+                        visible = showItems, enter = slideInVertically(
+                            initialOffsetY = { 50 }, animationSpec = tween(600, delayMillis = 400)
                         ) + fadeIn(tween(600, delayMillis = 400))
                     ) {
                         Row(modifier = Modifier.fillMaxWidth()) {
@@ -553,10 +548,8 @@ fun CardDetailsDialogContent(
 
                 // 4. أنميشن الزر السفلي (يظهر بتأخير 600ms)
                 AnimatedVisibility(
-                    visible = showItems,
-                    enter = slideInVertically(
-                        initialOffsetY = { 100 },
-                        animationSpec = tween(600, delayMillis = 600)
+                    visible = showItems, enter = slideInVertically(
+                        initialOffsetY = { 100 }, animationSpec = tween(600, delayMillis = 600)
                     ) + fadeIn(tween(600, delayMillis = 600))
                 ) {
                     Box(
@@ -579,7 +572,7 @@ fun CardDetailsDialogContent(
                                 color = SecondaryColor,
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Medium,
-                                modifier = Modifier.padding(horizontal = 30.dp, vertical = 12.dp)
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)
                             )
                         }
                     }
