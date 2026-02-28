@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
@@ -34,16 +35,19 @@ import com.example.fruithub.ui.theme.PrimaryColor
 
 @Composable
 fun DeliveryStatusScreen(onBackClick: () -> Unit) {
-    // إضافة حالة الأنميشن للهيدر لتتناسب مع بقية التطبيق
+
+    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+
     var startAnimations by remember { mutableStateOf(false) }
+
     LaunchedEffect(Unit) {
         startAnimations = true
     }
 
     val headerHeight by animateDpAsState(
-        targetValue = if (startAnimations) 110.dp else 110.dp,
-        animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing),
-        label = "HeaderHeight"
+        targetValue = if (startAnimations) 110.dp else screenHeight, animationSpec = tween(
+            durationMillis = 1500, easing = FastOutSlowInEasing
+        ), label = "HeaderHeight"
     )
 
     Column(
