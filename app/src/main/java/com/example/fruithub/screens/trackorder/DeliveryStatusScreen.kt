@@ -1,8 +1,12 @@
 package com.example.fruithub.screens.trackorder
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -35,9 +39,7 @@ import com.example.fruithub.ui.theme.PrimaryColor
 
 @Composable
 fun DeliveryStatusScreen(onBackClick: () -> Unit) {
-
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
-
     var startAnimations by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
@@ -45,103 +47,134 @@ fun DeliveryStatusScreen(onBackClick: () -> Unit) {
     }
 
     val headerHeight by animateDpAsState(
-        targetValue = if (startAnimations) 110.dp else screenHeight, animationSpec = tween(
-            durationMillis = 1500, easing = FastOutSlowInEasing
-        ), label = "HeaderHeight"
+        targetValue = if (startAnimations) 110.dp else screenHeight,
+        animationSpec = tween(durationMillis = 1700, easing = FastOutSlowInEasing),
+        label = "HeaderHeight"
     )
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
     ) {
-
-        OrangeHeader(
-            title = "Delivery Status", headerHeight = headerHeight, onBackClick = onBackClick
-        )
-
-        // BODY
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 24.dp)
+                .padding(top = 110.dp)
                 .verticalScroll(rememberScrollState())
+                .padding(horizontal = 24.dp)
         ) {
 
-            TimelineItem(
-                title = "Order Taken",
-                iconRes = R.drawable.takenorder,
-                iconBg = Color(0xFFFFFAEB),
-                isCompleted = true
-            )
-
-            TimelineDots()
-
-            TimelineItem(
-                title = "Order Is Being Prepared",
-                iconRes = R.drawable.removebgpreview,
-                iconBg = Color(0xFFF3F4F9),
-                isCompleted = true
-            )
-
-            TimelineDots()
-
-            // DELIVERY STEP
-            TimelineItem(
-                title = "Order Is Being Delivered",
-                subtitle = "Your delivery agent is coming",
-                iconRes = R.drawable.deliveryman,
-                iconBg = Color(0xFFFFF2F2),
-                isCompleted = false,
-                trailingContent = {
-                    IconButton(
-                        onClick = { }, modifier = Modifier
-                            .background(
-                                SecondaryColor.copy(alpha = 0.2f), CircleShape
-                            )
-                            .size(40.dp)
-                    ) {
-                        Icon(Icons.Default.Phone, null, tint = SecondaryColor)
-                    }
-                })
-
-            TimelineDots()
-
-            // MAP
-            Row(
-                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center
+            // 1. Order Taken - يظهر من الأسفل
+            AnimatedVisibility(
+                visible = startAnimations && headerHeight < 500.dp, enter = slideInVertically(
+                    initialOffsetY = { it }, animationSpec = tween(1000, delayMillis = 400)
+                ) + fadeIn()
             ) {
+                Column {
+                    TimelineItem("Order Taken", R.drawable.takenorder, Color(0xFFFFFAEB), true)
+                    TimelineDots()
+                }
+            }
+
+            // 2. Order Is Being Prepared - يظهر من الأسفل
+            AnimatedVisibility(
+                visible = startAnimations && headerHeight < 400.dp, enter = slideInVertically(
+                    initialOffsetY = { it }, animationSpec = tween(1000, delayMillis = 600)
+                ) + fadeIn()
+            ) {
+                Column {
+                    TimelineItem(
+                        "Order Is Being Prepared",
+                        R.drawable.removebgpreview,
+                        Color(0xFFF3F4F9),
+                        true
+                    )
+                    TimelineDots()
+                }
+            }
+
+            // 3. Order Is Being Delivered - من جهة اليسار
+            AnimatedVisibility(
+                visible = startAnimations && headerHeight < 300.dp, enter = slideInHorizontally(
+                    initialOffsetX = { -it }, animationSpec = tween(1000, delayMillis = 800)
+                ) + fadeIn()
+            ) {
+                Column {
+                    TimelineItem(
+                        title = "Order Is Being Delivered",
+                        subtitle = "Your delivery agent is coming",
+                        iconRes = R.drawable.deliveryman,
+                        iconBg = Color(0xFFFFF2F2),
+                        isCompleted = false,
+                        trailingContent = {
+                            IconButton(
+                                onClick = { },
+                                modifier = Modifier
+                                    .background(
+                                        SecondaryColor.copy(alpha = 0.2f), CircleShape
+                                    )
+                                    .size(40.dp)
+                            ) {
+                                Icon(Icons.Default.Phone, null, tint = SecondaryColor)
+                            }
+                        })
+                    TimelineDots()
+                }
+            }
+
+            // 4. الصورة (الخريطة) - تفتح كخط رفيع (تمدد)
+            // نستخدم animateDpAsState للتحكم في العرض أو الارتفاع يدوياً لتأثير الـ Expand
+            val imageWidth by animateDpAsState(
+                targetValue = if (startAnimations && headerHeight < 250.dp) 327.dp else 0.dp,
+                animationSpec = tween(1500, delayMillis = 1200)
+            )
+
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                 Image(
                     painter = painterResource(R.drawable.rectangle),
                     contentDescription = null,
                     modifier = Modifier
                         .padding(top = 6.dp, bottom = 24.dp)
-                        .width(327.dp)
+                        .width(imageWidth) // هنا نطبق تأثير التمدد
                         .height(128.dp)
                         .clip(RoundedCornerShape(12.dp)),
                     contentScale = ContentScale.Crop
                 )
             }
 
-            TimelineItem(
-                title = "Order Received",
-                iconRes = Icons.Default.Check,
-                iconBg = Color(0xFFE0FFE5),
-                isCompleted = false,
-                isFinal = true,
-                trailingContent = {
-                    Row {
-                        repeat(3) {
-                            Box(
-                                modifier = Modifier
-                                    .padding(horizontal = 3.dp)
-                                    .size(6.dp)
-                                    .background(SecondaryColor.copy(alpha = 0.4f), CircleShape)
-                            )
+            // 5. Order Received - يخرج من الأسفل
+            AnimatedVisibility(
+                visible = startAnimations && headerHeight < 200.dp, enter = slideInVertically(
+                    initialOffsetY = { it }, animationSpec = tween(800, delayMillis = 1000)
+                ) + fadeIn()
+            ) {
+                TimelineItem(
+                    title = "Order Received",
+                    iconRes = Icons.Default.Check,
+                    iconBg = Color(0xFFE0FFE5),
+                    isCompleted = false,
+                    isFinal = true,
+                    trailingContent = {
+                        Row {
+                            repeat(3) {
+                                Box(
+                                    modifier = Modifier
+                                        .padding(horizontal = 3.dp)
+                                        .size(6.dp)
+                                        .background(SecondaryColor.copy(alpha = 0.4f), CircleShape)
+                                )
+                            }
                         }
-                    }
-                })
+                    })
+            }
+            Spacer(modifier = Modifier.height(30.dp))
         }
+
+        // الهيدر دائماً في الأعلى
+        OrangeHeader(
+            title = "Delivery Status", headerHeight = headerHeight, onBackClick = onBackClick
+        )
     }
 }
 
