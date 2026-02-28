@@ -34,6 +34,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.HorizontalDivider
+import com.example.fruithub.commonComponent.OrangeHeader
 import com.example.fruithub.ui.theme.PrimaryColor
 
 // كائن البيانات للسلة
@@ -164,36 +165,11 @@ fun BasketScreen(onBackClick: () -> Unit, onNavigateToSuccess: () -> Unit) {
             }
         }
 
-        // --- 2. طبقة الهيدر البرتقالي ---
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(headerHeight)
-                .background(SecondaryColor)
-                .padding(start = 24.dp, end = 24.dp, bottom = 20.dp),
-            contentAlignment = Alignment.BottomCenter
-        ) {
-            if (headerHeight < 250.dp) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 10.dp)
-                ) {
-                    BackButton(
-                        onBackClick = onBackClick, modifier = Modifier.padding(bottom = 10.dp)
-                    )
-                    Spacer(modifier = Modifier.weight(0.3f))
-                    Text(
-                        text = "My Basket",
-                        color = Color.White,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(modifier = Modifier.weight(1f))
-                }
-            }
-        }
+        OrangeHeader(
+            title = "My Basket",
+            headerHeight = headerHeight,
+            onBackClick = onBackClick
+        )
 
         if (showCheckoutSheet) {
             Box(

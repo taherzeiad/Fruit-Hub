@@ -223,7 +223,12 @@ fun CheckoutDialogContent(
                         OutlinedTextField(
                             value = "",
                             onValueChange = {},
-                            placeholder = { Text("10th avenue, Lekki, Lagos State", color = Color.LightGray) },
+                            placeholder = {
+                                Text(
+                                    "10th avenue, Lekki, Lagos State",
+                                    color = Color.LightGray
+                                )
+                            },
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(10.dp),
                             colors = TextFieldDefaults.colors(
@@ -324,7 +329,9 @@ fun CheckoutDialogContent(
         // زر الإغلاق مع أنميشن ظهور بسيط
         AnimatedVisibility(
             visible = showContent,
-            modifier = Modifier.align(Alignment.TopCenter).offset(y = (-70).dp),
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .offset(y = (-70).dp),
             enter = fadeIn(animationSpec = tween(1000, delayMillis = 600))
         ) {
             IconButton(

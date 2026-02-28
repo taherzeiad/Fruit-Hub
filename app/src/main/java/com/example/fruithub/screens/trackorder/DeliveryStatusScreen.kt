@@ -1,6 +1,8 @@
 package com.example.fruithub.screens.trackorder
 
-import androidx.compose.foundation.Canvas
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -13,13 +15,11 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -27,12 +27,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.fruithub.R
-import com.example.fruithub.commonComponent.BackButton
+import com.example.fruithub.commonComponent.OrangeHeader // استيراد الدالة العامة
 import com.example.fruithub.ui.theme.SecondaryColor
 import com.example.fruithub.ui.theme.PrimaryColor
 
 @Composable
 fun DeliveryStatusScreen(onBackClick: () -> Unit) {
+    // إضافة حالة الأنميشن للهيدر لتتناسب مع بقية التطبيق
+    var startAnimations by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        startAnimations = true
+    }
+
+    val headerHeight by animateDpAsState(
+        targetValue = if (startAnimations) 110.dp else 110.dp,
+        animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing),
+        label = "HeaderHeight"
+    )
 
     Column(
         modifier = Modifier
@@ -40,31 +51,9 @@ fun DeliveryStatusScreen(onBackClick: () -> Unit) {
             .background(Color.White)
     ) {
 
-        // HEADER
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(130.dp)
-                .background(SecondaryColor)
-                .padding(horizontal = 24.dp, vertical = 20.dp),
-            contentAlignment = Alignment.BottomCenter
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 10.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                BackButton(onBackClick = onBackClick)
-                Spacer(Modifier.width(16.dp))
-                Text(
-                    text = "Delivery Status",
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-        }
+        OrangeHeader(
+            title = "Delivery Status", headerHeight = headerHeight, onBackClick = onBackClick
+        )
 
         // BODY
         Column(
@@ -128,6 +117,7 @@ fun DeliveryStatusScreen(onBackClick: () -> Unit) {
                     contentScale = ContentScale.Crop
                 )
             }
+
             TimelineItem(
                 title = "Order Received",
                 iconRes = Icons.Default.Check,
@@ -141,9 +131,7 @@ fun DeliveryStatusScreen(onBackClick: () -> Unit) {
                                 modifier = Modifier
                                     .padding(horizontal = 3.dp)
                                     .size(6.dp)
-                                    .background(
-                                        SecondaryColor.copy(alpha = 0.4f), CircleShape
-                                    )
+                                    .background(SecondaryColor.copy(alpha = 0.4f), CircleShape)
                             )
                         }
                     }
