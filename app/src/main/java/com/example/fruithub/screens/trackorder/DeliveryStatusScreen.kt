@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.fruithub.R
@@ -150,15 +151,13 @@ fun TimelineItem(
     isFinal: Boolean = false,
     trailingContent: @Composable (() -> Unit)? = null
 ) {
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 24.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-
-        // ICON
+        // --- المربع الأيسر ---
         Box(
             modifier = Modifier
                 .size(64.dp)
@@ -166,27 +165,41 @@ fun TimelineItem(
             contentAlignment = Alignment.Center
         ) {
             when (iconRes) {
+                // 1. الأيقونات العلوية (الصور): تبقى كما هي 40dp
                 is Int -> Image(
-                    painterResource(iconRes), null, modifier = Modifier.size(40.dp)
+                    painter = painterResource(iconRes),
+                    contentDescription = null,
+                    modifier = Modifier.size(40.dp)
                 )
 
-                is ImageVector -> Icon(
-                    iconRes, null, tint = Color(0xFF4CD964), modifier = Modifier.size(40.dp)
-                )
+                // 2. أيقونة الصح (أسفل اليسار): تظهر بالخلفية الخضراء الدائرية كما في الصورة
+                is ImageVector -> {
+                    Box(
+                        modifier = Modifier
+                            .size(45.dp) // حجم الدائرة الخضراء
+                            .background(Color(0xFF4CD964), CircleShape),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = iconRes,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(24.dp) // حجم الصح أبيض صغير
+                        )
+                    }
+                }
             }
         }
 
         Spacer(Modifier.width(20.dp))
 
-        // TEXT AREA
+        // --- منطقة النصوص وأيقونة الحالة اليمنى ---
         Column(modifier = Modifier.weight(1f)) {
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-
                 Column {
                     Text(title, fontWeight = FontWeight.Bold, color = PrimaryColor)
                     subtitle?.let {
@@ -194,11 +207,25 @@ fun TimelineItem(
                     }
                 }
 
+                // أيقونات الحالة على جهة اليمين (تبقى كما هي)
                 when {
                     trailingContent != null -> trailingContent()
-                    isCompleted -> Icon(
-                        Icons.Default.CheckCircle, null, tint = Color(0xFF4CD964)
-                    )
+                    isCompleted -> {
+                        // دائرة خضراء صغيرة مع صح للخطوات المكتملة فوق
+                        Box(
+                            modifier = Modifier
+                                .size(24.dp)
+                                .background(Color(0xFF4CD964), CircleShape),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Check,
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
+                    }
                 }
             }
         }
