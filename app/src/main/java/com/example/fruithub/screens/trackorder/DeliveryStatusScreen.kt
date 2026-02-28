@@ -16,7 +16,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -29,11 +28,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.fruithub.R
-import com.example.fruithub.commonComponent.OrangeHeader // استيراد الدالة العامة
+import com.example.fruithub.commonComponent.OrangeHeader
 import com.example.fruithub.ui.theme.SecondaryColor
 import com.example.fruithub.ui.theme.PrimaryColor
 
@@ -111,12 +109,10 @@ fun DeliveryStatusScreen(onBackClick: () -> Unit) {
                             IconButton(
                                 onClick = { },
                                 modifier = Modifier
-                                    .background(
-                                        SecondaryColor.copy(alpha = 0.2f), CircleShape
-                                    )
+                                    .background(SecondaryColor, CircleShape)
                                     .size(40.dp)
                             ) {
-                                Icon(Icons.Default.Phone, null, tint = SecondaryColor)
+                                Icon(painterResource(R.drawable.iconcall), null, tint = Color.White)
                             }
                         })
                     TimelineDots()
@@ -124,7 +120,6 @@ fun DeliveryStatusScreen(onBackClick: () -> Unit) {
             }
 
             // 4. الصورة (الخريطة) - تفتح كخط رفيع (تمدد)
-            // نستخدم animateDpAsState للتحكم في العرض أو الارتفاع يدوياً لتأثير الـ Expand
             val imageWidth by animateDpAsState(
                 targetValue = if (startAnimations && headerHeight < 250.dp) 327.dp else 0.dp,
                 animationSpec = tween(1500, delayMillis = 1200)
