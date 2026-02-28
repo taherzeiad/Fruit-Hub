@@ -11,14 +11,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.fruithub.R
+import com.example.fruithub.ui.theme.BrandonGrotesque
 
 @Composable
 fun BackButton(
-    modifier: Modifier = Modifier,
-    onBackClick: () -> Unit
+    modifier: Modifier = Modifier, onBackClick: () -> Unit
 ) {
     Surface(
         onClick = onBackClick,
@@ -37,7 +38,13 @@ fun BackButton(
                 tint = Color.Black
             )
             Spacer(modifier = Modifier.width(4.dp))
-            Text(text = "Go back", fontSize = 14.sp, color = Color.Black)
+            Text(
+                text = "Go back",
+                fontSize = 14.sp,
+                color = Color.Black,
+                fontFamily = BrandonGrotesque,
+                fontWeight = FontWeight.Normal
+            )
         }
     }
 }

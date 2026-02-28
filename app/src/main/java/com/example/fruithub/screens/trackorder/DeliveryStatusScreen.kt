@@ -16,7 +16,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -32,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.fruithub.R
 import com.example.fruithub.commonComponent.OrangeHeader
+import com.example.fruithub.ui.theme.BrandonGrotesque
 import com.example.fruithub.ui.theme.SecondaryColor
 import com.example.fruithub.ui.theme.PrimaryColor
 
@@ -233,9 +233,20 @@ fun TimelineItem(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Column {
-                    Text(title, fontWeight = FontWeight.Bold, color = PrimaryColor)
+                    Text(
+                        title,
+                        color = PrimaryColor,
+                        fontFamily = BrandonGrotesque,
+                        fontWeight = FontWeight.Medium
+                    )
                     subtitle?.let {
-                        Text(it, fontSize = 13.sp, color = PrimaryColor.copy(.7f))
+                        Text(
+                            it,
+                            fontSize = 13.sp,
+                            color = PrimaryColor.copy(.7f),
+                            fontFamily = BrandonGrotesque,
+                            fontWeight = FontWeight.Normal
+                        )
                     }
                 }
 
