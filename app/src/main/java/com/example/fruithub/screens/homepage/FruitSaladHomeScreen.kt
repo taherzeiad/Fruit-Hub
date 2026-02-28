@@ -21,7 +21,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.fruithub.ui.theme.BackgroundColor
@@ -30,6 +33,7 @@ import com.example.fruithub.ui.theme.CardBackground2
 import com.example.fruithub.ui.theme.PrimaryColor
 import com.example.fruithub.ui.theme.SecondaryColor
 import com.example.fruithub.R
+import com.example.fruithub.ui.theme.BrandonGrotesque
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -132,13 +136,30 @@ fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit, onProductC
             ) + fadeIn(animationSpec = tween(800, easing = FastOutSlowInEasing))
         ) {
             Text(
-                text = "Hello $userName, What fruit salad \ncombo do you want today?",
+                text = buildAnnotatedString {
+                    // الجزء الأول: Hello + الاسم (بوزن Medium)
+                    withStyle(
+                        style = SpanStyle(
+                            fontWeight = FontWeight.Medium, fontFamily = BrandonGrotesque
+                        )
+                    ) {
+                        append("Hello $userName, ")
+                    }
+
+                    // الجزء الثاني: باقي النص (بوزن Regular)
+                    withStyle(
+                        style = SpanStyle(
+                            fontWeight = FontWeight.Normal, // Regular
+                            fontFamily = BrandonGrotesque
+                        )
+                    ) {
+                        append("What fruit salad \ncombo do you want today?")
+                    }
+                },
                 modifier = Modifier.padding(horizontal = 24.dp),
                 style = MaterialTheme.typography.headlineSmall.copy(
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = PrimaryColor,
-                    lineHeight = 28.sp
+                    fontSize = 20.sp, // رفعت الحجم قليلاً لأنه headline، ويمكنك إعادته لـ 14sp حسب رغبتك
+                    color = PrimaryColor, lineHeight = 28.sp
                 )
             )
         }
@@ -161,7 +182,14 @@ fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit, onProductC
                 TextField(
                     value = "",
                     onValueChange = {},
-                    placeholder = { Text("Search for fruit salad combos", color = Color.Gray) },
+                    placeholder = {
+                        Text(
+                            "Search for fruit salad combos",
+                            color = Color.Gray,
+                            fontFamily = BrandonGrotesque,
+                            fontWeight = FontWeight.Normal
+                        )
+                    },
                     leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                     modifier = Modifier
                         .weight(1f)
@@ -203,7 +231,9 @@ fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit, onProductC
                     .padding(horizontal = 24.dp)
                     .graphicsLayer(alpha = recommendedAlpha),
                 style = MaterialTheme.typography.titleLarge.copy(
-                    fontWeight = FontWeight.Bold, color = PrimaryColor
+                    fontFamily = BrandonGrotesque,
+                    fontWeight = FontWeight.Medium,
+                    color = PrimaryColor
                 )
             )
         }
@@ -319,6 +349,8 @@ fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit, onProductC
                 Text(
                     "Popular",
                     color = Color.Gray,
+                    fontFamily = BrandonGrotesque,
+                    fontWeight = FontWeight.Medium,
                     fontSize = 16.sp,
                     modifier = Modifier.graphicsLayer(alpha = popularAlpha)
                 )
@@ -326,12 +358,16 @@ fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit, onProductC
                     "New combo",
                     color = Color.Gray,
                     fontSize = 16.sp,
+                    fontFamily = BrandonGrotesque,
+                    fontWeight = FontWeight.Medium,
                     modifier = Modifier.graphicsLayer(alpha = newAlpha)
                 )
                 Text(
                     "Top",
                     color = Color.Gray,
                     fontSize = 16.sp,
+                    fontFamily = BrandonGrotesque,
+                    fontWeight = FontWeight.Medium,
                     modifier = Modifier.graphicsLayer(alpha = topAlpha)
                 )
             }
@@ -449,7 +485,8 @@ fun RecommendedCard(
 
             Text(
                 text = name,
-                fontWeight = FontWeight.Bold,
+                fontFamily = BrandonGrotesque,
+                fontWeight = FontWeight.Medium,
                 color = PrimaryColor,
                 fontSize = 14.sp,
                 modifier = Modifier.weight(1f)
@@ -463,7 +500,8 @@ fun RecommendedCard(
                 Text(
                     text = "₦ $price",
                     color = SecondaryColor,
-                    fontWeight = FontWeight.Bold,
+                    fontFamily = BrandonGrotesque,
+                    fontWeight = FontWeight.Normal,
                     fontSize = 14.sp
                 )
 
@@ -521,13 +559,24 @@ fun HottestCard(
             )
 
             Spacer(modifier = Modifier.height(8.dp))
-            Text(name, fontWeight = FontWeight.Bold, color = PrimaryColor, fontSize = 12.sp)
+            Text(
+                name,
+                color = PrimaryColor,
+                fontSize = 12.sp,
+                fontFamily = BrandonGrotesque,
+                fontWeight = FontWeight.Medium
+            )
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("₦ $price", color = SecondaryColor)
+                Text(
+                    "₦ $price",
+                    color = SecondaryColor,
+                    fontFamily = BrandonGrotesque,
+                    fontWeight = FontWeight.Medium
+                )
                 Box(
                     modifier = Modifier
                         .size(24.dp)

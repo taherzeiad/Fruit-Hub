@@ -177,9 +177,7 @@ fun OrderSuccessScreen(
 
 @Composable
 fun CheckoutDialogContent(
-    onDismiss: () -> Unit,
-    onPayOnDelivery: () -> Unit,
-    onPayWithCard: () -> Unit
+    onDismiss: () -> Unit, onPayOnDelivery: () -> Unit, onPayWithCard: () -> Unit
 ) {
     // حالة لبدء الأنميشن الداخلي عند ظهور المكون
     var showContent by remember { mutableStateOf(false) }
@@ -206,10 +204,8 @@ fun CheckoutDialogContent(
             ) {
                 // 1. أنميشن الجزء الأول (العنوان + الحقل) من الأسفل
                 AnimatedVisibility(
-                    visible = showContent,
-                    enter = slideInVertically(
-                        initialOffsetY = { it },
-                        animationSpec = tween(1500)
+                    visible = showContent, enter = slideInVertically(
+                        initialOffsetY = { it }, animationSpec = tween(1500)
                     ) + fadeIn()
                 ) {
                     Column {
@@ -225,8 +221,7 @@ fun CheckoutDialogContent(
                             onValueChange = {},
                             placeholder = {
                                 Text(
-                                    "10th avenue, Lekki, Lagos State",
-                                    color = Color.LightGray
+                                    "10th avenue, Lekki, Lagos State", color = Color.LightGray
                                 )
                             },
                             modifier = Modifier.fillMaxWidth(),
@@ -245,10 +240,8 @@ fun CheckoutDialogContent(
 
                 // 2. أنميشن الجزء الثاني بتأخير بسيط (delay) ومن الأسفل
                 AnimatedVisibility(
-                    visible = showContent,
-                    enter = slideInVertically(
-                        initialOffsetY = { it },
-                        animationSpec = tween(800, delayMillis = 200)
+                    visible = showContent, enter = slideInVertically(
+                        initialOffsetY = { it }, animationSpec = tween(800, delayMillis = 200)
                     ) + fadeIn()
                 ) {
                     Column {
@@ -287,8 +280,7 @@ fun CheckoutDialogContent(
                         visible = showContent,
                         modifier = Modifier.weight(1f),
                         enter = slideInHorizontally(
-                            initialOffsetX = { -it },
-                            animationSpec = tween(800, delayMillis = 400)
+                            initialOffsetX = { -it }, animationSpec = tween(800, delayMillis = 400)
                         ) + fadeIn()
                     ) {
                         OutlinedButton(
@@ -308,8 +300,7 @@ fun CheckoutDialogContent(
                         visible = showContent,
                         modifier = Modifier.weight(1f),
                         enter = slideInHorizontally(
-                            initialOffsetX = { it },
-                            animationSpec = tween(800, delayMillis = 400)
+                            initialOffsetX = { it }, animationSpec = tween(800, delayMillis = 400)
                         ) + fadeIn()
                     ) {
                         OutlinedButton(

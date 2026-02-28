@@ -16,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.fruithub.ui.theme.BrandonGrotesque
 import com.example.fruithub.ui.theme.SecondaryColor
 
 @Composable
@@ -46,7 +47,8 @@ fun OrangeHeader(
                     text = title,
                     color = Color.White,
                     fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
+                    fontFamily = BrandonGrotesque,
+                    fontWeight = FontWeight.Medium
                 )
                 Spacer(modifier = Modifier.weight(1f))
             }

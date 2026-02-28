@@ -40,13 +40,13 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.fruithub.commonComponent.ButtonOrange
 import com.example.fruithub.R
+import com.example.fruithub.ui.theme.BrandonGrotesque
 import com.example.fruithub.ui.theme.SecondaryColor
 import kotlinx.coroutines.delay
 
 @Composable
 fun AuthenticationScreen(
-    viewModel: AuthenticationViewModel = viewModel(), // استخدام ViewModel
-    onLoginSuccess: (String) -> Unit // تمرير دالة بدلاً من NavController
+    viewModel: AuthenticationViewModel = viewModel(), onLoginSuccess: (String) -> Unit
 ) {
     // منطق التحريك (الأنميشن) يبقى هنا لأنه خاص بالـ UI فقط
     var startBasketAnimation by remember { mutableStateOf(false) }
@@ -143,6 +143,7 @@ fun AuthenticationScreen(
                     Text(
                         text = "What is your firstname?",
                         fontSize = 18.sp,
+                        fontFamily = BrandonGrotesque,
                         fontWeight = FontWeight.Medium,
                         color = Color(0xFF27214D)
                     )
@@ -154,7 +155,8 @@ fun AuthenticationScreen(
                         onValueChange = { viewModel.updateUserName(it) },
                         placeholder = {
                             Text(
-                                "Tony", color = Color.Gray
+                                "Tony", color = Color.Gray, fontFamily = BrandonGrotesque,
+                                fontWeight = FontWeight.Normal,
                             )
                         }, // جعل الـ Placeholder باهتًا
                         textStyle = androidx.compose.ui.text.TextStyle(
@@ -198,8 +200,9 @@ fun AuthenticationScreen(
                             Text(
                                 text = "Start Ordering",
                                 color = Color.White,
+                                fontFamily = BrandonGrotesque,
+                                fontWeight = FontWeight.Medium,
                                 fontSize = 16.sp,
-                                fontWeight = FontWeight.Medium
                             )
                         }
                         Spacer(modifier = Modifier.height(18.dp))

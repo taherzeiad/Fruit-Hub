@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.fruithub.R
 import com.example.fruithub.commonComponent.ButtonOrange
+import com.example.fruithub.ui.theme.BrandonGrotesque
 import com.example.fruithub.ui.theme.SecondaryColor
 import kotlinx.coroutines.delay
 
@@ -131,7 +132,8 @@ fun WelcomeScreen(onContinueClick: () -> Unit) {
                     Text(
                         text = "Get The Freshest Fruit Salad Combo",
                         fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
+                        fontFamily = BrandonGrotesque,
+                        fontWeight = FontWeight.Medium,
                         color = Color(0xFF27214D),
                         lineHeight = 32.sp
                     )
@@ -139,6 +141,8 @@ fun WelcomeScreen(onContinueClick: () -> Unit) {
                     Text(
                         text = "We deliver the best and freshest fruit salad in town. Order for a combo today!!!",
                         fontSize = 16.sp,
+                        fontFamily = BrandonGrotesque,
+                        fontWeight = FontWeight.Normal,
                         color = Color(0xFF5D577E),
                         lineHeight = 24.sp
                     )
@@ -158,8 +162,9 @@ fun WelcomeScreen(onContinueClick: () -> Unit) {
                     Text(
                         text = "Let’s Continue",
                         color = Color.White,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium
+                        fontFamily = BrandonGrotesque,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 16.sp
                     )
                 }
             }

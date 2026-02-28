@@ -35,6 +35,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.HorizontalDivider
 import com.example.fruithub.commonComponent.OrangeHeader
+import com.example.fruithub.ui.theme.BrandonGrotesque
 import com.example.fruithub.ui.theme.PrimaryColor
 
 // كائن البيانات للسلة
@@ -140,13 +141,15 @@ fun BasketScreen(onBackClick: () -> Unit, onNavigateToSuccess: () -> Unit) {
                         Text(
                             "Total",
                             fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
+                            fontFamily = BrandonGrotesque,
+                            fontWeight = FontWeight.Medium,
                             color = PrimaryColor
                         )
                         Text(
                             "₦ 60,000",
                             fontSize = 22.sp,
-                            fontWeight = FontWeight.Bold,
+                            fontFamily = BrandonGrotesque,
+                            fontWeight = FontWeight.Medium,
                             color = PrimaryColor
                         )
                     }
@@ -159,16 +162,20 @@ fun BasketScreen(onBackClick: () -> Unit, onNavigateToSuccess: () -> Unit) {
                             .width(199.dp)
                             .height(56.dp)
                     ) {
-                        Text("Checkout", color = Color.White, fontSize = 16.sp)
+                        Text(
+                            "Checkout",
+                            color = Color.White,
+                            fontSize = 16.sp,
+                            fontFamily = BrandonGrotesque,
+                            fontWeight = FontWeight.Medium,
+                        )
                     }
                 }
             }
         }
 
         OrangeHeader(
-            title = "My Basket",
-            headerHeight = headerHeight,
-            onBackClick = onBackClick
+            title = "My Basket", headerHeight = headerHeight, onBackClick = onBackClick
         )
 
         if (showCheckoutSheet) {
@@ -244,16 +251,24 @@ fun BasketRow(item: BasketItem) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = item.name,
-                fontWeight = FontWeight.Bold,
+                fontFamily = BrandonGrotesque,
+                fontWeight = FontWeight.Medium,
                 fontSize = 16.sp,
                 color = PrimaryColor
             )
-            Text(text = item.quantity, fontSize = 14.sp, color = Color.Gray)
+            Text(
+                text = item.quantity,
+                fontSize = 14.sp,
+                color = Color.Gray,
+                fontFamily = BrandonGrotesque,
+                fontWeight = FontWeight.Normal
+            )
         }
 
         Text(
             text = "₦ ${item.price}",
-            fontWeight = FontWeight.Bold,
+            fontFamily = BrandonGrotesque,
+            fontWeight = FontWeight.Medium,
             fontSize = 16.sp,
             color = PrimaryColor
         )
@@ -295,7 +310,8 @@ fun CheckoutDialogContent(
                         Text(
                             text = "Delivery address",
                             fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold,
+                            fontFamily = BrandonGrotesque,
+                            fontWeight = FontWeight.Medium,
                             color = PrimaryColor
                         )
                         Spacer(modifier = Modifier.height(16.dp))
@@ -304,7 +320,10 @@ fun CheckoutDialogContent(
                             onValueChange = {},
                             placeholder = {
                                 Text(
-                                    "10th avenue, Lekki, Lagos State", color = Color.LightGray
+                                    "10th avenue, Lekki, Lagos State",
+                                    color = Color.LightGray,
+                                    fontFamily = BrandonGrotesque,
+                                    fontWeight = FontWeight.Normal,
                                 )
                             },
                             modifier = Modifier.fillMaxWidth(),
@@ -330,14 +349,22 @@ fun CheckoutDialogContent(
                         Text(
                             text = "Number we can call",
                             fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold,
+                            fontFamily = BrandonGrotesque,
+                            fontWeight = FontWeight.Medium,
                             color = PrimaryColor
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         OutlinedTextField(
                             value = "",
                             onValueChange = {},
-                            placeholder = { Text("09090605708", color = Color.LightGray) },
+                            placeholder = {
+                                Text(
+                                    "09090605708",
+                                    color = Color.LightGray,
+                                    fontFamily = BrandonGrotesque,
+                                    fontWeight = FontWeight.Normal
+                                )
+                            },
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(10.dp),
                             colors = TextFieldDefaults.colors(
@@ -369,7 +396,13 @@ fun CheckoutDialogContent(
                             shape = RoundedCornerShape(10.dp),
                             border = BorderStroke(1.dp, SecondaryColor)
                         ) {
-                            Text("Pay on delivery", color = SecondaryColor, fontSize = 16.sp)
+                            Text(
+                                "Pay on delivery",
+                                color = SecondaryColor,
+                                fontSize = 16.sp,
+                                fontFamily = BrandonGrotesque,
+                                fontWeight = FontWeight.Medium
+                            )
                         }
                     }
 
@@ -388,7 +421,13 @@ fun CheckoutDialogContent(
                             shape = RoundedCornerShape(10.dp),
                             border = BorderStroke(1.dp, SecondaryColor)
                         ) {
-                            Text("Pay with card", color = SecondaryColor, fontSize = 16.sp)
+                            Text(
+                                "Pay with card",
+                                color = SecondaryColor,
+                                fontSize = 16.sp,
+                                fontFamily = BrandonGrotesque,
+                                fontWeight = FontWeight.Medium
+                            )
                         }
                     }
                 }
@@ -450,17 +489,16 @@ fun CardDetailsDialogContent(
                 ) {
                     // 1. أنميشن الاسم (يظهر أولاً)
                     AnimatedVisibility(
-                        visible = showItems,
-                        enter = slideInVertically(
-                            initialOffsetY = { 50 },
-                            animationSpec = tween(600)
+                        visible = showItems, enter = slideInVertically(
+                            initialOffsetY = { 50 }, animationSpec = tween(600)
                         ) + fadeIn(tween(600))
                     ) {
                         Column {
                             Text(
                                 text = "Card Holders Name",
                                 fontSize = 15.sp,
-                                fontWeight = FontWeight.Bold,
+                                fontFamily = BrandonGrotesque,
+                                fontWeight = FontWeight.Medium,
                                 color = PrimaryColor
                             )
                             Spacer(modifier = Modifier.height(16.dp))
@@ -472,17 +510,16 @@ fun CardDetailsDialogContent(
 
                     // 2. أنميشن رقم البطاقة (يظهر بتأخير 200ms)
                     AnimatedVisibility(
-                        visible = showItems,
-                        enter = slideInVertically(
-                            initialOffsetY = { 50 },
-                            animationSpec = tween(600, delayMillis = 200)
+                        visible = showItems, enter = slideInVertically(
+                            initialOffsetY = { 50 }, animationSpec = tween(600, delayMillis = 200)
                         ) + fadeIn(tween(600, delayMillis = 200))
                     ) {
                         Column {
                             Text(
                                 text = "Card Number",
                                 fontSize = 15.sp,
-                                fontWeight = FontWeight.Bold,
+                                fontFamily = BrandonGrotesque,
+                                fontWeight = FontWeight.Medium,
                                 color = PrimaryColor
                             )
                             Spacer(modifier = Modifier.height(16.dp))
@@ -494,10 +531,8 @@ fun CardDetailsDialogContent(
 
                     // 3. أنميشن التاريخ والـ CCV (يظهر بتأخير 400ms)
                     AnimatedVisibility(
-                        visible = showItems,
-                        enter = slideInVertically(
-                            initialOffsetY = { 50 },
-                            animationSpec = tween(600, delayMillis = 400)
+                        visible = showItems, enter = slideInVertically(
+                            initialOffsetY = { 50 }, animationSpec = tween(600, delayMillis = 400)
                         ) + fadeIn(tween(600, delayMillis = 400))
                     ) {
                         Row(modifier = Modifier.fillMaxWidth()) {
@@ -505,7 +540,8 @@ fun CardDetailsDialogContent(
                                 Text(
                                     text = "Date",
                                     fontSize = 15.sp,
-                                    fontWeight = FontWeight.Bold,
+                                    fontFamily = BrandonGrotesque,
+                                    fontWeight = FontWeight.Medium,
                                     color = PrimaryColor
                                 )
                                 Spacer(modifier = Modifier.height(16.dp))
@@ -516,7 +552,8 @@ fun CardDetailsDialogContent(
                                 Text(
                                     text = "CCV",
                                     fontSize = 15.sp,
-                                    fontWeight = FontWeight.Bold,
+                                    fontFamily = BrandonGrotesque,
+                                    fontWeight = FontWeight.Medium,
                                     color = PrimaryColor
                                 )
                                 Spacer(modifier = Modifier.height(16.dp))
@@ -530,10 +567,8 @@ fun CardDetailsDialogContent(
 
                 // 4. أنميشن الزر السفلي (يظهر بتأخير 600ms)
                 AnimatedVisibility(
-                    visible = showItems,
-                    enter = slideInVertically(
-                        initialOffsetY = { 100 },
-                        animationSpec = tween(600, delayMillis = 600)
+                    visible = showItems, enter = slideInVertically(
+                        initialOffsetY = { 100 }, animationSpec = tween(600, delayMillis = 600)
                     ) + fadeIn(tween(600, delayMillis = 600))
                 ) {
                     Box(
@@ -555,6 +590,7 @@ fun CardDetailsDialogContent(
                                 text = "Complete Order",
                                 color = SecondaryColor,
                                 fontSize = 16.sp,
+                                fontFamily = BrandonGrotesque,
                                 fontWeight = FontWeight.Medium,
                                 modifier = Modifier.padding(horizontal = 30.dp, vertical = 12.dp)
                             )
@@ -594,7 +630,13 @@ fun CardTextField(placeholder: String) {
     OutlinedTextField(
         value = "",
         onValueChange = {},
-        placeholder = { Text(placeholder, color = Color.LightGray) },
+        placeholder = {
+            Text(
+                placeholder, color = Color.LightGray,
+                fontFamily = BrandonGrotesque,
+                fontWeight = FontWeight.Normal,
+            )
+        },
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(10.dp),
         colors = TextFieldDefaults.colors(
