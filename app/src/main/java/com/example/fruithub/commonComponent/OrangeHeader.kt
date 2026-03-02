@@ -31,7 +31,6 @@ fun OrangeHeader(
             .padding(start = 24.dp, end = 24.dp, bottom = 20.dp),
         contentAlignment = Alignment.BottomCenter
     ) {
-        // نظهر المحتويات فقط عندما يبدأ الهيدر بالتقلص لمقاسه الطبيعي
         if (headerHeight < 250.dp) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,

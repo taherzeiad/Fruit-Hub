@@ -1,5 +1,6 @@
 package com.example.fruithub.screens.trackorder
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -35,6 +36,7 @@ import com.example.fruithub.ui.theme.BrandonGrotesque
 import com.example.fruithub.ui.theme.SecondaryColor
 import com.example.fruithub.ui.theme.PrimaryColor
 
+@SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun DeliveryStatusScreen(onBackClick: () -> Unit) {
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
@@ -63,7 +65,7 @@ fun DeliveryStatusScreen(onBackClick: () -> Unit) {
                 .padding(horizontal = 24.dp)
         ) {
 
-            // 1. Order Taken - يظهر من الأسفل
+            // 1. Order Taken
             AnimatedVisibility(
                 visible = startAnimations && headerHeight < 500.dp, enter = slideInVertically(
                     initialOffsetY = { it }, animationSpec = tween(1000, delayMillis = 400)
@@ -75,7 +77,7 @@ fun DeliveryStatusScreen(onBackClick: () -> Unit) {
                 }
             }
 
-            // 2. Order Is Being Prepared - يظهر من الأسفل
+            // 2. Order Is Being Prepared
             AnimatedVisibility(
                 visible = startAnimations && headerHeight < 400.dp, enter = slideInVertically(
                     initialOffsetY = { it }, animationSpec = tween(1000, delayMillis = 600)
@@ -92,7 +94,7 @@ fun DeliveryStatusScreen(onBackClick: () -> Unit) {
                 }
             }
 
-            // 3. Order Is Being Delivered - من جهة اليسار
+            // 3. Order Is Being Delivered
             AnimatedVisibility(
                 visible = startAnimations && headerHeight < 300.dp, enter = slideInHorizontally(
                     initialOffsetX = { -it }, animationSpec = tween(1000, delayMillis = 800)
@@ -119,7 +121,7 @@ fun DeliveryStatusScreen(onBackClick: () -> Unit) {
                 }
             }
 
-            // 4. الصورة (الخريطة) - تفتح كخط رفيع (تمدد)
+            // 4. Photo (Plan)
             val imageWidth by animateDpAsState(
                 targetValue = if (startAnimations && headerHeight < 250.dp) 327.dp else 0.dp,
                 animationSpec = tween(1500, delayMillis = 1200)
@@ -131,14 +133,14 @@ fun DeliveryStatusScreen(onBackClick: () -> Unit) {
                     contentDescription = null,
                     modifier = Modifier
                         .padding(top = 6.dp, bottom = 24.dp)
-                        .width(imageWidth) // هنا نطبق تأثير التمدد
+                        .width(imageWidth)
                         .height(128.dp)
                         .clip(RoundedCornerShape(12.dp)),
                     contentScale = ContentScale.Crop
                 )
             }
 
-            // 5. Order Received - يخرج من الأسفل
+            // 5. Order Received
             AnimatedVisibility(
                 visible = startAnimations && headerHeight < 200.dp, enter = slideInVertically(
                     initialOffsetY = { it }, animationSpec = tween(800, delayMillis = 1000)
@@ -166,7 +168,6 @@ fun DeliveryStatusScreen(onBackClick: () -> Unit) {
             Spacer(modifier = Modifier.height(30.dp))
         }
 
-        // الهيدر دائماً في الأعلى
         OrangeHeader(
             title = "Delivery Status", headerHeight = headerHeight, onBackClick = onBackClick
         )
@@ -189,7 +190,6 @@ fun TimelineItem(
             .padding(top = 24.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // --- المربع الأيسر ---
         Box(
             modifier = Modifier
                 .size(64.dp)
@@ -197,18 +197,16 @@ fun TimelineItem(
             contentAlignment = Alignment.Center
         ) {
             when (iconRes) {
-                // 1. الأيقونات العلوية (الصور): تبقى كما هي 40dp
                 is Int -> Image(
                     painter = painterResource(iconRes),
                     contentDescription = null,
                     modifier = Modifier.size(40.dp)
                 )
 
-                // 2. أيقونة الصح (أسفل اليسار): تظهر بالخلفية الخضراء الدائرية كما في الصورة
                 is ImageVector -> {
                     Box(
                         modifier = Modifier
-                            .size(45.dp) // حجم الدائرة الخضراء
+                            .size(45.dp)
                             .background(Color(0xFF4CD964), CircleShape),
                         contentAlignment = Alignment.Center
                     ) {
@@ -216,7 +214,7 @@ fun TimelineItem(
                             imageVector = iconRes,
                             contentDescription = null,
                             tint = Color.White,
-                            modifier = Modifier.size(24.dp) // حجم الصح أبيض صغير
+                            modifier = Modifier.size(24.dp)
                         )
                     }
                 }
@@ -225,7 +223,6 @@ fun TimelineItem(
 
         Spacer(Modifier.width(20.dp))
 
-        // --- منطقة النصوص وأيقونة الحالة اليمنى ---
         Column(modifier = Modifier.weight(1f)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -250,11 +247,9 @@ fun TimelineItem(
                     }
                 }
 
-                // أيقونات الحالة على جهة اليمين (تبقى كما هي)
                 when {
                     trailingContent != null -> trailingContent()
                     isCompleted -> {
-                        // دائرة خضراء صغيرة مع صح للخطوات المكتملة فوق
                         Box(
                             modifier = Modifier
                                 .size(24.dp)

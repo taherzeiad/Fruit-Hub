@@ -40,7 +40,6 @@ import kotlinx.coroutines.delay
 @Composable
 fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit, onProductClick: () -> Unit) {
 
-    // Animation states
     val infiniteTransition = rememberInfiniteTransition(label = "menu_transition")
     val menuAlpha by infiniteTransition.animateFloat(
         initialValue = 0.3f, targetValue = 1f, animationSpec = infiniteRepeatable(
@@ -48,7 +47,6 @@ fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit, onProductC
         ), label = "menu_alpha"
     )
 
-    // States for sequential animations
     var startGreeting by remember { mutableStateOf(false) }
     var startSearch by remember { mutableStateOf(false) }
     var startRecommendedText by remember { mutableStateOf(false) }
@@ -58,7 +56,7 @@ fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit, onProductC
     var startBasket by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        delay(500) // Delay after menu animation starts
+        delay(500)
         startGreeting = true
         delay(400)
         startSearch = true
@@ -86,9 +84,9 @@ fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit, onProductC
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 24.dp, vertical = 8.dp)
-                .height(56.dp), //  تثبيت الارتفاع يمنع أي حركة رأسية عند ظهور الأيقونة
+                .height(56.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically //  جعل العناصر في المنتصف دائماً
+            verticalAlignment = Alignment.CenterVertically
         ) {
             // Menu icon
             Icon(
@@ -100,8 +98,8 @@ fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit, onProductC
                     .graphicsLayer(alpha = menuAlpha)
             )
 
-            // سلة المشتريات
-            Box(modifier = Modifier.wrapContentSize()) { // 👈 وضعها داخل Box يحافظ على استقرار المكان
+            // Purchases Basket
+            Box(modifier = Modifier.wrapContentSize()) {
                 androidx.compose.animation.AnimatedVisibility(
                     visible = startBasket,
                     enter = slideInVertically(initialOffsetY = { it }) + fadeIn(tween(800)),
@@ -137,7 +135,6 @@ fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit, onProductC
         ) {
             Text(
                 text = buildAnnotatedString {
-                    // الجزء الأول: Hello + الاسم (بوزن Medium)
                     withStyle(
                         style = SpanStyle(
                             fontWeight = FontWeight.Medium, fontFamily = BrandonGrotesque
@@ -146,7 +143,6 @@ fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit, onProductC
                         append("Hello $userName, ")
                     }
 
-                    // الجزء الثاني: باقي النص (بوزن Regular)
                     withStyle(
                         style = SpanStyle(
                             fontWeight = FontWeight.Normal, // Regular

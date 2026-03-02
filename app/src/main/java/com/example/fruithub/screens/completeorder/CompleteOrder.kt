@@ -30,7 +30,6 @@ import kotlinx.coroutines.delay
 fun OrderSuccessScreen(
     onTrackOrderClick: () -> Unit, onContinueShoppingClick: () -> Unit
 ) {
-    // حالات التحكم في الأنميشن
     var startIconAnimation by remember { mutableStateOf(false) }
     var showTexts by remember { mutableStateOf(false) }
     var showTrackButton by remember { mutableStateOf(false) }
@@ -46,7 +45,6 @@ fun OrderSuccessScreen(
         showContinueButton = true
     }
 
-    // أنميشن الأيقونة (حجم وشفافية)
     val iconScale by animateFloatAsState(
         targetValue = if (startIconAnimation) 1f else 0.3f, animationSpec = spring(
             dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow
@@ -58,15 +56,12 @@ fun OrderSuccessScreen(
         label = "IconAlpha"
     )
 
-    // أنميشن النصوص (شفافية وإزاحة)
     val textAlpha by animateFloatAsState(if (showTexts) 1f else 0f, tween(600))
     val textTranslationY by animateFloatAsState(if (showTexts) 0f else 40f, tween(600))
 
-    // أنميشن زر التتبع (شفافية وإزاحة)
     val trackAlpha by animateFloatAsState(if (showTrackButton) 1f else 0f, tween(500))
     val trackTranslationY by animateFloatAsState(if (showTrackButton) 0f else 40f, tween(500))
 
-    // أنميشن زر المواصلة (شفافية وإزاحة)
     val continueAlpha by animateFloatAsState(if (showContinueButton) 1f else 0f, tween(500))
     val continueTranslationY by animateFloatAsState(if (showContinueButton) 0f else 40f, tween(500))
 
@@ -78,7 +73,6 @@ fun OrderSuccessScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // --- 1. الأيقونة ---
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
@@ -109,7 +103,6 @@ fun OrderSuccessScreen(
 
         Spacer(modifier = Modifier.height(56.dp))
 
-        // --- 2. النصوص (محجوزة المساحة) ---
         Column(
             horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.graphicsLayer {
                 alpha = textAlpha
@@ -137,9 +130,6 @@ fun OrderSuccessScreen(
 
         Spacer(modifier = Modifier.height(56.dp))
 
-        // --- 3. الأزرار (محجوزة المساحة) ---
-
-        // زر تتبع الطلب
         Button(
             onClick = onTrackOrderClick,
             modifier = Modifier
@@ -163,7 +153,6 @@ fun OrderSuccessScreen(
 
         Spacer(modifier = Modifier.height(48.dp))
 
-        // زر مواصلة التسوق
         OutlinedButton(
             onClick = onContinueShoppingClick,
             modifier = Modifier

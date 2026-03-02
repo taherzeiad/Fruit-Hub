@@ -25,10 +25,8 @@ fun SplashScreen(onTimeout: () -> Unit) {
     var startLeaves by remember { mutableStateOf(false) }
     var startText by remember { mutableStateOf(false) }
 
-    // 🟠 لبدء توسع الدائرة
     var expandCircle by remember { mutableStateOf(false) }
 
-    // أنيميشن نصف قطر الدائرة
     val circleRadius by animateFloatAsState(
         targetValue = if (expandCircle) 2500f else 0f, // قيمة كبيرة لتغطية الشاشة بالكامل
         animationSpec = tween(durationMillis = 3000, easing = FastOutSlowInEasing),
@@ -59,7 +57,6 @@ fun SplashScreen(onTimeout: () -> Unit) {
         targetValue = if (startText) -40.dp else 200.dp, animationSpec = tween(600), label = ""
     )
 
-    // ✨ التحكم بالظهور
     val leavesAlpha by animateFloatAsState(if (startLeaves) 1f else 0f, label = "")
     val textAlpha by animateFloatAsState(if (startText) 1f else 0f, label = "")
 
@@ -74,11 +71,9 @@ fun SplashScreen(onTimeout: () -> Unit) {
         startLeaves = true
         startText = true
 
-        // ⏱️ انتظر قليلاً بعد ظهور الشعار ثم ابدأ الدائرة البرتقالية
         delay(1150)
         expandCircle = true
 
-        // انتظر حتى يكتمل أنيميشن الدائرة قبل الانتقال
         delay(800)
         onTimeout()
     }
@@ -92,7 +87,6 @@ fun SplashScreen(onTimeout: () -> Unit) {
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
-            // 🌱 النبتة
             Image(
                 painter = painterResource(R.drawable.tree),
                 contentDescription = null,
@@ -100,7 +94,7 @@ fun SplashScreen(onTimeout: () -> Unit) {
                     .padding(end = 47.dp)
                     .size(59.dp)
                     .offset(y = leavesOffset)
-                    .alpha(leavesAlpha)   // مخفية ثم تظهر
+                    .alpha(leavesAlpha)
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -138,21 +132,20 @@ fun SplashScreen(onTimeout: () -> Unit) {
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // 🟧 مستطيل النص
             Image(
                 painter = painterResource(R.drawable.textfruit),
                 contentDescription = null,
                 modifier = Modifier
                     .offset(y = textOffset)
-                    .alpha(textAlpha)   // مخفي ثم يظهر
+                    .alpha(textAlpha)
             )
         }
         Canvas(modifier = Modifier.fillMaxSize()) {
             drawCircle(
-                color = SecondaryColor, // استخدم لون OrangePrimary الخاص بك
-                radius = circleRadius, center = androidx.compose.ui.geometry.Offset(
-                    x = size.width + 100f, // خارج الشاشة قليلاً جهة اليمين
-                    y = size.height + 100f // خارج الشاشة قليلاً جهة الأسفل
+                color = SecondaryColor,
+                radius = circleRadius,
+                center = androidx.compose.ui.geometry.Offset(
+                    x = size.width + 100f, y = size.height + 100f
                 )
             )
         }

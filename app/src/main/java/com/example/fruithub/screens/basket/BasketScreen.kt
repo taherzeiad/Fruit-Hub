@@ -38,7 +38,6 @@ import com.example.fruithub.commonComponent.OrangeHeader
 import com.example.fruithub.ui.theme.BrandonGrotesque
 import com.example.fruithub.ui.theme.PrimaryColor
 
-// كائن البيانات للسلة
 data class BasketItem(
     val name: String, val imageRes: Int, val bgColor: Color, val price: String, val quantity: String
 )
@@ -68,7 +67,6 @@ fun BasketScreen(onBackClick: () -> Unit, onNavigateToSuccess: () -> Unit) {
             .fillMaxSize()
             .background(Color.White)
     ) {
-        // --- 1. طبقة المحتوى ---
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -124,7 +122,6 @@ fun BasketScreen(onBackClick: () -> Unit, onNavigateToSuccess: () -> Unit) {
                 }
             }
 
-            // --- الجزء السفلي (السعر وزر Checkout) ---
             AnimatedVisibility(
                 visible = startAnimations && headerHeight < 300.dp, enter = slideInVertically(
                     initialOffsetY = { it }, animationSpec = tween(1200, delayMillis = 800)
@@ -155,7 +152,7 @@ fun BasketScreen(onBackClick: () -> Unit, onNavigateToSuccess: () -> Unit) {
                     }
 
                     Button(
-                        onClick = { showCheckoutSheet = true }, // تفعيل ظهور الـ BottomSheet
+                        onClick = { showCheckoutSheet = true },
                         colors = ButtonDefaults.buttonColors(containerColor = SecondaryColor),
                         shape = RoundedCornerShape(10.dp),
                         modifier = Modifier
@@ -205,7 +202,6 @@ fun BasketScreen(onBackClick: () -> Unit, onNavigateToSuccess: () -> Unit) {
                 }, onPayWithCard = { showCardDetails = true })
             }
         }
-        // 2. ديلاوج بيانات البطاقة
         AnimatedVisibility(
             visible = showCheckoutSheet && showCardDetails,
             enter = slideInVertically(
@@ -435,7 +431,6 @@ fun CheckoutDialogContent(
             }
         }
 
-        // زر الإغلاق مع أنميشن ظهور بسيط
         AnimatedVisibility(
             visible = showContent,
             modifier = Modifier
@@ -459,7 +454,6 @@ fun CheckoutDialogContent(
 fun CardDetailsDialogContent(
     onDismiss: () -> Unit, onCompleteOrder: () -> Unit
 ) {
-    // حالة للتحكم في بدء الأنميشن عند ظهور المكون
     var showItems by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
         showItems = true
@@ -469,9 +463,8 @@ fun CardDetailsDialogContent(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight(),
-        contentAlignment = Alignment.BottomCenter // لجعل المحتوى يرتكز في الأسفل
+        contentAlignment = Alignment.BottomCenter
     ) {
-        // --- 1. حاوية المحتوى (الخلفية البيضاء والحقول) ---
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp),
@@ -481,13 +474,11 @@ fun CardDetailsDialogContent(
             Column(
                 modifier = Modifier.fillMaxWidth()
             ) {
-                // حاوية الحقول مع Padding جانبي
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 32.dp, start = 24.dp, end = 24.dp)
                 ) {
-                    // 1. أنميشن الاسم (يظهر أولاً)
                     AnimatedVisibility(
                         visible = showItems, enter = slideInVertically(
                             initialOffsetY = { 50 }, animationSpec = tween(600)
@@ -508,7 +499,6 @@ fun CardDetailsDialogContent(
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    // 2. أنميشن رقم البطاقة (يظهر بتأخير 200ms)
                     AnimatedVisibility(
                         visible = showItems, enter = slideInVertically(
                             initialOffsetY = { 50 }, animationSpec = tween(600, delayMillis = 200)
@@ -529,7 +519,6 @@ fun CardDetailsDialogContent(
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    // 3. أنميشن التاريخ والـ CCV (يظهر بتأخير 400ms)
                     AnimatedVisibility(
                         visible = showItems, enter = slideInVertically(
                             initialOffsetY = { 50 }, animationSpec = tween(600, delayMillis = 400)
@@ -565,7 +554,6 @@ fun CardDetailsDialogContent(
 
                 Spacer(modifier = Modifier.height(45.dp))
 
-                // 4. أنميشن الزر السفلي (يظهر بتأخير 600ms)
                 AnimatedVisibility(
                     visible = showItems, enter = slideInVertically(
                         initialOffsetY = { 100 }, animationSpec = tween(600, delayMillis = 600)
@@ -600,13 +588,11 @@ fun CardDetailsDialogContent(
             }
         }
 
-        // --- 2. زر الإغلاق (X) طافٍ فوق الـ Surface ---
-        // وضعناه هنا ليكون تابعاً للـ Box الأساسي ومحاذاته TopCenter مستقلة
         AnimatedVisibility(
             visible = showItems,
             modifier = Modifier
-                .align(Alignment.TopCenter) // المحاذاة بالنسبة للـ Box وليس الـ Column
-                .offset(y = (-70).dp),      // رفعه للأعلى ليظهر فوق حافة الديلاوج
+                .align(Alignment.TopCenter)
+                .offset(y = (-70).dp),
             enter = fadeIn(tween(800, delayMillis = 800))
         ) {
             IconButton(
