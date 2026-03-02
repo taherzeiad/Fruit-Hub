@@ -61,9 +61,9 @@ fun AuthenticationScreen(
     LaunchedEffect(Unit) {
         delay(200)
         startBasketAnimation = true
-        delay(700)
+        delay(350)
         startTextAnimation = true
-        delay(400)
+        delay(200)
         startButtonAnimation = true
     }
     Column(
