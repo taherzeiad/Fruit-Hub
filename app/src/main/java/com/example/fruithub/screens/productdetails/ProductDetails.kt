@@ -160,7 +160,7 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
                     )
                 }
 
-                Divider(modifier = Modifier.padding(vertical = 32.dp), color = Color(0xFFF3F3F3))
+                HorizontalDivider(modifier = Modifier.padding(vertical = 32.dp), color = Color(0xFFF3F3F3))
 
                 Text(
                     text = "One Pack Contains:",
