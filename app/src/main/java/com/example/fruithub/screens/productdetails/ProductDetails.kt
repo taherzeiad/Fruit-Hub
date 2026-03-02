@@ -8,7 +8,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -25,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.fruithub.R
 import com.example.fruithub.commonComponent.BackButton
+import com.example.fruithub.ui.theme.BrandonGrotesque
 import com.example.fruithub.ui.theme.PrimaryColor
 import com.example.fruithub.ui.theme.SecondaryColor
 
@@ -33,29 +33,24 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
 
     var quantity by remember { mutableStateOf(1) }
 
-    // --- 1. تعريف حالات التحريك (State) ---
     val startAnimation = remember { mutableStateOf(false) }
 
-    // تحريك حجم الصورة (من صغير لكبير)
     val imageScale by animateFloatAsState(
         targetValue = if (startAnimation.value) 1f else 0.3f,
         animationSpec = tween(durationMillis = 800, easing = FastOutSlowInEasing)
     )
 
-    // تحريك صعود الجزء الأبيض من الأسفل
     val sheetOffsetY by animateDpAsState(
         targetValue = if (startAnimation.value) 0.dp else 400.dp, animationSpec = tween(
             durationMillis = 700, easing = FastOutSlowInEasing
         )
     )
 
-    // تحريك شفافية المحتوى السفلي (من باهت إلى غامق)
     val contentAlpha by animateFloatAsState(
         targetValue = if (startAnimation.value) 1f else 0f,
         animationSpec = tween(durationMillis = 1000, delayMillis = 400)
     )
 
-    // تحريك الزر من اليمين والقلب من اليسار
     val buttonOffsetX by animateDpAsState(
         targetValue = if (startAnimation.value) 0.dp else 150.dp,
         animationSpec = tween(durationMillis = 800, delayMillis = 600)
@@ -65,7 +60,6 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
         animationSpec = tween(durationMillis = 800, delayMillis = 600)
     )
 
-    // تفعيل الانميشن عند تشغيل الشاشة
     LaunchedEffect(Unit) {
         startAnimation.value = true
     }
@@ -73,9 +67,8 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(SecondaryColor) // الخلفية البرتقالية
+            .background(SecondaryColor)
     ) {
-        // --- الجزء العلوي (البرتقالي) ---
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -91,7 +84,6 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            // صورة المنتج مع تحريك الحجم (Scale)
             Image(
                 painter = painterResource(id = R.drawable.quinoa_salad_large),
                 contentDescription = null,
@@ -101,15 +93,13 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
             )
         }
 
-        // --- 2. الجزء السفلي (الأبيض) مع تحريك الصعود (Offset) ---
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(0.6f)
-                .offset(y = sheetOffsetY), // الصعود من الأسفل
+                .offset(y = sheetOffsetY),
             shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp), color = Color.White
         ) {
-            // استخدام graphicsLayer للتحكم في الشفافية (باهت -> طبيعي)
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -119,7 +109,8 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
                 Text(
                     text = "Quinoa Fruit Salad",
                     fontSize = 25.sp,
-                    fontWeight = FontWeight.Bold,
+                    fontFamily = BrandonGrotesque,
+                    fontWeight = FontWeight.Medium,
                     color = PrimaryColor
                 )
 
@@ -145,6 +136,8 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
                             text = "$quantity",
                             modifier = Modifier.padding(horizontal = 16.dp),
                             fontSize = 20.sp,
+                            fontFamily = BrandonGrotesque,
+                            fontWeight = FontWeight.Normal,
                             color = PrimaryColor
                         )
                         IconButton(
@@ -161,7 +154,8 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
                     Text(
                         text = "₦ 2,000",
                         fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
+                        fontFamily = BrandonGrotesque,
+                        fontWeight = FontWeight.Medium,
                         color = PrimaryColor
                     )
                 }
@@ -171,7 +165,8 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
                 Text(
                     text = "One Pack Contains:",
                     fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
+                    fontFamily = BrandonGrotesque,
+                    fontWeight = FontWeight.Medium,
                     color = PrimaryColor
                 )
                 Box(
@@ -185,6 +180,8 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
                 Text(
                     text = "Red Quinoa, Lime, Honey, Blueberries, Strawberries, Mango, Fresh mint.",
                     fontSize = 13.sp,
+                    fontFamily = BrandonGrotesque,
+                    fontWeight = FontWeight.Medium,
                     color = PrimaryColor,
                     lineHeight = 24.sp
                 )
@@ -192,18 +189,18 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
                 Text(
                     text = "If you are looking for a new fruit salad to eat today, \nquinoa is the perfect brunch for you. make ",
                     fontSize = 11.sp,
+                    fontFamily = BrandonGrotesque,
+                    fontWeight = FontWeight.Medium,
                     color = Color.Black,
                     lineHeight = 20.sp
                 )
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                // --- 3. تحريك الزر والقلب (يمين ويسار) ---
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // تحريك القلب من اليسار (Offset X)
                     Box(
                         modifier = Modifier
                             .offset(x = heartOffsetX)
@@ -220,7 +217,6 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
 
                     Spacer(modifier = Modifier.width(24.dp))
 
-                    // تحريك الزر من اليمين (Offset X)
                     Button(
                         onClick = { onAddToBasketClick() },
                         modifier = Modifier
@@ -230,7 +226,13 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
                         colors = ButtonDefaults.buttonColors(containerColor = SecondaryColor),
                         shape = RoundedCornerShape(16.dp)
                     ) {
-                        Text("Add to basket", color = Color.White, fontSize = 16.sp)
+                        Text(
+                            "Add to basket",
+                            color = Color.White,
+                            fontSize = 16.sp,
+                            fontFamily = BrandonGrotesque,
+                            fontWeight = FontWeight.Medium,
+                        )
                     }
                 }
             }

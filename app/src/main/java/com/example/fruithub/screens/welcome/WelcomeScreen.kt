@@ -27,30 +27,29 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.fruithub.R
 import com.example.fruithub.commonComponent.ButtonOrange
+import com.example.fruithub.ui.theme.BrandonGrotesque
 import com.example.fruithub.ui.theme.SecondaryColor
 import kotlinx.coroutines.delay
 
 @Composable
 fun WelcomeScreen(onContinueClick: () -> Unit) {
-    // 1. تعريف حالات التحكم في ظهور العناصر (States)
+
     var isBasketVisible by remember { mutableStateOf(false) }
     var isTextVisible by remember { mutableStateOf(false) }
     var isButtonVisible by remember { mutableStateOf(false) }
 
-    // 2. مقياس حجم السلة (Scaling)
     val basketScale by animateFloatAsState(
         targetValue = if (isBasketVisible) 1f else 0f, animationSpec = spring(
             dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow
         ), label = "BasketScale"
     )
 
-    // 3. تشغيل الحركات بالتتابع عند دخول الشاشة
     LaunchedEffect(Unit) {
-        delay(300) // انتظار بسيط قبل ظهور السلة
+        delay(300)
         isBasketVisible = true
-        delay(600) // انتظار نمو السلة ثم إظهار النصوص
+        delay(600)
         isTextVisible = true
-        delay(400) // انتظار ظهور النصوص ثم إظهار الزر
+        delay(400)
         isButtonVisible = true
     }
 
@@ -59,14 +58,12 @@ fun WelcomeScreen(onContinueClick: () -> Unit) {
             .fillMaxSize()
             .background(Color.White)
     ) {
-        // الجزء العلوي: الخلفية البرتقالية
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(0.9f)
                 .background(SecondaryColor)
         ) {
-            // صورة الفاكهة الصغيرة (تظهر مباشرة كما طلبت)
             Image(
                 painter = painterResource(id = R.drawable.smallfruit),
                 contentDescription = null,
@@ -76,7 +73,6 @@ fun WelcomeScreen(onContinueClick: () -> Unit) {
                     .size(45.dp)
             )
 
-            // مجموعة سلة الفواكه والظل (تتحرك بالحجم)
             Column(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
@@ -84,7 +80,7 @@ fun WelcomeScreen(onContinueClick: () -> Unit) {
                     .fillMaxWidth()
                     .graphicsLayer(
                         scaleX = basketScale, scaleY = basketScale
-                    ), // 👈 تحريك الحجم هنا
+                    ),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -112,7 +108,6 @@ fun WelcomeScreen(onContinueClick: () -> Unit) {
 
         Spacer(modifier = Modifier.height(38.dp))
 
-        // الجزء السفلي: النصوص والزر
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -122,7 +117,6 @@ fun WelcomeScreen(onContinueClick: () -> Unit) {
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // تحريك ظهور النصوص من الأسفل للأعلى
             AnimatedVisibility(
                 visible = isTextVisible,
                 enter = slideInVertically(initialOffsetY = { it / 2 }) + fadeIn()
@@ -131,7 +125,8 @@ fun WelcomeScreen(onContinueClick: () -> Unit) {
                     Text(
                         text = "Get The Freshest Fruit Salad Combo",
                         fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
+                        fontFamily = BrandonGrotesque,
+                        fontWeight = FontWeight.Medium,
                         color = Color(0xFF27214D),
                         lineHeight = 32.sp
                     )
@@ -139,13 +134,14 @@ fun WelcomeScreen(onContinueClick: () -> Unit) {
                     Text(
                         text = "We deliver the best and freshest fruit salad in town. Order for a combo today!!!",
                         fontSize = 16.sp,
+                        fontFamily = BrandonGrotesque,
+                        fontWeight = FontWeight.Normal,
                         color = Color(0xFF5D577E),
                         lineHeight = 24.sp
                     )
                 }
             }
 
-            // تحريك ظهور الزر بعد النصوص
             AnimatedVisibility(
                 visible = isButtonVisible,
                 enter = slideInVertically(initialOffsetY = { it }) + fadeIn()
@@ -158,8 +154,9 @@ fun WelcomeScreen(onContinueClick: () -> Unit) {
                     Text(
                         text = "Let’s Continue",
                         color = Color.White,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium
+                        fontFamily = BrandonGrotesque,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 16.sp
                     )
                 }
             }

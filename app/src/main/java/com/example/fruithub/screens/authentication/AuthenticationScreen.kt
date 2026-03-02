@@ -40,15 +40,14 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.fruithub.commonComponent.ButtonOrange
 import com.example.fruithub.R
+import com.example.fruithub.ui.theme.BrandonGrotesque
 import com.example.fruithub.ui.theme.SecondaryColor
 import kotlinx.coroutines.delay
 
 @Composable
 fun AuthenticationScreen(
-    viewModel: AuthenticationViewModel = viewModel(), // استخدام ViewModel
-    onLoginSuccess: (String) -> Unit // تمرير دالة بدلاً من NavController
+    viewModel: AuthenticationViewModel = viewModel(), onLoginSuccess: (String) -> Unit
 ) {
-    // منطق التحريك (الأنميشن) يبقى هنا لأنه خاص بالـ UI فقط
     var startBasketAnimation by remember { mutableStateOf(false) }
     var startTextAnimation by remember { mutableStateOf(false) }
     var startButtonAnimation by remember { mutableStateOf(false) }
@@ -72,14 +71,12 @@ fun AuthenticationScreen(
             .fillMaxSize()
             .background(Color.White)
     ) {
-        // الجزء العلوي: الخلفية البرتقالية
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1.2f)
                 .background(SecondaryColor)
         ) {
-            // صورة الفاكهة الصغيرة - تظل ظاهرة من البداية كما طلبت
             Image(
                 painter = painterResource(id = R.drawable.smallfruit),
                 contentDescription = null,
@@ -88,8 +85,6 @@ fun AuthenticationScreen(
                     .padding(top = 85.dp, end = 10.dp)
                     .size(45.dp)
             )
-
-            // مجموعة سلة الفواكه والظل مع تأثير التكبير
             Column(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
@@ -97,7 +92,7 @@ fun AuthenticationScreen(
                     .fillMaxWidth()
                     .graphicsLayer(
                         scaleX = basketScale, scaleY = basketScale
-                    ), // 👈 تطبيق حركة التكبير هنا
+                    ),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -125,7 +120,6 @@ fun AuthenticationScreen(
 
         Spacer(modifier = Modifier.height(63.dp))
 
-        // الجزء السفلي (النصوص والزر)
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -134,7 +128,6 @@ fun AuthenticationScreen(
             verticalArrangement = Arrangement.SpaceBetween
         ) {
 
-            // تحريك النص والـ TextField من الأسفل للأعلى
             AnimatedVisibility(
                 visible = startTextAnimation,
                 enter = slideInVertically(initialOffsetY = { it / 2 }) + fadeIn()
@@ -143,6 +136,7 @@ fun AuthenticationScreen(
                     Text(
                         text = "What is your firstname?",
                         fontSize = 18.sp,
+                        fontFamily = BrandonGrotesque,
                         fontWeight = FontWeight.Medium,
                         color = Color(0xFF27214D)
                     )
@@ -154,20 +148,22 @@ fun AuthenticationScreen(
                         onValueChange = { viewModel.updateUserName(it) },
                         placeholder = {
                             Text(
-                                "Tony", color = Color.Gray
+                                "Tony", color = Color.Gray, fontFamily = BrandonGrotesque,
+                                fontWeight = FontWeight.Normal,
                             )
-                        }, // جعل الـ Placeholder باهتًا
+                        },
                         textStyle = androidx.compose.ui.text.TextStyle(
-                            color = Color(0xFF27214D), // 👈 هذا هو اللون الغامق المطلوب للنص عند الكتابة
-                            fontSize = 16.sp, fontWeight = FontWeight.Medium
+                            color = Color(0xFF27214D),
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium
                         ),
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(56.dp),
                         shape = RoundedCornerShape(12.dp),
                         colors = TextFieldDefaults.colors(
-                            focusedTextColor = Color(0xFF27214D),   // 👈 لضمان اللون عند التركيز
-                            unfocusedTextColor = Color(0xFF27214D), // 👈 لضمان اللون بعد انتهاء التركيز
+                            focusedTextColor = Color(0xFF27214D),
+                            unfocusedTextColor = Color(0xFF27214D),
                             unfocusedContainerColor = Color(0xFFF3F3F3),
                             focusedContainerColor = Color(0xFFF3F3F3),
                             unfocusedIndicatorColor = Color.Transparent,
@@ -179,7 +175,6 @@ fun AuthenticationScreen(
 
             Spacer(modifier = Modifier.height(35.dp))
 
-            // تحريك الزر ليظهر بعد النصوص
             AnimatedVisibility(
                 visible = startButtonAnimation,
                 enter = slideInVertically(initialOffsetY = { it }) + fadeIn()
@@ -198,8 +193,9 @@ fun AuthenticationScreen(
                             Text(
                                 text = "Start Ordering",
                                 color = Color.White,
+                                fontFamily = BrandonGrotesque,
+                                fontWeight = FontWeight.Medium,
                                 fontSize = 16.sp,
-                                fontWeight = FontWeight.Medium
                             )
                         }
                         Spacer(modifier = Modifier.height(18.dp))

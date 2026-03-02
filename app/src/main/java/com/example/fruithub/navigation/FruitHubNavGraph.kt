@@ -19,12 +19,10 @@ import com.example.fruithub.screens.trackorder.DeliveryStatusScreen
 @Composable
 fun FruitHubNavGraph() {
     val navController = rememberNavController()
-
-    // وضع الـ Scaffold هنا يحمي الشاشات من التداخل مع شريط الحالة أو أزرار النظام
     Scaffold { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.CompleteOrder.route,
+            startDestination = Screen.Splash.route,
             modifier = Modifier.padding(innerPadding)
         ) {
             // 1. Splash
@@ -92,13 +90,11 @@ fun FruitHubNavGraph() {
                     }
                 })
             }
-
             // 8. TrackOrder
             composable(Screen.TrackOrder.route) {
                 DeliveryStatusScreen(
                     onBackClick = { navController.popBackStack() })
             }
         }
-
     }
 }

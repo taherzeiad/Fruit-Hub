@@ -21,7 +21,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.fruithub.ui.theme.BackgroundColor
@@ -30,13 +33,13 @@ import com.example.fruithub.ui.theme.CardBackground2
 import com.example.fruithub.ui.theme.PrimaryColor
 import com.example.fruithub.ui.theme.SecondaryColor
 import com.example.fruithub.R
+import com.example.fruithub.ui.theme.BrandonGrotesque
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit, onProductClick: () -> Unit) {
 
-    // Animation states
     val infiniteTransition = rememberInfiniteTransition(label = "menu_transition")
     val menuAlpha by infiniteTransition.animateFloat(
         initialValue = 0.3f, targetValue = 1f, animationSpec = infiniteRepeatable(
@@ -44,7 +47,6 @@ fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit, onProductC
         ), label = "menu_alpha"
     )
 
-    // States for sequential animations
     var startGreeting by remember { mutableStateOf(false) }
     var startSearch by remember { mutableStateOf(false) }
     var startRecommendedText by remember { mutableStateOf(false) }
@@ -54,7 +56,7 @@ fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit, onProductC
     var startBasket by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        delay(500) // Delay after menu animation starts
+        delay(500)
         startGreeting = true
         delay(400)
         startSearch = true
@@ -82,9 +84,9 @@ fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit, onProductC
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 24.dp, vertical = 8.dp)
-                .height(56.dp), //  تثبيت الارتفاع يمنع أي حركة رأسية عند ظهور الأيقونة
+                .height(56.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically //  جعل العناصر في المنتصف دائماً
+            verticalAlignment = Alignment.CenterVertically
         ) {
             // Menu icon
             Icon(
@@ -96,8 +98,8 @@ fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit, onProductC
                     .graphicsLayer(alpha = menuAlpha)
             )
 
-            // سلة المشتريات
-            Box(modifier = Modifier.wrapContentSize()) { // 👈 وضعها داخل Box يحافظ على استقرار المكان
+            // Purchases Basket
+            Box(modifier = Modifier.wrapContentSize()) {
                 androidx.compose.animation.AnimatedVisibility(
                     visible = startBasket,
                     enter = slideInVertically(initialOffsetY = { it }) + fadeIn(tween(800)),
@@ -132,13 +134,28 @@ fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit, onProductC
             ) + fadeIn(animationSpec = tween(800, easing = FastOutSlowInEasing))
         ) {
             Text(
-                text = "Hello $userName, What fruit salad \ncombo do you want today?",
+                text = buildAnnotatedString {
+                    withStyle(
+                        style = SpanStyle(
+                            fontWeight = FontWeight.Medium, fontFamily = BrandonGrotesque
+                        )
+                    ) {
+                        append("Hello $userName, ")
+                    }
+
+                    withStyle(
+                        style = SpanStyle(
+                            fontWeight = FontWeight.Normal, // Regular
+                            fontFamily = BrandonGrotesque
+                        )
+                    ) {
+                        append("What fruit salad \ncombo do you want today?")
+                    }
+                },
                 modifier = Modifier.padding(horizontal = 24.dp),
                 style = MaterialTheme.typography.headlineSmall.copy(
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = PrimaryColor,
-                    lineHeight = 28.sp
+                    fontSize = 20.sp, // رفعت الحجم قليلاً لأنه headline، ويمكنك إعادته لـ 14sp حسب رغبتك
+                    color = PrimaryColor, lineHeight = 28.sp
                 )
             )
         }
@@ -161,7 +178,14 @@ fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit, onProductC
                 TextField(
                     value = "",
                     onValueChange = {},
-                    placeholder = { Text("Search for fruit salad combos", color = Color.Gray) },
+                    placeholder = {
+                        Text(
+                            "Search for fruit salad combos",
+                            color = Color.Gray,
+                            fontFamily = BrandonGrotesque,
+                            fontWeight = FontWeight.Normal
+                        )
+                    },
                     leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                     modifier = Modifier
                         .weight(1f)
@@ -203,7 +227,9 @@ fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit, onProductC
                     .padding(horizontal = 24.dp)
                     .graphicsLayer(alpha = recommendedAlpha),
                 style = MaterialTheme.typography.titleLarge.copy(
-                    fontWeight = FontWeight.Bold, color = PrimaryColor
+                    fontFamily = BrandonGrotesque,
+                    fontWeight = FontWeight.Medium,
+                    color = PrimaryColor
                 )
             )
         }
@@ -319,6 +345,8 @@ fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit, onProductC
                 Text(
                     "Popular",
                     color = Color.Gray,
+                    fontFamily = BrandonGrotesque,
+                    fontWeight = FontWeight.Medium,
                     fontSize = 16.sp,
                     modifier = Modifier.graphicsLayer(alpha = popularAlpha)
                 )
@@ -326,12 +354,16 @@ fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit, onProductC
                     "New combo",
                     color = Color.Gray,
                     fontSize = 16.sp,
+                    fontFamily = BrandonGrotesque,
+                    fontWeight = FontWeight.Medium,
                     modifier = Modifier.graphicsLayer(alpha = newAlpha)
                 )
                 Text(
                     "Top",
                     color = Color.Gray,
                     fontSize = 16.sp,
+                    fontFamily = BrandonGrotesque,
+                    fontWeight = FontWeight.Medium,
                     modifier = Modifier.graphicsLayer(alpha = topAlpha)
                 )
             }
@@ -449,7 +481,8 @@ fun RecommendedCard(
 
             Text(
                 text = name,
-                fontWeight = FontWeight.Bold,
+                fontFamily = BrandonGrotesque,
+                fontWeight = FontWeight.Medium,
                 color = PrimaryColor,
                 fontSize = 14.sp,
                 modifier = Modifier.weight(1f)
@@ -463,7 +496,8 @@ fun RecommendedCard(
                 Text(
                     text = "₦ $price",
                     color = SecondaryColor,
-                    fontWeight = FontWeight.Bold,
+                    fontFamily = BrandonGrotesque,
+                    fontWeight = FontWeight.Normal,
                     fontSize = 14.sp
                 )
 
@@ -521,13 +555,24 @@ fun HottestCard(
             )
 
             Spacer(modifier = Modifier.height(8.dp))
-            Text(name, fontWeight = FontWeight.Bold, color = PrimaryColor, fontSize = 12.sp)
+            Text(
+                name,
+                color = PrimaryColor,
+                fontSize = 12.sp,
+                fontFamily = BrandonGrotesque,
+                fontWeight = FontWeight.Medium
+            )
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("₦ $price", color = SecondaryColor)
+                Text(
+                    "₦ $price",
+                    color = SecondaryColor,
+                    fontFamily = BrandonGrotesque,
+                    fontWeight = FontWeight.Medium
+                )
                 Box(
                     modifier = Modifier
                         .size(24.dp)
