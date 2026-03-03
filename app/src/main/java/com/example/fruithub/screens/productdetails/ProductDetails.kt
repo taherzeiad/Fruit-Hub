@@ -127,36 +127,34 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    // الجزء الخاص بالتحكم في الكمية
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         IconButton(
                             onClick = { if (quantity > 1) quantity-- },
                             modifier = Modifier.size(32.dp)
                         ) {
-                            Icon(
-                                painterResource(R.drawable.remove),
-                                contentDescription = null,
-                                tint = Color.Black
-                            )
+                            Icon(painterResource(R.drawable.remove), contentDescription = null, tint = Color.Black)
                         }
+
+                        // استخدام Modifier.widthIn يمنع النص من تغيير عرض الـ Row بشكل مفاجئ
                         Text(
                             text = "$quantity",
-                            modifier = Modifier.padding(horizontal = 16.dp),
+                            modifier = Modifier.padding(horizontal = 16.dp).widthIn(min = 20.dp),
                             fontSize = 20.sp,
                             fontFamily = BrandonGrotesque,
                             fontWeight = FontWeight.Normal,
-                            color = PrimaryColor
+                            color = PrimaryColor,
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center
                         )
+
                         IconButton(
                             onClick = { quantity++ },
-                            modifier = Modifier
-                                .background(Color(0xFFFFF2E7), CircleShape)
-                                .size(32.dp)
+                            modifier = Modifier.background(Color(0xFFFFF2E7), CircleShape).size(32.dp)
                         ) {
-                            Icon(
-                                Icons.Default.Add, contentDescription = null, tint = SecondaryColor
-                            )
+                            Icon(Icons.Default.Add, contentDescription = null, tint = SecondaryColor)
                         }
                     }
+
                     Text(
                         text = "₦ 2,000",
                         fontSize = 24.sp,
@@ -222,7 +220,10 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
                             // الطريقة الحديثة لعمل Clickable مع Ripple دائري
                             .clickable(
                                 interactionSource = interactionSource,
-                                indication = ripple(bounded = false, radius = 28.dp), // استخدام ripple() بدلاً من rememberRipple()
+                                indication = ripple(
+                                    bounded = false,
+                                    radius = 28.dp
+                                ), // استخدام ripple() بدلاً من rememberRipple()
                                 onClick = { isFavorite = !isFavorite }
                             ),
                         contentAlignment = Alignment.Center
