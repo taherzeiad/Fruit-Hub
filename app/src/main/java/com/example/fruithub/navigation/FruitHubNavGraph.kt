@@ -64,7 +64,6 @@ fun FruitHubNavGraph() {
                 ProductDetailsScreen(
                     onBackClick = { navController.popBackStack() },
                     onAddToBasketClick = {
-                        // الانتقال إلى شاشة السلة
                         navController.navigate(Screen.Basket.route)
                     })
             }
@@ -72,9 +71,7 @@ fun FruitHubNavGraph() {
             // 6. Basket
             composable(Screen.Basket.route) {
                 BasketScreen(onBackClick = { navController.popBackStack() }, onNavigateToSuccess = {
-                    // الانتقال إلى شاشة النجاح
                     navController.navigate(Screen.CompleteOrder.route) {
-                        // مسح شاشة السلة من المكدس (Backstack) حتى لا يعود المستخدم إليها عند الضغط على زر الرجوع
                         popUpTo(Screen.Basket.route) { inclusive = true }
                     }
                 })
