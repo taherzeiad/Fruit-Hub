@@ -27,19 +27,25 @@ fun BackButton(
         modifier = modifier
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier
+                .padding(horizontal = 12.dp, vertical = 8.dp)
+                .width(80.dp)
+                .height(32.dp), verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.backicon),
                 contentDescription = "Back",
-                modifier = Modifier.size(16.dp),
+                modifier = Modifier
+                    .width(10.dp)
+                    .height(20.dp),
                 tint = Color.Black
             )
-            Spacer(modifier = Modifier.width(4.dp))
+
+            Spacer(modifier = Modifier.width(5.dp))
+
             Text(
                 text = "Go back",
-                fontSize = 14.sp,
+                fontSize = 16.sp,
                 color = Color.Black,
                 fontFamily = BrandonGrotesque,
                 fontWeight = FontWeight.Normal

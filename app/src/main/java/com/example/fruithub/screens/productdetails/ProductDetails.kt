@@ -25,6 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import com.example.fruithub.R
 import com.example.fruithub.commonComponent.BackButton
 import com.example.fruithub.ui.theme.BrandonGrotesque
@@ -80,7 +81,11 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
                 .weight(0.4f),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Box(modifier = Modifier.fillMaxWidth()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .zIndex(1f)
+            ) {
                 BackButton(
                     onBackClick = { onBackClick() },
                     modifier = Modifier.padding(top = 40.dp, start = 24.dp)
@@ -124,22 +129,28 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // الجزء الخاص بالتحكم في الكمية
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        modifier = Modifier.weight(1f),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         IconButton(
                             onClick = { if (quantity > 1) quantity-- },
                             modifier = Modifier.size(32.dp)
                         ) {
-                            Icon(painterResource(R.drawable.remove), contentDescription = null, tint = Color.Black)
+                            Icon(
+                                painterResource(R.drawable.remove),
+                                contentDescription = null,
+                                tint = Color.Black
+                            )
                         }
 
-                        // استخدام Modifier.widthIn يمنع النص من تغيير عرض الـ Row بشكل مفاجئ
                         Text(
                             text = "$quantity",
-                            modifier = Modifier.padding(horizontal = 16.dp).widthIn(min = 20.dp),
+                            modifier = Modifier
+                                .padding(horizontal = 16.dp)
+                                .widthIn(min = 28.dp),
                             fontSize = 20.sp,
                             fontFamily = BrandonGrotesque,
                             fontWeight = FontWeight.Normal,
@@ -149,9 +160,13 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
 
                         IconButton(
                             onClick = { quantity++ },
-                            modifier = Modifier.background(Color(0xFFFFF2E7), CircleShape).size(32.dp)
+                            modifier = Modifier
+                                .background(Color(0xFFFFF2E7), CircleShape)
+                                .size(32.dp)
                         ) {
-                            Icon(Icons.Default.Add, contentDescription = null, tint = SecondaryColor)
+                            Icon(
+                                Icons.Default.Add, contentDescription = null, tint = SecondaryColor
+                            )
                         }
                     }
 
@@ -163,7 +178,6 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
                         color = PrimaryColor
                     )
                 }
-
                 HorizontalDivider(
                     modifier = Modifier.padding(vertical = 32.dp), color = Color(0xFFF3F3F3)
                 )
@@ -219,13 +233,10 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
                             )
                             // الطريقة الحديثة لعمل Clickable مع Ripple دائري
                             .clickable(
-                                interactionSource = interactionSource,
-                                indication = ripple(
-                                    bounded = false,
-                                    radius = 28.dp
+                                interactionSource = interactionSource, indication = ripple(
+                                    bounded = false, radius = 28.dp
                                 ), // استخدام ripple() بدلاً من rememberRipple()
-                                onClick = { isFavorite = !isFavorite }
-                            ),
+                                onClick = { isFavorite = !isFavorite }),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
