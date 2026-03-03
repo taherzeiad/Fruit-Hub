@@ -135,7 +135,7 @@ fun AuthenticationScreen(
                 Column {
                     Text(
                         text = "What is your firstname?",
-                        fontSize = 18.sp,
+                        fontSize = 20.sp,
                         fontFamily = BrandonGrotesque,
                         fontWeight = FontWeight.Medium,
                         color = Color(0xFF27214D)

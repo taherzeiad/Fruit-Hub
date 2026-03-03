@@ -22,7 +22,7 @@ fun FruitHubNavGraph() {
     Scaffold { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.ProductDetails.route,
+            startDestination = Screen.Basket.route,
             modifier = Modifier.padding(innerPadding)
         ) {
             // 1. Splash

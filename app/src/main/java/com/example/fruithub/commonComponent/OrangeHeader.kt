@@ -45,7 +45,7 @@ fun OrangeHeader(
                 Text(
                     text = title,
                     color = Color.White,
-                    fontSize = 20.sp,
+                    fontSize = 24.sp,
                     fontFamily = BrandonGrotesque,
                     fontWeight = FontWeight.Medium
                 )
