@@ -39,6 +39,8 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
     var isFavorite by remember { mutableStateOf(false) }
 
     var quantity by remember { mutableStateOf(1) }
+    val unitPrice = 2000
+    val totalPrice = unitPrice * quantity
 
     val startAnimation = remember { mutableStateOf(false) }
 
@@ -172,7 +174,7 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
                     }
 
                     Text(
-                        text = "₦ 2,000",
+                        text = "₦ ${"%,d".format(totalPrice)}",
                         fontSize = 24.sp,
                         fontFamily = BrandonGrotesque,
                         fontWeight = FontWeight.Medium,
@@ -229,7 +231,7 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
                     Box(
                         modifier = Modifier
                             .offset(x = heartOffsetX)
-                            .size(56.dp)
+                            .size(48.dp)
                             .background(
                                 if (isFavorite) Color(0xFFFFECE0) else Color(0xFFFFF2E7),
                                 CircleShape
