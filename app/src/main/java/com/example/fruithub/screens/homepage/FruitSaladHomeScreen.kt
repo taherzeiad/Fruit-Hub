@@ -145,8 +145,7 @@ fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit, onProductC
 
                     withStyle(
                         style = SpanStyle(
-                            fontWeight = FontWeight.Normal, // Regular
-                            fontFamily = BrandonGrotesque
+                            fontWeight = FontWeight.Normal, fontFamily = BrandonGrotesque
                         )
                     ) {
                         append("What fruit salad \ncombo do you want today?")
@@ -181,6 +180,7 @@ fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit, onProductC
                     placeholder = {
                         Text(
                             "Search for fruit salad combos",
+                            fontSize = 14.sp,
                             color = Color.Gray,
                             fontFamily = BrandonGrotesque,
                             fontWeight = FontWeight.Normal
@@ -223,6 +223,7 @@ fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit, onProductC
 
             Text(
                 "Recommended Combo",
+                fontSize = 24.sp,
                 modifier = Modifier
                     .padding(horizontal = 24.dp)
                     .graphicsLayer(alpha = recommendedAlpha),
@@ -484,7 +485,7 @@ fun RecommendedCard(
                 fontFamily = BrandonGrotesque,
                 fontWeight = FontWeight.Medium,
                 color = PrimaryColor,
-                fontSize = 14.sp,
+                fontSize = 16.sp,
                 modifier = Modifier.weight(1f)
             )
 
@@ -558,7 +559,7 @@ fun HottestCard(
             Text(
                 name,
                 color = PrimaryColor,
-                fontSize = 12.sp,
+                fontSize = 16.sp,
                 fontFamily = BrandonGrotesque,
                 fontWeight = FontWeight.Medium
             )
@@ -571,7 +572,8 @@ fun HottestCard(
                     "₦ $price",
                     color = SecondaryColor,
                     fontFamily = BrandonGrotesque,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 16.sp
                 )
                 Box(
                     modifier = Modifier
