@@ -6,11 +6,14 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -30,6 +33,8 @@ import com.example.fruithub.ui.theme.SecondaryColor
 
 @Composable
 fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit) {
+
+    var isFavorite by remember { mutableStateOf(false) }
 
     var quantity by remember { mutableStateOf(1) }
 
@@ -98,7 +103,8 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
                 .fillMaxWidth()
                 .weight(0.6f)
                 .offset(y = sheetOffsetY),
-            shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp), color = Color.White
+            shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
+            color = Color.White
         ) {
             Column(
                 modifier = Modifier
@@ -160,7 +166,9 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
                     )
                 }
 
-                HorizontalDivider(modifier = Modifier.padding(vertical = 32.dp), color = Color(0xFFF3F3F3))
+                HorizontalDivider(
+                    modifier = Modifier.padding(vertical = 32.dp), color = Color(0xFFF3F3F3)
+                )
 
                 Text(
                     text = "One Pack Contains:",
@@ -201,16 +209,27 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    val interactionSource = remember { MutableInteractionSource() }
+
                     Box(
                         modifier = Modifier
                             .offset(x = heartOffsetX)
                             .size(56.dp)
-                            .background(Color(0xFFFFF2E7), CircleShape),
+                            .background(
+                                if (isFavorite) Color(0xFFFFECE0) else Color(0xFFFFF2E7),
+                                CircleShape
+                            )
+                            // الطريقة الحديثة لعمل Clickable مع Ripple دائري
+                            .clickable(
+                                interactionSource = interactionSource,
+                                indication = ripple(bounded = false, radius = 28.dp), // استخدام ripple() بدلاً من rememberRipple()
+                                onClick = { isFavorite = !isFavorite }
+                            ),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            Icons.Default.FavoriteBorder,
-                            contentDescription = null,
+                            imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
+                            contentDescription = "Favorite",
                             tint = SecondaryColor
                         )
                     }
