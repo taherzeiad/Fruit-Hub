@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
@@ -119,7 +120,7 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
             ) {
                 Text(
                     text = "Quinoa Fruit Salad",
-                    fontSize = 25.sp,
+                    fontSize = 32.sp,
                     fontFamily = BrandonGrotesque,
                     fontWeight = FontWeight.Medium,
                     color = PrimaryColor
@@ -151,11 +152,11 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
                             modifier = Modifier
                                 .padding(horizontal = 16.dp)
                                 .widthIn(min = 28.dp),
-                            fontSize = 20.sp,
+                            fontSize = 24.sp,
                             fontFamily = BrandonGrotesque,
                             fontWeight = FontWeight.Normal,
                             color = PrimaryColor,
-                            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                            textAlign = TextAlign.Center
                         )
 
                         IconButton(
@@ -179,36 +180,38 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
                     )
                 }
                 HorizontalDivider(
-                    modifier = Modifier.padding(vertical = 32.dp), color = Color(0xFFF3F3F3)
+                    modifier = Modifier.padding(vertical = 25.dp), color = Color(0xFFF3F3F3)
                 )
 
                 Text(
                     text = "One Pack Contains:",
-                    fontSize = 14.sp,
+                    fontSize = 20.sp,
                     fontFamily = BrandonGrotesque,
                     fontWeight = FontWeight.Medium,
                     color = PrimaryColor
                 )
                 Box(
                     modifier = Modifier
-                        .width(130.dp)
+                        .width(163.dp)
                         .height(2.dp)
                         .background(SecondaryColor)
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = "Red Quinoa, Lime, Honey, Blueberries, Strawberries, Mango, Fresh mint.",
-                    fontSize = 13.sp,
+                    text = "RedQuinoa,Lime,Honey,Blueberries,Strawberries\nMango, Fresh mint.",
+                    fontSize = 16.sp,
                     fontFamily = BrandonGrotesque,
                     fontWeight = FontWeight.Medium,
                     color = PrimaryColor,
                     lineHeight = 24.sp
                 )
-                Spacer(modifier = Modifier.height(30.dp))
+                HorizontalDivider(
+                    modifier = Modifier.padding(vertical = 20.dp), color = Color(0xFFF3F3F3)
+                )
                 Text(
                     text = "If you are looking for a new fruit salad to eat today, \nquinoa is the perfect brunch for you. make ",
-                    fontSize = 11.sp,
+                    fontSize = 14.sp,
                     fontFamily = BrandonGrotesque,
                     fontWeight = FontWeight.Medium,
                     color = Color.Black,
@@ -231,12 +234,10 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
                                 if (isFavorite) Color(0xFFFFECE0) else Color(0xFFFFF2E7),
                                 CircleShape
                             )
-                            // الطريقة الحديثة لعمل Clickable مع Ripple دائري
                             .clickable(
                                 interactionSource = interactionSource, indication = ripple(
                                     bounded = false, radius = 28.dp
-                                ), // استخدام ripple() بدلاً من rememberRipple()
-                                onClick = { isFavorite = !isFavorite }),
+                                ), onClick = { isFavorite = !isFavorite }),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
@@ -254,6 +255,7 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
                             .offset(x = buttonOffsetX)
                             .fillMaxWidth()
                             .height(56.dp),
+
                         colors = ButtonDefaults.buttonColors(containerColor = SecondaryColor),
                         shape = RoundedCornerShape(16.dp)
                     ) {
