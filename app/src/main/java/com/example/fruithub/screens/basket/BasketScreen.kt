@@ -144,7 +144,7 @@ fun BasketScreen(onBackClick: () -> Unit, onNavigateToSuccess: () -> Unit) {
                         )
                         Text(
                             "₦ 60,000",
-                            fontSize = 22.sp,
+                            fontSize = 24.sp,
                             fontFamily = BrandonGrotesque,
                             fontWeight = FontWeight.Medium,
                             color = PrimaryColor
