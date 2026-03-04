@@ -23,11 +23,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.StrokeCap.Companion.Square
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
@@ -280,22 +283,29 @@ fun TimelineItem(
 
 @Composable
 fun TimelineDots() {
+    val density = LocalDensity.current
+    val spacePx = with(density) { 4.dp.toPx() }
+
     Canvas(
         modifier = Modifier
             .padding(start = 31.dp)
             .height(55.dp)
             .width(2.dp)
     ) {
-        // floatArrayOf(8f, 12f) تعني: طول النقطة 8، والفراغ بينهما 12
-        val pathEffect = PathEffect.dashPathEffect(floatArrayOf(8f, 12f), 0f)
+        val dashLength = 8f
+        val dashGap = 12f
+        val pathEffect = PathEffect.dashPathEffect(floatArrayOf(dashLength, dashGap), 0f)
+
+        val startOffset = spacePx - (dashLength / 2)
+        val endOffset = (size.height - spacePx) + (dashLength / 2)
 
         drawLine(
             color = SecondaryColor,
-            start = androidx.compose.ui.geometry.Offset(size.width / 2, 0f),
-            end = androidx.compose.ui.geometry.Offset(size.width / 2, size.height),
+            start = Offset(size.width / 2, startOffset),
+            end = Offset(size.width / 2, endOffset),
             pathEffect = pathEffect,
             strokeWidth = size.width,
-            cap = androidx.compose.ui.graphics.StrokeCap.Square
+            cap = Square
         )
     }
 }
