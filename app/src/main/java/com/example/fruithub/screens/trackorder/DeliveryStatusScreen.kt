@@ -158,7 +158,7 @@ fun DeliveryStatusScreen(onBackClick: () -> Unit) {
                                 Box(
                                     modifier = Modifier
                                         .padding(horizontal = 3.dp)
-                                        .size(6.dp)
+                                        .size(8.dp)
                                         .background(SecondaryColor.copy(alpha = 0.4f), CircleShape)
                                 )
                             }
@@ -233,13 +233,14 @@ fun TimelineItem(
                     Text(
                         title,
                         color = PrimaryColor,
+                        fontSize = 16.sp,
                         fontFamily = BrandonGrotesque,
                         fontWeight = FontWeight.Medium
                     )
                     subtitle?.let {
                         Text(
                             it,
-                            fontSize = 13.sp,
+                            fontSize = 14.sp,
                             color = PrimaryColor.copy(.7f),
                             fontFamily = BrandonGrotesque,
                             fontWeight = FontWeight.Normal
