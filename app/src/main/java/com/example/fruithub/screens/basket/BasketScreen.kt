@@ -305,7 +305,7 @@ fun CheckoutDialogContent(
                     Column {
                         Text(
                             text = "Delivery address",
-                            fontSize = 14.sp,
+                            fontSize = 20.sp,
                             fontFamily = BrandonGrotesque,
                             fontWeight = FontWeight.Medium,
                             color = PrimaryColor
@@ -318,6 +318,7 @@ fun CheckoutDialogContent(
                                 Text(
                                     "10th avenue, Lekki, Lagos State",
                                     color = Color.LightGray,
+                                    fontSize = 20.sp,
                                     fontFamily = BrandonGrotesque,
                                     fontWeight = FontWeight.Normal,
                                 )
@@ -344,7 +345,7 @@ fun CheckoutDialogContent(
                     Column {
                         Text(
                             text = "Number we can call",
-                            fontSize = 14.sp,
+                            fontSize = 20.sp,
                             fontFamily = BrandonGrotesque,
                             fontWeight = FontWeight.Medium,
                             color = PrimaryColor
@@ -357,6 +358,7 @@ fun CheckoutDialogContent(
                                 Text(
                                     "09090605708",
                                     color = Color.LightGray,
+                                    fontSize = 20.sp,
                                     fontFamily = BrandonGrotesque,
                                     fontWeight = FontWeight.Normal
                                 )
@@ -487,7 +489,7 @@ fun CardDetailsDialogContent(
                         Column {
                             Text(
                                 text = "Card Holders Name",
-                                fontSize = 15.sp,
+                                fontSize = 20.sp,
                                 fontFamily = BrandonGrotesque,
                                 fontWeight = FontWeight.Medium,
                                 color = PrimaryColor
@@ -507,7 +509,7 @@ fun CardDetailsDialogContent(
                         Column {
                             Text(
                                 text = "Card Number",
-                                fontSize = 15.sp,
+                                fontSize = 20.sp,
                                 fontFamily = BrandonGrotesque,
                                 fontWeight = FontWeight.Medium,
                                 color = PrimaryColor
@@ -528,7 +530,7 @@ fun CardDetailsDialogContent(
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(
                                     text = "Date",
-                                    fontSize = 15.sp,
+                                    fontSize = 20.sp,
                                     fontFamily = BrandonGrotesque,
                                     fontWeight = FontWeight.Medium,
                                     color = PrimaryColor
@@ -540,7 +542,7 @@ fun CardDetailsDialogContent(
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(
                                     text = "CCV",
-                                    fontSize = 15.sp,
+                                    fontSize = 20.sp,
                                     fontFamily = BrandonGrotesque,
                                     fontWeight = FontWeight.Medium,
                                     color = PrimaryColor
@@ -619,6 +621,7 @@ fun CardTextField(placeholder: String) {
         placeholder = {
             Text(
                 placeholder, color = Color.LightGray,
+                fontSize = 20.sp,
                 fontFamily = BrandonGrotesque,
                 fontWeight = FontWeight.Normal,
             )

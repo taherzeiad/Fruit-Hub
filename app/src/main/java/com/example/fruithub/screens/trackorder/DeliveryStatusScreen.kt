@@ -8,6 +8,7 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -23,11 +24,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.fruithub.R
@@ -88,7 +91,8 @@ fun DeliveryStatusScreen(onBackClick: () -> Unit) {
                         "Order Is Being Prepared",
                         R.drawable.removebgpreview,
                         Color(0xFFF3F4F9),
-                        true
+                        true,
+                        topPadding = 0.dp
                     )
                     TimelineDots()
                 }
@@ -107,6 +111,7 @@ fun DeliveryStatusScreen(onBackClick: () -> Unit) {
                         iconRes = R.drawable.deliveryman,
                         iconBg = Color(0xFFFFF2F2),
                         isCompleted = false,
+                        topPadding = 0.dp,
                         trailingContent = {
                             IconButton(
                                 onClick = { },
@@ -152,13 +157,14 @@ fun DeliveryStatusScreen(onBackClick: () -> Unit) {
                     iconBg = Color(0xFFE0FFE5),
                     isCompleted = false,
                     isFinal = true,
+                    topPadding = 0.dp,
                     trailingContent = {
                         Row {
                             repeat(3) {
                                 Box(
                                     modifier = Modifier
                                         .padding(horizontal = 3.dp)
-                                        .size(6.dp)
+                                        .size(8.dp)
                                         .background(SecondaryColor.copy(alpha = 0.4f), CircleShape)
                                 )
                             }
@@ -182,12 +188,13 @@ fun TimelineItem(
     isCompleted: Boolean,
     subtitle: String? = null,
     isFinal: Boolean = false,
+    topPadding: Dp = 24.dp,
     trailingContent: @Composable (() -> Unit)? = null
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 24.dp),
+            .padding(top = topPadding),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
@@ -233,13 +240,14 @@ fun TimelineItem(
                     Text(
                         title,
                         color = PrimaryColor,
+                        fontSize = 16.sp,
                         fontFamily = BrandonGrotesque,
                         fontWeight = FontWeight.Medium
                     )
                     subtitle?.let {
                         Text(
                             it,
-                            fontSize = 13.sp,
+                            fontSize = 14.sp,
                             color = PrimaryColor.copy(.7f),
                             fontFamily = BrandonGrotesque,
                             fontWeight = FontWeight.Normal
@@ -272,18 +280,22 @@ fun TimelineItem(
 
 @Composable
 fun TimelineDots() {
-
-    Column(
-        modifier = Modifier.padding(start = 30.dp, top = 4.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+    Canvas(
+        modifier = Modifier
+            .padding(start = 31.dp)
+            .height(55.dp)
+            .width(2.dp)
     ) {
-        repeat(3) {
-            Box(
-                modifier = Modifier
-                    .padding(vertical = 3.dp)
-                    .size(5.dp)
-                    .background(SecondaryColor, CircleShape)
-            )
-        }
+        // floatArrayOf(8f, 12f) تعني: طول النقطة 8، والفراغ بينهما 12
+        val pathEffect = PathEffect.dashPathEffect(floatArrayOf(8f, 12f), 0f)
+
+        drawLine(
+            color = SecondaryColor,
+            start = androidx.compose.ui.geometry.Offset(size.width / 2, 0f),
+            end = androidx.compose.ui.geometry.Offset(size.width / 2, size.height),
+            pathEffect = pathEffect,
+            strokeWidth = size.width,
+            cap = androidx.compose.ui.graphics.StrokeCap.Square
+        )
     }
 }
