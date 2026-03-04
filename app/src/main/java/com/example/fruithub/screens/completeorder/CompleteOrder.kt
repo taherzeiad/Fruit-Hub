@@ -110,21 +110,22 @@ fun OrderSuccessScreen(
             }) {
             Text(
                 text = "Congratulations!!!",
-                fontSize = 25.sp,
+                fontSize = 32.sp,
                 fontFamily = BrandonGrotesque,
                 fontWeight = FontWeight.Medium,
                 color = PrimaryColor,
+                lineHeight = 32.sp,
                 textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = "Your order have been taken and\nis being attended to",
-                fontSize = 16.sp,
+                fontSize = 20.sp,
                 fontFamily = BrandonGrotesque,
                 fontWeight = FontWeight.Normal,
                 color = PrimaryColor,
                 textAlign = TextAlign.Center,
-                lineHeight = 28.sp
+                lineHeight = 30.sp
             )
         }
 
@@ -145,7 +146,8 @@ fun OrderSuccessScreen(
             Text(
                 text = "Track order",
                 color = Color.White,
-                fontSize = 14.sp,
+                fontSize = 16.sp,
+                lineHeight = 24.sp,
                 fontFamily = BrandonGrotesque,
                 fontWeight = FontWeight.Medium
             )
@@ -168,7 +170,8 @@ fun OrderSuccessScreen(
             Text(
                 text = "Continue shopping",
                 color = SecondaryColor,
-                fontSize = 14.sp,
+                fontSize = 16.sp,
+                lineHeight = 24.sp,
                 fontFamily = BrandonGrotesque,
                 fontWeight = FontWeight.Medium
             )
