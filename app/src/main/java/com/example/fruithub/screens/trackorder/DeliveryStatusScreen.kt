@@ -2,6 +2,7 @@ package com.example.fruithub.screens.trackorder
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -54,7 +55,7 @@ fun DeliveryStatusScreen(onBackClick: () -> Unit) {
 
     val headerHeight by animateDpAsState(
         targetValue = if (startAnimations) 110.dp else screenHeight,
-        animationSpec = tween(durationMillis = 1700, easing = FastOutSlowInEasing),
+        animationSpec = tween(durationMillis = 1900, easing = FastOutSlowInEasing),
         label = "HeaderHeight"
     )
 
