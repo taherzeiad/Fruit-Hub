@@ -1,14 +1,12 @@
 package com.example.fruithub.commonComponent
 
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,8 +19,17 @@ import com.example.fruithub.ui.theme.SecondaryColor
 
 @Composable
 fun OrangeHeader(
-    title: String, headerHeight: Dp, onBackClick: () -> Unit
+    title: String,
+    headerHeight: Dp,
+    onBackClick: () -> Unit,
+    animationProgress: Float
 ) {
+    val contentAlpha by animateDpAsState(
+        targetValue = if (animationProgress > 0.65f) 1.dp else 0.dp,
+        animationSpec = tween(durationMillis = 300),
+        label = "ContentAlpha"
+    )
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -31,7 +38,7 @@ fun OrangeHeader(
             .padding(start = 24.dp, end = 24.dp, bottom = 20.dp),
         contentAlignment = Alignment.BottomCenter
     ) {
-        if (headerHeight < 250.dp) {
+        if (contentAlpha > 0.dp) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -39,7 +46,8 @@ fun OrangeHeader(
                     .padding(bottom = 10.dp)
             ) {
                 BackButton(
-                    onBackClick = onBackClick, modifier = Modifier.padding(bottom = 10.dp)
+                    onBackClick = onBackClick,
+                    modifier = Modifier.padding(bottom = 10.dp)
                 )
                 Spacer(modifier = Modifier.weight(0.3f))
                 Text(
