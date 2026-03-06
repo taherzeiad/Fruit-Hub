@@ -5,7 +5,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.*
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
@@ -54,7 +53,6 @@ fun BasketScreen(onBackClick: () -> Unit, onNavigateToSuccess: () -> Unit) {
     var showCheckoutSheet by remember { mutableStateOf(false) }
     var showCardDetails by remember { mutableStateOf(false) }
 
-    // حساب ارتفاع header بناءً على progress
     val headerHeight = if (animationProgress.value < 0.1f) {
         screenHeight
     } else {
@@ -62,7 +60,6 @@ fun BasketScreen(onBackClick: () -> Unit, onNavigateToSuccess: () -> Unit) {
     }
 
     LaunchedEffect(Unit) {
-        // تأخير بسيط لضمان اكتمال rendering
         delay(100)
 
         animationProgress.animateTo(
@@ -74,11 +71,10 @@ fun BasketScreen(onBackClick: () -> Unit, onNavigateToSuccess: () -> Unit) {
         )
     }
 
-    // thresholds ثابتة لتجنب إعادة الحساب
     val thresholds = remember {
         object {
-            val showItems = 0.4f  // 400.dp تقريباً
-            val showTotal = 0.5f   // 300.dp تقريباً
+            val showItems = 0.4f
+            val showTotal = 0.5f
         }
     }
 
@@ -124,13 +120,11 @@ fun BasketScreen(onBackClick: () -> Unit, onNavigateToSuccess: () -> Unit) {
                     )
                 )
 
-                // عرض items عندما يصل progress إلى threshold
                 if (animationProgress.value >= thresholds.showItems) {
                     items.forEachIndexed { index, item ->
                         val isLeftToRight = index % 2 == 0
                         val itemDelay = 500 + (index * 150)
 
-                        // استخدام key فريد لكل item
                         key(index) {
                             Column {
                                 BasketRow(
@@ -150,7 +144,6 @@ fun BasketScreen(onBackClick: () -> Unit, onNavigateToSuccess: () -> Unit) {
                 }
             }
 
-            // عرض total عندما يصل progress إلى threshold
             if (animationProgress.value >= thresholds.showTotal) {
                 val totalSlideOffset by animateDpAsState(
                     targetValue = 0.dp,
@@ -210,7 +203,6 @@ fun BasketScreen(onBackClick: () -> Unit, onNavigateToSuccess: () -> Unit) {
             animationProgress = animationProgress.value
         )
 
-        // باقي الكود للـ sheets (نفسه لكن مع تحسينات)
         HandleCheckoutSheets(
             showCheckoutSheet = showCheckoutSheet,
             showCardDetails = showCardDetails,
@@ -378,8 +370,6 @@ fun HandleCheckoutSheets(
     }
 }
 
-// باقي الكود (CheckoutDialogContent, CardDetailsDialogContent, CardTextField) كما هو مع تحسين بسيط:
-
 @Composable
 fun CheckoutDialogContent(
     onDismiss: () -> Unit,
@@ -543,7 +533,6 @@ fun CheckoutDialogContent(
     }
 }
 
-// CardDetailsDialogContent بنفس التحسينات...
 @Composable
 fun CardDetailsDialogContent(
     onDismiss: () -> Unit,

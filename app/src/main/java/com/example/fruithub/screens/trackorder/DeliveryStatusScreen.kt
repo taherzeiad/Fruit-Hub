@@ -52,7 +52,6 @@ fun DeliveryStatusScreen(onBackClick: () -> Unit) {
     val animationProgress = remember { Animatable(0f) }
     val scope = rememberCoroutineScope()
 
-    // استخدام قيمة ثابتة للبداية بدلاً من screenHeight
     val headerHeight = if (animationProgress.value < 0.1f) {
         screenHeight
     } else {
@@ -72,14 +71,13 @@ fun DeliveryStatusScreen(onBackClick: () -> Unit) {
         )
     }
 
-    // استخدام remember لقيم threshold لتجنب إعادة الحساب
     val thresholds = remember {
         object {
-            val step1 = 0.4f // 500.dp تقريباً
-            val step2 = 0.5f // 400.dp تقريباً
-            val step3 = 0.6f // 300.dp تقريباً
-            val step4 = 0.65f // 250.dp تقريباً
-            val step5 = 0.7f // 200.dp تقريباً
+            val step1 = 0.4f
+            val step2 = 0.5f
+            val step3 = 0.6f
+            val step4 = 0.65f
+            val step5 = 0.7f
         }
     }
 
