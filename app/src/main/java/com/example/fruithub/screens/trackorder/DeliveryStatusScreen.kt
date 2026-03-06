@@ -2,6 +2,7 @@ package com.example.fruithub.screens.trackorder
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -42,22 +43,46 @@ import com.example.fruithub.commonComponent.OrangeHeader
 import com.example.fruithub.ui.theme.BrandonGrotesque
 import com.example.fruithub.ui.theme.SecondaryColor
 import com.example.fruithub.ui.theme.PrimaryColor
+import kotlinx.coroutines.delay
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun DeliveryStatusScreen(onBackClick: () -> Unit) {
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
-    var startAnimations by remember { mutableStateOf(false) }
+    val animationProgress = remember { Animatable(0f) }
+    val scope = rememberCoroutineScope()
 
-    LaunchedEffect(Unit) {
-        startAnimations = true
+    // استخدام قيمة ثابتة للبداية بدلاً من screenHeight
+    val headerHeight = if (animationProgress.value < 0.1f) {
+        screenHeight
+    } else {
+        110.dp + (screenHeight - 110.dp) * (1 - animationProgress.value.coerceIn(0f, 1f))
     }
 
-    val headerHeight by animateDpAsState(
-        targetValue = if (startAnimations) 110.dp else screenHeight,
-        animationSpec = tween(durationMillis = 1900, easing = FastOutSlowInEasing),
-        label = "HeaderHeight"
-    )
+    LaunchedEffect(Unit) {
+        // تأخير بسيط قبل بدء animation لضمان اكتمال الـ rendering
+        delay(100)
+
+        animationProgress.animateTo(
+            targetValue = 1f,
+            animationSpec = tween(
+                durationMillis = 1900,
+                easing = FastOutSlowInEasing
+            )
+        )
+    }
+
+    // استخدام remember لقيم threshold لتجنب إعادة الحساب
+    val thresholds = remember {
+        object {
+            val step1 = 0.4f // 500.dp تقريباً
+            val step2 = 0.5f // 400.dp تقريباً
+            val step3 = 0.6f // 300.dp تقريباً
+            val step4 = 0.65f // 250.dp تقريباً
+            val step5 = 0.7f // 200.dp تقريباً
+        }
+    }
+
 
     Box(
         modifier = Modifier
@@ -67,94 +92,78 @@ fun DeliveryStatusScreen(onBackClick: () -> Unit) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 110.dp)
+                .padding(top = if (animationProgress.value < 0.1f) screenHeight else 110.dp)
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 24.dp)
         ) {
 
             // 1. Order Taken
-            AnimatedVisibility(
-                visible = startAnimations && headerHeight < 500.dp, enter = slideInVertically(
-                    initialOffsetY = { it }, animationSpec = tween(1000, delayMillis = 400)
-                ) + fadeIn()
-            ) {
-                Column {
-                    TimelineItem("Order Taken", R.drawable.takenorder, Color(0xFFFFFAEB), true)
-                    TimelineDots()
-                }
+            if (animationProgress.value >= thresholds.step1) {
+                TimelineItem("Order Taken", R.drawable.takenorder, Color(0xFFFFFAEB), true)
+                TimelineDots()
             }
 
             // 2. Order Is Being Prepared
-            AnimatedVisibility(
-                visible = startAnimations && headerHeight < 400.dp, enter = slideInVertically(
-                    initialOffsetY = { it }, animationSpec = tween(1000, delayMillis = 600)
-                ) + fadeIn()
-            ) {
-                Column {
-                    TimelineItem(
-                        "Order Is Being Prepared",
-                        R.drawable.removebgpreview,
-                        Color(0xFFF3F4F9),
-                        true,
-                        topPadding = 0.dp
-                    )
-                    TimelineDots()
-                }
+            if (animationProgress.value >= thresholds.step2) {
+                TimelineItem(
+                    "Order Is Being Prepared",
+                    R.drawable.removebgpreview,
+                    Color(0xFFF3F4F9),
+                    true,
+                    topPadding = 0.dp
+                )
+                TimelineDots()
             }
 
             // 3. Order Is Being Delivered
-            AnimatedVisibility(
-                visible = startAnimations && headerHeight < 300.dp, enter = slideInHorizontally(
-                    initialOffsetX = { -it }, animationSpec = tween(1000, delayMillis = 800)
-                ) + fadeIn()
-            ) {
-                Column {
-                    TimelineItem(
-                        title = "Order Is Being Delivered",
-                        subtitle = "Your delivery agent is coming",
-                        iconRes = R.drawable.deliveryman,
-                        iconBg = Color(0xFFFFF2F2),
-                        isCompleted = false,
-                        topPadding = 0.dp,
-                        trailingContent = {
-                            IconButton(
-                                onClick = { },
-                                modifier = Modifier
-                                    .background(SecondaryColor, CircleShape)
-                                    .size(40.dp)
-                            ) {
-                                Icon(painterResource(R.drawable.iconcall), null, tint = Color.White)
-                            }
-                        })
-                    TimelineDots()
-                }
+            if (animationProgress.value >= thresholds.step3) {
+                TimelineItem(
+                    title = "Order Is Being Delivered",
+                    subtitle = "Your delivery agent is coming",
+                    iconRes = R.drawable.deliveryman,
+                    iconBg = Color(0xFFFFF2F2),
+                    isCompleted = false,
+                    topPadding = 0.dp,
+                    trailingContent = {
+                        IconButton(
+                            onClick = { },
+                            modifier = Modifier
+                                .background(SecondaryColor, CircleShape)
+                                .size(40.dp)
+                        ) {
+                            Icon(painterResource(R.drawable.iconcall), null, tint = Color.White)
+                        }
+                    })
+                TimelineDots()
             }
 
             // 4. Photo (Plan)
-            val imageWidth by animateDpAsState(
-                targetValue = if (startAnimations && headerHeight < 250.dp) 327.dp else 0.dp,
-                animationSpec = tween(1500, delayMillis = 1200)
-            )
-
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                Image(
-                    painter = painterResource(R.drawable.rectangle),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .padding(top = 6.dp, bottom = 24.dp)
-                        .width(imageWidth)
-                        .height(128.dp)
-                        .clip(RoundedCornerShape(12.dp)),
-                    contentScale = ContentScale.Crop
+            if (animationProgress.value >= thresholds.step4) {
+                val imageWidth by animateDpAsState(
+                    targetValue = 327.dp,
+                    animationSpec = tween(
+                        durationMillis = 1500,
+                        easing = FastOutLinearInEasing
+                    ),
+                    label = "ImageWidth"
                 )
+
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                    Image(
+                        painter = painterResource(R.drawable.rectangle),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .padding(top = 6.dp, bottom = 24.dp)
+                            .width(imageWidth)
+                            .height(128.dp)
+                            .clip(RoundedCornerShape(12.dp)),
+                        contentScale = ContentScale.Crop
+                    )
+                }
             }
 
             // 5. Order Received
-            AnimatedVisibility(
-                visible = startAnimations && headerHeight < 200.dp, enter = slideInVertically(
-                    initialOffsetY = { it }, animationSpec = tween(800, delayMillis = 1000)
-                ) + fadeIn()
-            ) {
+            if (animationProgress.value >= thresholds.step5) {
                 TimelineItem(
                     title = "Order Received",
                     iconRes = Icons.Default.Check,
@@ -179,7 +188,10 @@ fun DeliveryStatusScreen(onBackClick: () -> Unit) {
         }
 
         OrangeHeader(
-            title = "Delivery Status", headerHeight = headerHeight, onBackClick = onBackClick
+            title = "Delivery Status",
+            headerHeight = headerHeight,
+            onBackClick = onBackClick,
+            animationProgress = animationProgress.value
         )
     }
 }
