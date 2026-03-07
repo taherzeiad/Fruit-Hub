@@ -63,10 +63,8 @@ fun DeliveryStatusScreen(onBackClick: () -> Unit) {
         delay(100)
 
         animationProgress.animateTo(
-            targetValue = 1f,
-            animationSpec = tween(
-                durationMillis = 1900,
-                easing = FastOutSlowInEasing
+            targetValue = 1f, animationSpec = tween(
+                durationMillis = 1900, easing = FastOutSlowInEasing
             )
         )
     }
@@ -90,7 +88,7 @@ fun DeliveryStatusScreen(onBackClick: () -> Unit) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = if (animationProgress.value < 0.1f) screenHeight else 110.dp)
+                .padding(top = 110.dp)
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 24.dp)
         ) {
@@ -138,15 +136,14 @@ fun DeliveryStatusScreen(onBackClick: () -> Unit) {
             // 4. Photo (Plan)
             if (animationProgress.value >= thresholds.step4) {
                 val imageWidth by animateDpAsState(
-                    targetValue = 327.dp,
-                    animationSpec = tween(
-                        durationMillis = 1500,
-                        easing = FastOutLinearInEasing
-                    ),
-                    label = "ImageWidth"
+                    targetValue = 327.dp, animationSpec = tween(
+                        durationMillis = 1500, easing = FastOutLinearInEasing
+                    ), label = "ImageWidth"
                 )
 
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center
+                ) {
                     Image(
                         painter = painterResource(R.drawable.rectangle),
                         contentDescription = null,
