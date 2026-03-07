@@ -16,14 +16,10 @@ import com.example.fruithub.ui.theme.SecondaryColor
 
 @Composable
 fun OrangeHeader(
-    title: String,
-    headerHeight: Dp,
-    onBackClick: () -> Unit,
-    animationProgress: Float
+    title: String, headerHeight: Dp, onBackClick: () -> Unit, animationProgress: Float
 ) {
     Box(modifier = Modifier.fillMaxWidth()) {
 
-        // 1. الخلفية البرتقالية المتغيرة
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -31,14 +27,13 @@ fun OrangeHeader(
                 .background(SecondaryColor)
         )
 
-        // 2. المحتوى الثابت
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .statusBarsPadding() // مسافة شريط النظام
+                .statusBarsPadding()
                 .padding(horizontal = 24.dp)
-                .height(80.dp) // قمنا بتقليل الارتفاع من 110 إلى 80 لرفع العناصر للأعلى
+                .height(80.dp)
         ) {
             BackButton(onBackClick = onBackClick)
 
