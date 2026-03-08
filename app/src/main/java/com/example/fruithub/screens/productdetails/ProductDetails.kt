@@ -34,43 +34,40 @@ import com.example.fruithub.ui.theme.PrimaryColor
 import com.example.fruithub.ui.theme.SecondaryColor
 
 @Composable
-fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit) {
+fun ProductDetailsScreen(
+    onBackClick: () -> Unit,
+    onAddToBasketClick: () -> Unit,
+    viewModel: ProductDetailsViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
+    val uiState by viewModel.uiState.collectAsState()
 
-    var isFavorite by remember { mutableStateOf(false) }
-
-    var quantity by remember { mutableStateOf(1) }
-    val unitPrice = 2000
-    val totalPrice = unitPrice * quantity
-
-    val startAnimation = remember { mutableStateOf(false) }
-
+    // Animation Values - مرتبطة الآن بـ uiState.startAnimation
     val imageScale by animateFloatAsState(
-        targetValue = if (startAnimation.value) 1f else 0.3f,
+        targetValue = if (uiState.startAnimation) 1f else 0.3f,
         animationSpec = tween(durationMillis = 800, easing = FastOutSlowInEasing)
     )
 
     val sheetOffsetY by animateDpAsState(
-        targetValue = if (startAnimation.value) 0.dp else 400.dp, animationSpec = tween(
-            durationMillis = 700, easing = FastOutSlowInEasing
-        )
+        targetValue = if (uiState.startAnimation) 0.dp else 400.dp,
+        animationSpec = tween(durationMillis = 700, easing = FastOutSlowInEasing)
     )
 
     val contentAlpha by animateFloatAsState(
-        targetValue = if (startAnimation.value) 1f else 0f,
+        targetValue = if (uiState.startAnimation) 1f else 0f,
         animationSpec = tween(durationMillis = 1000, delayMillis = 400)
     )
 
     val buttonOffsetX by animateDpAsState(
-        targetValue = if (startAnimation.value) 0.dp else 150.dp,
+        targetValue = if (uiState.startAnimation) 0.dp else 150.dp,
         animationSpec = tween(durationMillis = 800, delayMillis = 600)
     )
     val heartOffsetX by animateDpAsState(
-        targetValue = if (startAnimation.value) 0.dp else (-100).dp,
+        targetValue = if (uiState.startAnimation) 0.dp else (-100).dp,
         animationSpec = tween(durationMillis = 800, delayMillis = 600)
     )
 
     LaunchedEffect(Unit) {
-        startAnimation.value = true
+        viewModel.triggerAnimation()
     }
 
     Column(
@@ -84,11 +81,7 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
                 .weight(0.4f),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .zIndex(1f)
-            ) {
+            Box(modifier = Modifier.fillMaxWidth().zIndex(1f)) {
                 BackButton(
                     onBackClick = { onBackClick() },
                     modifier = Modifier.padding(top = 40.dp, start = 24.dp)
@@ -121,7 +114,7 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
                     .graphicsLayer(alpha = contentAlpha)
             ) {
                 Text(
-                    text = "Quinoa Fruit Salad",
+                    text = uiState.name,
                     fontSize = 32.sp,
                     fontFamily = BrandonGrotesque,
                     fontWeight = FontWeight.Medium,
@@ -139,7 +132,7 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         IconButton(
-                            onClick = { if (quantity > 1) quantity-- },
+                            onClick = { viewModel.onDecreaseQuantity() },
                             modifier = Modifier.size(32.dp)
                         ) {
                             Icon(
@@ -150,7 +143,7 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
                         }
 
                         Text(
-                            text = "$quantity",
+                            text = "${uiState.quantity}",
                             modifier = Modifier
                                 .padding(horizontal = 16.dp)
                                 .widthIn(min = 28.dp),
@@ -162,19 +155,17 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
                         )
 
                         IconButton(
-                            onClick = { quantity++ },
+                            onClick = { viewModel.onIncreaseQuantity() },
                             modifier = Modifier
                                 .background(Color(0xFFFFF2E7), CircleShape)
                                 .size(32.dp)
                         ) {
-                            Icon(
-                                Icons.Default.Add, contentDescription = null, tint = SecondaryColor
-                            )
+                            Icon(Icons.Default.Add, contentDescription = null, tint = SecondaryColor)
                         }
                     }
 
                     Text(
-                        text = "₦ ${"%,d".format(totalPrice)}",
+                        text = "₦ ${"%,d".format(uiState.totalPrice)}",
                         fontSize = 24.sp,
                         fontFamily = BrandonGrotesque,
                         fontWeight = FontWeight.Medium,
@@ -201,7 +192,7 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
 
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = "RedQuinoa,Lime,Honey,Blueberries,Strawberries\nMango, Fresh mint.",
+                    text = uiState.ingredients,
                     fontSize = 16.sp,
                     fontFamily = BrandonGrotesque,
                     fontWeight = FontWeight.Medium,
@@ -212,7 +203,7 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
                     modifier = Modifier.padding(vertical = 20.dp), color = Color(0xFFF3F3F3)
                 )
                 Text(
-                    text = "If you are looking for a new fruit salad to eat today, \nquinoa is the perfect brunch for you. make ",
+                    text = uiState.description,
                     fontSize = 14.sp,
                     fontFamily = BrandonGrotesque,
                     fontWeight = FontWeight.Medium,
@@ -233,17 +224,17 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
                             .offset(x = heartOffsetX)
                             .size(48.dp)
                             .background(
-                                if (isFavorite) Color(0xFFFFECE0) else Color(0xFFFFF2E7),
+                                if (uiState.isFavorite) Color(0xFFFFECE0) else Color(0xFFFFF2E7),
                                 CircleShape
                             )
                             .clickable(
-                                interactionSource = interactionSource, indication = ripple(
-                                    bounded = false, radius = 28.dp
-                                ), onClick = { isFavorite = !isFavorite }),
+                                interactionSource = interactionSource,
+                                indication = ripple(bounded = false, radius = 28.dp),
+                                onClick = { viewModel.toggleFavorite() }),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
+                            imageVector = if (uiState.isFavorite) Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
                             contentDescription = "Favorite",
                             tint = SecondaryColor
                         )
@@ -257,7 +248,6 @@ fun ProductDetailsScreen(onBackClick: () -> Unit, onAddToBasketClick: () -> Unit
                             .offset(x = buttonOffsetX)
                             .fillMaxWidth()
                             .height(56.dp),
-
                         colors = ButtonDefaults.buttonColors(containerColor = SecondaryColor),
                         shape = RoundedCornerShape(16.dp)
                     ) {

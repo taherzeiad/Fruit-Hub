@@ -5,6 +5,7 @@ import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -27,18 +28,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.fruithub.ui.theme.BackgroundColor
-import com.example.fruithub.ui.theme.CardBackground1
-import com.example.fruithub.ui.theme.CardBackground2
 import com.example.fruithub.ui.theme.PrimaryColor
 import com.example.fruithub.ui.theme.SecondaryColor
 import com.example.fruithub.R
 import com.example.fruithub.ui.theme.BrandonGrotesque
-import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit, onProductClick: () -> Unit) {
+fun FruitSaladHomeScreen(
+    userName: String,
+    onBasketClick: () -> Unit,
+    onProductClick: () -> Unit,
+    viewModel: HomeViewModel = viewModel()
+) {
+    val uiState by viewModel.uiState.collectAsState()
 
     val infiniteTransition = rememberInfiniteTransition(label = "menu_transition")
     val menuAlpha by infiniteTransition.animateFloat(
@@ -47,31 +52,6 @@ fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit, onProductC
         ), label = "menu_alpha"
     )
 
-    var startGreeting by remember { mutableStateOf(false) }
-    var startSearch by remember { mutableStateOf(false) }
-    var startRecommendedText by remember { mutableStateOf(false) }
-    var startRecommendedCards by remember { mutableStateOf(false) }
-    var startTabs by remember { mutableStateOf(false) }
-    var startHottestCards by remember { mutableStateOf(false) }
-    var startBasket by remember { mutableStateOf(false) }
-
-    LaunchedEffect(Unit) {
-        delay(500)
-        startGreeting = true
-        delay(400)
-        startSearch = true
-        delay(400)
-        startRecommendedText = true
-        delay(400)
-        startRecommendedCards = true
-        delay(400)
-        startTabs = true
-        delay(400)
-        startHottestCards = true
-        delay(400)
-        startBasket = true
-    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -79,7 +59,7 @@ fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit, onProductC
             .padding(top = 16.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        // 1. Header (Menu and Basket) with animations
+        // 1. Header (Menu and Basket)
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -88,7 +68,6 @@ fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit, onProductC
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Menu icon
             Icon(
                 painter = painterResource(id = android.R.drawable.ic_menu_sort_by_size),
                 contentDescription = "Menu",
@@ -98,99 +77,70 @@ fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit, onProductC
                     .graphicsLayer(alpha = menuAlpha)
             )
 
-            // Purchases Basket
-            Box(modifier = Modifier.wrapContentSize()) {
-                androidx.compose.animation.AnimatedVisibility(
-                    visible = startBasket,
-                    enter = slideInVertically(initialOffsetY = { it }) + fadeIn(tween(800)),
+            AnimatedVisibility(
+                visible = uiState.startBasket,
+                enter = slideInVertically(initialOffsetY = { it }) + fadeIn(tween(800)),
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.clickable { onBasketClick() }
                 ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier
-                            .wrapContentSize()
-                            .clickable { onBasketClick() }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.mybasket),
-                            contentDescription = "Basket",
-                            tint = SecondaryColor,
-                            modifier = Modifier.size(24.dp)
-                        )
-                        Text(
-                            text = "My basket",
-                            fontSize = 10.sp,
-                            color = PrimaryColor,
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
+                    Icon(
+                        painter = painterResource(id = R.drawable.mybasket),
+                        contentDescription = "Basket",
+                        tint = SecondaryColor,
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Text(
+                        text = "My basket",
+                        fontSize = 10.sp,
+                        color = PrimaryColor,
+                        fontWeight = FontWeight.Medium
+                    )
                 }
             }
         }
 
-        // 2. Greeting Text with slide up animation
+        // 2. Greeting Text
         AnimatedVisibility(
-            visible = startGreeting, enter = slideInVertically(
-                initialOffsetY = { it * 2 },
-                animationSpec = tween(600, easing = FastOutSlowInEasing)
-            ) + fadeIn(animationSpec = tween(800, easing = FastOutSlowInEasing))
+            visible = uiState.startGreeting,
+            enter = slideInVertically(initialOffsetY = { it * 2 }) + fadeIn()
         ) {
             Text(
                 text = buildAnnotatedString {
-                    withStyle(
-                        style = SpanStyle(
-                            fontWeight = FontWeight.Medium, fontFamily = BrandonGrotesque
-                        )
-                    ) {
+                    withStyle(SpanStyle(fontWeight = FontWeight.Medium, fontFamily = BrandonGrotesque)) {
                         append("Hello $userName, ")
                     }
-
-                    withStyle(
-                        style = SpanStyle(
-                            fontWeight = FontWeight.Normal, fontFamily = BrandonGrotesque
-                        )
-                    ) {
+                    withStyle(SpanStyle(fontWeight = FontWeight.Normal, fontFamily = BrandonGrotesque)) {
                         append("What fruit salad \ncombo do you want today?")
                     }
                 },
                 modifier = Modifier.padding(horizontal = 24.dp),
                 style = MaterialTheme.typography.headlineSmall.copy(
-                    fontSize = 20.sp, // رفعت الحجم قليلاً لأنه headline، ويمكنك إعادته لـ 14sp حسب رغبتك
-                    color = PrimaryColor, lineHeight = 28.sp
+                    fontSize = 20.sp, color = PrimaryColor, lineHeight = 28.sp
                 )
             )
         }
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // 3. Search Bar with slide up animation
+        // 3. Search Bar
         AnimatedVisibility(
-            visible = startSearch, enter = slideInVertically(
-                initialOffsetY = { it * 2 },
-                animationSpec = tween(600, easing = FastOutSlowInEasing)
-            ) + fadeIn(animationSpec = tween(800, easing = FastOutSlowInEasing))
+            visible = uiState.startSearch,
+            enter = slideInVertically(initialOffsetY = { it * 2 }) + fadeIn()
         ) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 TextField(
                     value = "",
                     onValueChange = {},
                     placeholder = {
-                        Text(
-                            "Search for fruit salad combos",
-                            fontSize = 14.sp,
-                            color = Color.Gray,
-                            fontFamily = BrandonGrotesque,
-                            fontWeight = FontWeight.Normal
-                        )
+                        Text("Search for fruit salad combos", color = Color.Gray, fontFamily = BrandonGrotesque)
                     },
                     leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(56.dp)
-                        .clip(RoundedCornerShape(16.dp)),
+                    modifier = Modifier.weight(1f).height(56.dp).clip(RoundedCornerShape(16.dp)),
                     colors = TextFieldDefaults.colors(
                         unfocusedContainerColor = Color(0xFFF3F4F9),
                         focusedContainerColor = Color(0xFFF3F4F9),
@@ -210,81 +160,36 @@ fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit, onProductC
 
         Spacer(modifier = Modifier.height(40.dp))
 
-        // 4. Recommended Section with fade animation
-        AnimatedVisibility(
-            visible = startRecommendedText,
-            enter = fadeIn(animationSpec = tween(800, easing = FastOutSlowInEasing))
-        ) {
-            val recommendedAlpha by animateFloatAsState(
-                targetValue = if (startRecommendedText) 1f else 0.3f,
-                animationSpec = tween(1000, easing = FastOutSlowInEasing),
-                label = "recommended_alpha"
-            )
-
+        // 4. Recommended Section Header
+        AnimatedVisibility(visible = uiState.startRecommendedText, enter = fadeIn()) {
             Text(
                 "Recommended Combo",
                 fontSize = 24.sp,
-                modifier = Modifier
-                    .padding(horizontal = 24.dp)
-                    .graphicsLayer(alpha = recommendedAlpha),
+                modifier = Modifier.padding(horizontal = 24.dp),
                 style = MaterialTheme.typography.titleLarge.copy(
-                    fontFamily = BrandonGrotesque,
-                    fontWeight = FontWeight.Medium,
-                    color = PrimaryColor
+                    fontFamily = BrandonGrotesque, fontWeight = FontWeight.Medium, color = PrimaryColor
                 )
             )
         }
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // 5. Recommended Cards with scale animation
-        AnimatedVisibility(
-            visible = startRecommendedCards,
-            enter = fadeIn(animationSpec = tween(800, easing = FastOutSlowInEasing))
-        ) {
+        // 5. Recommended Cards (Dynamic List)
+        AnimatedVisibility(visible = uiState.startRecommendedCards, enter = fadeIn()) {
             LazyRow(
                 contentPadding = PaddingValues(horizontal = 24.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                item {
+                items(viewModel.recommendedProducts) { product ->
                     val scale by animateFloatAsState(
-                        targetValue = if (startRecommendedCards) 1f else 0.5f,
-                        animationSpec = tween(800, easing = FastOutSlowInEasing),
-                        label = "recommended_card1_scale"
+                        targetValue = if (uiState.startRecommendedCards) 1f else 0.5f,
+                        animationSpec = tween(800), label = "scale"
                     )
                     RecommendedCard(
-                        name = "Honey lime combo",
-                        price = "2,000",
-                        imageRes = R.drawable.honeylime,
-                        bgColor = Color.White,
-                        scale = scale
-                    )
-                }
-                item {
-                    val scale by animateFloatAsState(
-                        targetValue = if (startRecommendedCards) 1f else 0.5f,
-                        animationSpec = tween(800, easing = FastOutSlowInEasing),
-                        label = "recommended_card2_scale"
-                    )
-                    RecommendedCard(
-                        name = "Berry mango combo",
-                        price = "8,000",
-                        imageRes = R.drawable.berryfruit,
-                        bgColor = Color.White,
-                        scale = scale
-                    )
-                }
-                item {
-                    val scale by animateFloatAsState(
-                        targetValue = if (startRecommendedCards) 1f else 0.5f,
-                        animationSpec = tween(800, easing = FastOutSlowInEasing),
-                        label = "recommended_card2_scale"
-                    )
-                    RecommendedCard(
-                        name = "Berry mango combo",
-                        price = "8,000",
-                        imageRes = R.drawable.berryfruit,
-                        bgColor = Color.White,
+                        name = product.name,
+                        price = product.price,
+                        imageRes = product.imageRes,
+                        bgColor = product.bgColor,
                         scale = scale
                     )
                 }
@@ -293,143 +198,46 @@ fun FruitSaladHomeScreen(userName: String, onBasketClick: () -> Unit, onProductC
 
         Spacer(modifier = Modifier.height(40.dp))
 
-        // 6. Tabs with sequential fade animation
-        AnimatedVisibility(
-            visible = startTabs,
-            enter = fadeIn(animationSpec = tween(800, easing = FastOutSlowInEasing))
-        ) {
-            val hottestAlpha by animateFloatAsState(
-                targetValue = if (startTabs) 1f else 0.3f,
-                animationSpec = tween(1000, delayMillis = 100, easing = FastOutSlowInEasing),
-                label = "hottest_alpha"
-            )
-            val popularAlpha by animateFloatAsState(
-                targetValue = if (startTabs) 1f else 0.3f,
-                animationSpec = tween(1000, delayMillis = 300, easing = FastOutSlowInEasing),
-                label = "popular_alpha"
-            )
-            val newAlpha by animateFloatAsState(
-                targetValue = if (startTabs) 1f else 0.3f,
-                animationSpec = tween(1000, delayMillis = 500, easing = FastOutSlowInEasing),
-                label = "new_alpha"
-            )
-            val topAlpha by animateFloatAsState(
-                targetValue = if (startTabs) 1f else 0.3f,
-                animationSpec = tween(1000, delayMillis = 700, easing = FastOutSlowInEasing),
-                label = "top_alpha"
-            )
-
+        // 6. Tabs
+        AnimatedVisibility(visible = uiState.startTabs, enter = fadeIn()) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Column {
-                    Text(
-                        "Hottest",
-                        fontWeight = FontWeight.Bold,
-                        color = PrimaryColor,
-                        fontSize = 20.sp,
-                        modifier = Modifier.graphicsLayer(alpha = hottestAlpha)
-                    )
-                    // Show underline only when alpha is high enough
-                    if (hottestAlpha > 0.8f) {
-                        Box(
-                            modifier = Modifier
-                                .width(20.dp)
-                                .height(2.dp)
-                                .background(SecondaryColor)
-                        )
-                    }
+                    Text("Hottest", fontWeight = FontWeight.Bold, color = PrimaryColor, fontSize = 20.sp)
+                    Box(modifier = Modifier.width(20.dp).height(2.dp).background(SecondaryColor))
                 }
-                Text(
-                    "Popular",
-                    color = Color.Gray,
-                    fontFamily = BrandonGrotesque,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 16.sp,
-                    modifier = Modifier.graphicsLayer(alpha = popularAlpha)
-                )
-                Text(
-                    "New combo",
-                    color = Color.Gray,
-                    fontSize = 16.sp,
-                    fontFamily = BrandonGrotesque,
-                    fontWeight = FontWeight.Medium,
-                    modifier = Modifier.graphicsLayer(alpha = newAlpha)
-                )
-                Text(
-                    "Top",
-                    color = Color.Gray,
-                    fontSize = 16.sp,
-                    fontFamily = BrandonGrotesque,
-                    fontWeight = FontWeight.Medium,
-                    modifier = Modifier.graphicsLayer(alpha = topAlpha)
-                )
+                Text("Popular", color = Color.Gray, fontFamily = BrandonGrotesque, fontSize = 16.sp)
+                Text("New combo", color = Color.Gray, fontFamily = BrandonGrotesque, fontSize = 16.sp)
+                Text("Top", color = Color.Gray, fontFamily = BrandonGrotesque, fontSize = 16.sp)
             }
         }
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // 7. Hottest Cards with scale animation
-        AnimatedVisibility(
-            visible = startHottestCards,
-            enter = fadeIn(animationSpec = tween(800, easing = FastOutSlowInEasing))
-        ) {
+        // 7. Hottest Cards (Dynamic List)
+        AnimatedVisibility(visible = uiState.startHottestCards, enter = fadeIn()) {
             LazyRow(
                 contentPadding = PaddingValues(horizontal = 24.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                item {
+                items(viewModel.hottestProducts) { product ->
                     val scale by animateFloatAsState(
-                        targetValue = if (startHottestCards) 1f else 0.5f,
-                        animationSpec = tween(800, delayMillis = 100, easing = FastOutSlowInEasing),
-                        label = "hottest_card1_scale"
+                        targetValue = if (uiState.startHottestCards) 1f else 0.5f,
+                        animationSpec = tween(800), label = "scale"
                     )
                     HottestCard(
-                        name = "Quinoa fruit salad",
-                        price = "10,000",
-                        imageRes = R.drawable.breakfast,
-                        bgColor = CardBackground1,
-                        scale = scale,
-                        onClick = onProductClick
-                    )
-                }
-                item {
-                    val scale by animateFloatAsState(
-                        targetValue = if (startHottestCards) 1f else 0.5f,
-                        animationSpec = tween(800, delayMillis = 300, easing = FastOutSlowInEasing),
-                        label = "hottest_card2_scale"
-                    )
-                    HottestCard(
-                        name = "Tropical fruit salad",
-                        price = "10,000",
-                        imageRes = R.drawable.bestever,
-                        bgColor = CardBackground2,
-                        scale = scale,
-                        onClick = onProductClick
-                    )
-                }
-
-                item {
-                    val scale by animateFloatAsState(
-                        targetValue = if (startHottestCards) 1f else 0.5f,
-                        animationSpec = tween(800, delayMillis = 300, easing = FastOutSlowInEasing),
-                        label = "hottest_card2_scale"
-                    )
-                    HottestCard(
-                        name = "Tropical fruit salad",
-                        price = "10,000",
-                        imageRes = R.drawable.bestever,
-                        bgColor = CardBackground2,
+                        name = product.name,
+                        price = product.price,
+                        imageRes = product.imageRes,
+                        bgColor = product.bgColor,
                         scale = scale,
                         onClick = onProductClick
                     )
                 }
             }
         }
-
         Spacer(modifier = Modifier.height(24.dp))
     }
 }

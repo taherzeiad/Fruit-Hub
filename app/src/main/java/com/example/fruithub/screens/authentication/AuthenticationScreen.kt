@@ -24,6 +24,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,24 +49,15 @@ import kotlinx.coroutines.delay
 fun AuthenticationScreen(
     viewModel: AuthenticationViewModel = viewModel(), onLoginSuccess: (String) -> Unit
 ) {
-    var startBasketAnimation by remember { mutableStateOf(false) }
-    var startTextAnimation by remember { mutableStateOf(false) }
-    var startButtonAnimation by remember { mutableStateOf(false) }
+
+    val uiState by viewModel.uiState.collectAsState()
 
     val basketScale by animateFloatAsState(
-        targetValue = if (startBasketAnimation) 1f else 0f, animationSpec = spring(
+        targetValue = if (uiState.isBasketVisible) 1f else 0f, animationSpec = spring(
             dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow
-        )
+        ), label = "BasketScale"
     )
 
-    LaunchedEffect(Unit) {
-        delay(200)
-        startBasketAnimation = true
-        delay(350)
-        startTextAnimation = true
-        delay(200)
-        startButtonAnimation = true
-    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -129,7 +121,7 @@ fun AuthenticationScreen(
         ) {
 
             AnimatedVisibility(
-                visible = startTextAnimation,
+                visible = uiState.isTextVisible,
                 enter = slideInVertically(initialOffsetY = { it / 2 }) + fadeIn()
             ) {
                 Column {
@@ -144,7 +136,7 @@ fun AuthenticationScreen(
                     Spacer(modifier = Modifier.height(16.dp))
 
                     TextField(
-                        value = viewModel.userName,
+                        value = uiState.userName,
                         onValueChange = { viewModel.updateUserName(it) },
                         placeholder = {
                             Text(
@@ -176,31 +168,29 @@ fun AuthenticationScreen(
             Spacer(modifier = Modifier.height(35.dp))
 
             AnimatedVisibility(
-                visible = startButtonAnimation,
+                visible = uiState.isButtonVisible,
                 enter = slideInVertically(initialOffsetY = { it }) + fadeIn()
             ) {
-                Column {
-                    AnimatedVisibility(visible = startButtonAnimation) {
-                        ButtonOrange(
-                            onClick = {
-                                if (viewModel.isInputValid()) {
-                                    onLoginSuccess(viewModel.userName)
-                                }
-                            }, modifier = Modifier
-                                .fillMaxWidth()
-                                .height(56.dp)
-                        ) {
-                            Text(
-                                text = "Start Ordering",
-                                color = Color.White,
-                                fontFamily = BrandonGrotesque,
-                                fontWeight = FontWeight.Medium,
-                                fontSize = 16.sp,
-                            )
+                ButtonOrange(
+                    onClick = {
+                        if (viewModel.isInputValid()) {
+                            onLoginSuccess(uiState.userName)
                         }
-                        Spacer(modifier = Modifier.height(18.dp))
-                    }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                ) {
+                    Text(
+                        text = "Start Ordering",
+                        color = Color.White,
+                        fontFamily = BrandonGrotesque,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 16.sp,
+                    )
                 }
+                Spacer(modifier = Modifier.height(18.dp))
+
             }
         }
     }

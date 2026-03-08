@@ -36,11 +36,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import kotlinx.coroutines.delay
 
 data class BasketItem(
-    val name: String,
-    val imageRes: Int,
-    val bgColor: Color,
-    val price: String,
-    val quantity: String
+    val name: String, val imageRes: Int, val bgColor: Color, val price: String, val quantity: String
 )
 
 @SuppressLint("ConfigurationScreenWidthHeight")
@@ -63,10 +59,8 @@ fun BasketScreen(onBackClick: () -> Unit, onNavigateToSuccess: () -> Unit) {
         delay(100)
 
         animationProgress.animateTo(
-            targetValue = 1f,
-            animationSpec = tween(
-                durationMillis = 1500,
-                easing = FastOutSlowInEasing
+            targetValue = 1f, animationSpec = tween(
+                durationMillis = 1500, easing = FastOutSlowInEasing
             )
         )
     }
@@ -86,7 +80,7 @@ fun BasketScreen(onBackClick: () -> Unit, onNavigateToSuccess: () -> Unit) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = if (animationProgress.value < 0.1f) screenHeight else 110.dp)
+                .padding(top = 110.dp)
         ) {
             Column(
                 modifier = Modifier
@@ -103,15 +97,13 @@ fun BasketScreen(onBackClick: () -> Unit, onNavigateToSuccess: () -> Unit) {
                         Color(0xFFFFFAEB),
                         "20,000",
                         "2 packs"
-                    ),
-                    BasketItem(
+                    ), BasketItem(
                         "Melon fruit salad",
                         R.drawable.melon_salad,
                         Color(0xFFF3F4F9),
                         "20,000",
                         "2 packs"
-                    ),
-                    BasketItem(
+                    ), BasketItem(
                         "Tropical fruit salad",
                         R.drawable.tropical_salad,
                         Color(0xFFFFF2F2),
@@ -220,18 +212,13 @@ fun BasketScreen(onBackClick: () -> Unit, onNavigateToSuccess: () -> Unit) {
                 showCardDetails = false
                 showCheckoutSheet = false
                 onNavigateToSuccess()
-            }
-        )
+            })
     }
 }
 
 @Composable
 fun BasketRow(
-    item: BasketItem,
-    index: Int,
-    isLeftToRight: Boolean,
-    animationProgress: Float,
-    itemDelay: Int
+    item: BasketItem, index: Int, isLeftToRight: Boolean, animationProgress: Float, itemDelay: Int
 ) {
     val slideOffset by animateDpAsState(
         targetValue = 0.dp,
@@ -318,25 +305,19 @@ fun HandleCheckoutSheets(
                     } else {
                         onDismissCheckout()
                     }
-                }
-        )
+                })
     }
 
     // Checkout sheet
     AnimatedVisibility(
-        visible = showCheckoutSheet && !showCardDetails,
-        enter = slideInVertically(
-            initialOffsetY = { it },
-            animationSpec = tween(800, easing = FastOutSlowInEasing)
-        ) + fadeIn(),
-        exit = slideOutVertically(
-            targetOffsetY = { it },
-            animationSpec = tween(500)
+        visible = showCheckoutSheet && !showCardDetails, enter = slideInVertically(
+            initialOffsetY = { it }, animationSpec = tween(800, easing = FastOutSlowInEasing)
+        ) + fadeIn(), exit = slideOutVertically(
+            targetOffsetY = { it }, animationSpec = tween(500)
         )
     ) {
         Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.BottomCenter
+            modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter
         ) {
             CheckoutDialogContent(
                 onDismiss = onDismissCheckout,
@@ -348,23 +329,17 @@ fun HandleCheckoutSheets(
 
     // Card details sheet
     AnimatedVisibility(
-        visible = showCheckoutSheet && showCardDetails,
-        enter = slideInVertically(
-            initialOffsetY = { it },
-            animationSpec = tween(800, easing = FastOutSlowInEasing)
-        ) + fadeIn(),
-        exit = slideOutVertically(
-            targetOffsetY = { it },
-            animationSpec = tween(500)
+        visible = showCheckoutSheet && showCardDetails, enter = slideInVertically(
+            initialOffsetY = { it }, animationSpec = tween(800, easing = FastOutSlowInEasing)
+        ) + fadeIn(), exit = slideOutVertically(
+            targetOffsetY = { it }, animationSpec = tween(500)
         )
     ) {
         Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.BottomCenter
+            modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter
         ) {
             CardDetailsDialogContent(
-                onDismiss = onDismissCardDetails,
-                onCompleteOrder = onCompleteOrder
+                onDismiss = onDismissCardDetails, onCompleteOrder = onCompleteOrder
             )
         }
     }
@@ -372,9 +347,7 @@ fun HandleCheckoutSheets(
 
 @Composable
 fun CheckoutDialogContent(
-    onDismiss: () -> Unit,
-    onPayOnDelivery: () -> Unit,
-    onPayWithCard: () -> Unit
+    onDismiss: () -> Unit, onPayOnDelivery: () -> Unit, onPayWithCard: () -> Unit
 ) {
     var showItems by remember { mutableStateOf(false) }
 
@@ -535,8 +508,7 @@ fun CheckoutDialogContent(
 
 @Composable
 fun CardDetailsDialogContent(
-    onDismiss: () -> Unit,
-    onCompleteOrder: () -> Unit
+    onDismiss: () -> Unit, onCompleteOrder: () -> Unit
 ) {
     var showItems by remember { mutableStateOf(false) }
 
@@ -635,8 +607,7 @@ fun CardDetailsDialogContent(
                                 color = SecondaryColor,
                                 shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
                             )
-                            .clickable { onCompleteOrder() },
-                        contentAlignment = Alignment.Center
+                            .clickable { onCompleteOrder() }, contentAlignment = Alignment.Center
                     ) {
                         Surface(
                             color = Color.White,
