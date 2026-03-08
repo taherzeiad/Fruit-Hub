@@ -3,12 +3,10 @@ package com.example.fruithub.screens.trackorder
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.fadeIn
-import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -59,7 +57,6 @@ fun DeliveryStatusScreen(onBackClick: () -> Unit) {
     }
 
     LaunchedEffect(Unit) {
-        // تأخير بسيط قبل بدء animation لضمان اكتمال الـ rendering
         delay(100)
 
         animationProgress.animateTo(
@@ -94,7 +91,6 @@ fun DeliveryStatusScreen(onBackClick: () -> Unit) {
         ) {
 
             // 1. Order Taken - يظهر من الأسفل
-            // مثال للعنصر الأول (طبق نفس النمط على البقية)
             AnimatedVisibility(
                 visible = animationProgress.value >= thresholds.step1, enter = slideInVertically(
                     initialOffsetY = { it },

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,6 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.fruithub.R
 import com.example.fruithub.commonComponent.ButtonOrange
 import com.example.fruithub.ui.theme.BrandonGrotesque
@@ -32,26 +34,17 @@ import com.example.fruithub.ui.theme.SecondaryColor
 import kotlinx.coroutines.delay
 
 @Composable
-fun WelcomeScreen(onContinueClick: () -> Unit) {
+fun WelcomeScreen(
+    onContinueClick: () -> Unit, viewModel: WelcomeViewModel = viewModel()
+) {
 
-    var isBasketVisible by remember { mutableStateOf(false) }
-    var isTextVisible by remember { mutableStateOf(false) }
-    var isButtonVisible by remember { mutableStateOf(false) }
+    val uiState by viewModel.uiState.collectAsState()
 
     val basketScale by animateFloatAsState(
-        targetValue = if (isBasketVisible) 1f else 0f, animationSpec = spring(
+        targetValue = if (uiState.isBasketVisible) 1f else 0f, animationSpec = spring(
             dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow
         ), label = "BasketScale"
     )
-
-    LaunchedEffect(Unit) {
-        delay(300)
-        isBasketVisible = true
-        delay(600)
-        isTextVisible = true
-        delay(400)
-        isButtonVisible = true
-    }
 
     Column(
         modifier = Modifier
@@ -118,7 +111,7 @@ fun WelcomeScreen(onContinueClick: () -> Unit) {
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             AnimatedVisibility(
-                visible = isTextVisible,
+                visible = uiState.isTextVisible,
                 enter = slideInVertically(initialOffsetY = { it / 2 }) + fadeIn()
             ) {
                 Column(modifier = Modifier.fillMaxWidth()) {
@@ -143,7 +136,7 @@ fun WelcomeScreen(onContinueClick: () -> Unit) {
             }
 
             AnimatedVisibility(
-                visible = isButtonVisible,
+                visible = uiState.isButtonVisible,
                 enter = slideInVertically(initialOffsetY = { it }) + fadeIn()
             ) {
                 ButtonOrange(
