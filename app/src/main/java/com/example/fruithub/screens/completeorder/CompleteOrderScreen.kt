@@ -24,46 +24,38 @@ import androidx.compose.ui.unit.sp
 import com.example.fruithub.ui.theme.BrandonGrotesque
 import com.example.fruithub.ui.theme.PrimaryColor
 import com.example.fruithub.ui.theme.SecondaryColor
-import kotlinx.coroutines.delay
 
 @Composable
 fun OrderSuccessScreen(
-    onTrackOrderClick: () -> Unit, onContinueShoppingClick: () -> Unit
+    onTrackOrderClick: () -> Unit,
+    onContinueShoppingClick: () -> Unit,
+    viewModel: OrderSuccessViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
-    var startIconAnimation by remember { mutableStateOf(false) }
-    var showTexts by remember { mutableStateOf(false) }
-    var showTrackButton by remember { mutableStateOf(false) }
-    var showContinueButton by remember { mutableStateOf(false) }
+    val state by viewModel.uiState
 
-    LaunchedEffect(Unit) {
-        startIconAnimation = true
-        delay(600)
-        showTexts = true
-        delay(500)
-        showTrackButton = true
-        delay(400)
-        showContinueButton = true
-    }
-
+    // 1. Icon Animation States
     val iconScale by animateFloatAsState(
-        targetValue = if (startIconAnimation) 1f else 0.3f, animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow
+        targetValue = if (state.startIconAnimation) 1f else 0.3f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
         ), label = "IconScale"
     )
     val iconAlpha by animateFloatAsState(
-        targetValue = if (startIconAnimation) 1f else 0f,
-        animationSpec = tween(800),
-        label = "IconAlpha"
+        targetValue = if (state.startIconAnimation) 1f else 0f,
+        animationSpec = tween(800), label = "IconAlpha"
     )
 
-    val textAlpha by animateFloatAsState(if (showTexts) 1f else 0f, tween(600))
-    val textTranslationY by animateFloatAsState(if (showTexts) 0f else 40f, tween(600))
+    // 2. Texts Animation States
+    val textAlpha by animateFloatAsState(if (state.showTexts) 1f else 0f, tween(600), label = "")
+    val textTranslationY by animateFloatAsState(if (state.showTexts) 0f else 40f, tween(600), label = "")
 
-    val trackAlpha by animateFloatAsState(if (showTrackButton) 1f else 0f, tween(500))
-    val trackTranslationY by animateFloatAsState(if (showTrackButton) 0f else 40f, tween(500))
+    // 3. Buttons Animation States
+    val trackAlpha by animateFloatAsState(if (state.showTrackButton) 1f else 0f, tween(500), label = "")
+    val trackTranslationY by animateFloatAsState(if (state.showTrackButton) 0f else 40f, tween(500), label = "")
 
-    val continueAlpha by animateFloatAsState(if (showContinueButton) 1f else 0f, tween(500))
-    val continueTranslationY by animateFloatAsState(if (showContinueButton) 0f else 40f, tween(500))
+    val continueAlpha by animateFloatAsState(if (state.showContinueButton) 1f else 0f, tween(500), label = "")
+    val continueTranslationY by animateFloatAsState(if (state.showContinueButton) 0f else 40f, tween(500), label = "")
 
     Column(
         modifier = Modifier
@@ -73,6 +65,7 @@ fun OrderSuccessScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        // Success Icon Section
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
@@ -103,11 +96,14 @@ fun OrderSuccessScreen(
 
         Spacer(modifier = Modifier.height(56.dp))
 
+        // Text Section
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.graphicsLayer {
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.graphicsLayer {
                 alpha = textAlpha
                 translationY = textTranslationY
-            }) {
+            }
+        ) {
             Text(
                 text = "Congratulations!!!",
                 fontSize = 32.sp,
@@ -131,6 +127,7 @@ fun OrderSuccessScreen(
 
         Spacer(modifier = Modifier.height(56.dp))
 
+        // Action Buttons
         Button(
             onClick = onTrackOrderClick,
             modifier = Modifier
@@ -147,7 +144,6 @@ fun OrderSuccessScreen(
                 text = "Track order",
                 color = Color.White,
                 fontSize = 16.sp,
-                lineHeight = 24.sp,
                 fontFamily = BrandonGrotesque,
                 fontWeight = FontWeight.Medium
             )
@@ -171,11 +167,9 @@ fun OrderSuccessScreen(
                 text = "Continue shopping",
                 color = SecondaryColor,
                 fontSize = 16.sp,
-                lineHeight = 24.sp,
                 fontFamily = BrandonGrotesque,
                 fontWeight = FontWeight.Medium
             )
         }
     }
 }
-
