@@ -35,42 +35,30 @@ import com.example.fruithub.ui.theme.SecondaryColor
 import androidx.compose.foundation.shape.RoundedCornerShape
 import kotlinx.coroutines.delay
 
-data class BasketItem(
-    val name: String, val imageRes: Int, val bgColor: Color, val price: String, val quantity: String
-)
-
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
-fun BasketScreen(onBackClick: () -> Unit, onNavigateToSuccess: () -> Unit) {
+fun BasketScreen(
+    onBackClick: () -> Unit,
+    onNavigateToSuccess: () -> Unit,
+    viewModel: BasketViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
-    val animationProgress = remember { Animatable(0f) }
-    val scope = rememberCoroutineScope()
-
-    var showCheckoutSheet by remember { mutableStateOf(false) }
-    var showCardDetails by remember { mutableStateOf(false) }
-
-    val headerHeight = if (animationProgress.value < 0.1f) {
-        screenHeight
-    } else {
-        110.dp + (screenHeight - 110.dp) * (1 - animationProgress.value.coerceIn(0f, 1f))
-    }
+    val animatableProgress = remember { Animatable(0f) }
+    val animationProgress by viewModel.animationProgress
+    val state by viewModel.uiState
 
     LaunchedEffect(Unit) {
         delay(100)
-
-        animationProgress.animateTo(
-            targetValue = 1f, animationSpec = tween(
-                durationMillis = 1500, easing = FastOutSlowInEasing
-            )
-        )
-    }
-
-    val thresholds = remember {
-        object {
-            val showItems = 0.4f
-            val showTotal = 0.5f
+        animatableProgress.animateTo(
+            targetValue = 1f,
+            animationSpec = tween(durationMillis = 1500, easing = FastOutSlowInEasing)
+        ) {
+            viewModel.updateProgress(this.value)
         }
     }
+
+    val headerHeight = if (animationProgress < 0.1f) screenHeight
+    else 110.dp + (screenHeight - 110.dp) * (1 - animationProgress.coerceIn(0f, 1f))
 
     Box(
         modifier = Modifier
@@ -82,6 +70,8 @@ fun BasketScreen(onBackClick: () -> Unit, onNavigateToSuccess: () -> Unit) {
                 .fillMaxSize()
                 .padding(top = 110.dp)
         ) {
+
+            // قائمة العناصر
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -90,42 +80,13 @@ fun BasketScreen(onBackClick: () -> Unit, onNavigateToSuccess: () -> Unit) {
             ) {
                 Spacer(modifier = Modifier.height(24.dp))
 
-                val items = listOf(
-                    BasketItem(
-                        "Quinoa fruit salad",
-                        R.drawable.quinoa_salad,
-                        Color(0xFFFFFAEB),
-                        "20,000",
-                        "2 packs"
-                    ), BasketItem(
-                        "Melon fruit salad",
-                        R.drawable.melon_salad,
-                        Color(0xFFF3F4F9),
-                        "20,000",
-                        "2 packs"
-                    ), BasketItem(
-                        "Tropical fruit salad",
-                        R.drawable.tropical_salad,
-                        Color(0xFFFFF2F2),
-                        "20,000",
-                        "2 packs"
-                    )
-                )
-
-                if (animationProgress.value >= thresholds.showItems) {
-                    items.forEachIndexed { index, item ->
+                if (animationProgress >= 0.4f) { // Threshold: showItems
+                    state.items.forEachIndexed { index, item ->
                         val isLeftToRight = index % 2 == 0
                         val itemDelay = 500 + (index * 150)
-
                         key(index) {
                             Column {
-                                BasketRow(
-                                    item = item,
-                                    index = index,
-                                    isLeftToRight = isLeftToRight,
-                                    animationProgress = animationProgress.value,
-                                    itemDelay = itemDelay
-                                )
+                                BasketRow(item, index, isLeftToRight, animationProgress, itemDelay)
                                 HorizontalDivider(
                                     modifier = Modifier.padding(vertical = 16.dp),
                                     color = Color(0xFFF3F3F3)
@@ -136,55 +97,11 @@ fun BasketScreen(onBackClick: () -> Unit, onNavigateToSuccess: () -> Unit) {
                 }
             }
 
-            if (animationProgress.value >= thresholds.showTotal) {
-                val totalSlideOffset by animateDpAsState(
-                    targetValue = 0.dp,
-                    animationSpec = tween(1200, delayMillis = 800, easing = FastOutSlowInEasing),
-                    label = "TotalSlide"
-                )
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(24.dp)
-                        .offset(y = totalSlideOffset),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column {
-                        Text(
-                            "Total",
-                            fontSize = 16.sp,
-                            fontFamily = BrandonGrotesque,
-                            fontWeight = FontWeight.Medium,
-                            color = PrimaryColor
-                        )
-                        Text(
-                            "₦ 60,000",
-                            fontSize = 24.sp,
-                            fontFamily = BrandonGrotesque,
-                            fontWeight = FontWeight.Medium,
-                            color = PrimaryColor
-                        )
-                    }
-
-                    Button(
-                        onClick = { showCheckoutSheet = true },
-                        colors = ButtonDefaults.buttonColors(containerColor = SecondaryColor),
-                        shape = RoundedCornerShape(10.dp),
-                        modifier = Modifier
-                            .width(199.dp)
-                            .height(56.dp)
-                    ) {
-                        Text(
-                            "Checkout",
-                            color = Color.White,
-                            fontSize = 16.sp,
-                            fontFamily = BrandonGrotesque,
-                            fontWeight = FontWeight.Medium,
-                        )
-                    }
-                }
+            // قسم المجموع والـ Checkout
+            if (animationProgress >= 0.5f) { // Threshold: showTotal
+                TotalSection(
+                    total = state.totalPrice,
+                    onCheckoutClick = { viewModel.toggleCheckoutSheet(true) })
             }
         }
 
@@ -192,27 +109,75 @@ fun BasketScreen(onBackClick: () -> Unit, onNavigateToSuccess: () -> Unit) {
             title = "My Basket",
             headerHeight = headerHeight,
             onBackClick = onBackClick,
-            animationProgress = animationProgress.value
+            animationProgress = animationProgress
         )
 
         HandleCheckoutSheets(
-            showCheckoutSheet = showCheckoutSheet,
-            showCardDetails = showCardDetails,
-            onDismissCheckout = { showCheckoutSheet = false },
-            onShowCardDetails = { showCardDetails = true },
-            onDismissCardDetails = {
-                showCardDetails = false
-                showCheckoutSheet = false
-            },
+            showCheckoutSheet = state.showCheckoutSheet,
+            showCardDetails = state.showCardDetails,
+            onDismissCheckout = { viewModel.toggleCheckoutSheet(false) },
+            onShowCardDetails = { viewModel.toggleCardDetails(true) },
+            onDismissCardDetails = { viewModel.toggleCardDetails(false) },
             onPayOnDelivery = {
-                showCheckoutSheet = false
+                viewModel.toggleCheckoutSheet(false)
                 onNavigateToSuccess()
             },
             onCompleteOrder = {
-                showCardDetails = false
-                showCheckoutSheet = false
+                viewModel.toggleCheckoutSheet(false)
                 onNavigateToSuccess()
             })
+    }
+}
+
+@Composable
+fun TotalSection(total: String, onCheckoutClick: () -> Unit) {
+    val totalSlideOffset by animateDpAsState(
+        targetValue = 0.dp,
+        animationSpec = tween(1200, delayMillis = 800, easing = FastOutSlowInEasing),
+        label = ""
+    )
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(24.dp)
+            .offset(y = totalSlideOffset),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column {
+            Text(
+                "Total",
+                fontSize = 16.sp,
+                fontFamily = BrandonGrotesque,
+                fontWeight = FontWeight.Medium,
+                color = PrimaryColor
+            )
+            Text(
+                total,
+                fontSize = 24.sp,
+                fontFamily = BrandonGrotesque,
+                fontWeight = FontWeight.Medium,
+                color = PrimaryColor
+            )
+        }
+
+        Button(
+            onClick = onCheckoutClick,
+            colors = ButtonDefaults.buttonColors(containerColor = SecondaryColor),
+            shape = RoundedCornerShape(10.dp),
+            modifier = Modifier
+                .width(199.dp)
+                .height(56.dp)
+        ) {
+            Text(
+                "Checkout",
+                color = Color.White,
+                fontSize = 16.sp,
+                fontFamily = BrandonGrotesque,
+                fontWeight = FontWeight.Medium
+            )
+        }
     }
 }
 

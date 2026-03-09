@@ -22,7 +22,7 @@ fun FruitHubNavGraph() {
     Scaffold { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.Home.route,
+            startDestination = Screen.CompleteOrderScreen.route,
             modifier = Modifier.padding(innerPadding)
         ) {
             // 1. Splash
@@ -71,14 +71,14 @@ fun FruitHubNavGraph() {
             // 6. Basket
             composable(Screen.Basket.route) {
                 BasketScreen(onBackClick = { navController.popBackStack() }, onNavigateToSuccess = {
-                    navController.navigate(Screen.CompleteOrder.route) {
+                    navController.navigate(Screen.CompleteOrderScreen.route) {
                         popUpTo(Screen.Basket.route) { inclusive = true }
                     }
                 })
             }
 
             // 7. CompleteOrder
-            composable(Screen.CompleteOrder.route) {
+            composable(Screen.CompleteOrderScreen.route) {
                 OrderSuccessScreen(onTrackOrderClick = {
                     navController.navigate(Screen.TrackOrder.route)
                 }, onContinueShoppingClick = {

@@ -6,7 +6,7 @@ sealed class Screen(val route: String) {
     object Authentication : Screen("authentication")
     object Basket : Screen("basket")
     object ProductDetails : Screen("product_details")
-    object CompleteOrder : Screen("complete_order")
+    object CompleteOrderScreen : Screen("complete_order")
     object TrackOrder : Screen("track_order")
 
 
