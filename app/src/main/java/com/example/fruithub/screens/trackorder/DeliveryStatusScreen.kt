@@ -1,12 +1,16 @@
 package com.example.fruithub.screens.trackorder
 
 import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -27,6 +31,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap.Companion.Square
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -84,9 +89,15 @@ fun DeliveryStatusScreen(
                     OrderImageSection()
                 }
 
+                // تحديد اتجاه الدخول بناءً على طلبك
+                val enterTransition = when (index) {
+                    0, 1, 3 -> slideInVertically(initialOffsetY = { it }) + fadeIn() // من الأسفل
+                    2 -> slideInHorizontally(initialOffsetX = { -it }) + fadeIn() // من اليسار
+                    else -> fadeIn()
+                }
+
                 AnimatedVisibility(
-                    visible = animationProgress >= (0.95f + (index * 0.01f)),
-                    enter = slideInVertically(initialOffsetY = { it / 2 }) + fadeIn()
+                    visible = animationProgress >= 1f, enter = enterTransition
                 ) {
                     Column {
                         TimelineItem(
@@ -152,9 +163,31 @@ fun StatusDots() {
 
 @Composable
 fun OrderImageSection() {
-    val imageWidth by animateDpAsState(
-        targetValue = 327.dp, animationSpec = tween(1000, easing = FastOutSlowInEasing), label = ""
+    var isExpanded by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        delay(300) // تأخير بسيط لتبدأ الحركة بعد ظهور العنصر السابق
+        isExpanded = true
+    }
+
+    // أنميشن الارتفاع من 2dp (خط) إلى 128dp (صورة)
+    val imageHeight by animateDpAsState(
+        targetValue = if (isExpanded) 128.dp else 2.dp,
+        animationSpec = tween(1000, easing = FastOutSlowInEasing),
+        label = "height"
     )
+
+    // أنميشن العرض ليتمدد أيضاً
+    val imageWidth by animateDpAsState(
+        targetValue = if (isExpanded) 327.dp else 50.dp,
+        animationSpec = tween(800, easing = FastOutSlowInEasing),
+        label = "width"
+    )
+
+    val alpha by animateFloatAsState(
+        targetValue = if (isExpanded) 1f else 0f, animationSpec = tween(500), label = "alpha"
+    )
+
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
         Image(
             painter = painterResource(R.drawable.rectangle),
@@ -162,7 +195,8 @@ fun OrderImageSection() {
             modifier = Modifier
                 .padding(top = 6.dp, bottom = 24.dp)
                 .width(imageWidth)
-                .height(128.dp)
+                .height(imageHeight)
+                .graphicsLayer(alpha = alpha)
                 .clip(RoundedCornerShape(12.dp)),
             contentScale = ContentScale.Crop
         )
