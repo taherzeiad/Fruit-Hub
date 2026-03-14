@@ -26,14 +26,13 @@ class HomeViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
-    // البيانات الوهمية للقسم الموصى به
     val recommendedProducts = listOf(
         FruitProduct(1, "Honey lime combo", "2,000", R.drawable.honeylime, Color.White),
         FruitProduct(2, "Berry mango combo", "8,000", R.drawable.berryfruit, Color.White),
-        FruitProduct(3, "Quinoa fruit salad", "10,000", R.drawable.breakfast, Color.White)
+        FruitProduct(3, "Quinoa fruit salad", "10,000", R.drawable.breakfast, Color.White),
+        FruitProduct(4,"taher","10,000",R.drawable.honeylime,Color.White)
     )
 
-    // البيانات الوهمية للقسم الأكثر طلباً باستخدام ألوان الثيم الخاصة بك
     val hottestProducts = listOf(
         FruitProduct(4, "Tropical fruit salad", "10,000", R.drawable.bestever, CardBackground1),
         FruitProduct(5, "Melon fruit mix", "5,000", R.drawable.berryfruit, CardBackground2),

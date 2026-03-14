@@ -5,6 +5,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.*
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
@@ -22,12 +24,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.fruithub.R
 import com.example.fruithub.commonComponent.OrangeHeader
 import com.example.fruithub.ui.theme.BrandonGrotesque
 import com.example.fruithub.ui.theme.PrimaryColor
@@ -80,13 +82,17 @@ fun BasketScreen(
             ) {
                 Spacer(modifier = Modifier.height(24.dp))
 
-                if (animationProgress >= 0.4f) { // Threshold: showItems
+                if (animationProgress >= 0.95f) {
                     state.items.forEachIndexed { index, item ->
                         val isLeftToRight = index % 2 == 0
-                        val itemDelay = 500 + (index * 150)
+                        val itemDelay = (index * 150)
                         key(index) {
                             Column {
-                                BasketRow(item, index, isLeftToRight, animationProgress, itemDelay)
+                                BasketRow(
+                                    item = item,
+                                    isLeftToRight = isLeftToRight,
+                                    itemDelay = itemDelay
+                                )
                                 HorizontalDivider(
                                     modifier = Modifier.padding(vertical = 16.dp),
                                     color = Color(0xFFF3F3F3)
@@ -97,8 +103,7 @@ fun BasketScreen(
                 }
             }
 
-            // قسم المجموع والـ Checkout
-            if (animationProgress >= 0.5f) { // Threshold: showTotal
+            if (animationProgress >= 0.98f) {
                 TotalSection(
                     total = state.totalPrice,
                     onCheckoutClick = { viewModel.toggleCheckoutSheet(true) })
@@ -183,24 +188,35 @@ fun TotalSection(total: String, onCheckoutClick: () -> Unit) {
 
 @Composable
 fun BasketRow(
-    item: BasketItem, index: Int, isLeftToRight: Boolean, animationProgress: Float, itemDelay: Int
+    item: BasketItem, isLeftToRight: Boolean, itemDelay: Int
 ) {
+    // حالة لبدء أنميشن الصف داخلياً بعد التوقيت المحدد
+    var startAnimation by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        delay(itemDelay.toLong())
+        startAnimation = true
+    }
+
+    // أنميشن الإزاحة (السلايد)
     val slideOffset by animateDpAsState(
-        targetValue = 0.dp,
-        animationSpec = tween(1000, delayMillis = itemDelay, easing = FastOutSlowInEasing),
-        label = "BasketRowSlide_$index"
+        targetValue = if (startAnimation) 0.dp else if (isLeftToRight) (-150).dp else 150.dp,
+        animationSpec = tween(durationMillis = 800, easing = EaseOutQuart),
+        label = "slide"
     )
 
+    // أنميشن الشفافية
     val alpha by animateFloatAsState(
-        targetValue = 1f,
-        animationSpec = tween(800, delayMillis = itemDelay),
-        label = "BasketRowAlpha_$index"
+        targetValue = if (startAnimation) 1f else 0f,
+        animationSpec = tween(durationMillis = 600),
+        label = "alpha"
     )
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .offset(x = if (isLeftToRight) slideOffset else -slideOffset),
+            .offset(x = slideOffset)
+            .graphicsLayer(alpha = alpha),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
@@ -224,12 +240,12 @@ fun BasketRow(
                 fontFamily = BrandonGrotesque,
                 fontWeight = FontWeight.Medium,
                 fontSize = 16.sp,
-                color = PrimaryColor.copy(alpha = alpha)
+                color = PrimaryColor
             )
             Text(
                 text = item.quantity,
                 fontSize = 14.sp,
-                color = Color.Gray.copy(alpha = alpha),
+                color = Color.Gray,
                 fontFamily = BrandonGrotesque,
                 fontWeight = FontWeight.Normal
             )
@@ -240,7 +256,7 @@ fun BasketRow(
             fontFamily = BrandonGrotesque,
             fontWeight = FontWeight.Medium,
             fontSize = 16.sp,
-            color = PrimaryColor.copy(alpha = alpha)
+            color = PrimaryColor
         )
     }
 }
@@ -314,11 +330,11 @@ fun HandleCheckoutSheets(
 fun CheckoutDialogContent(
     onDismiss: () -> Unit, onPayOnDelivery: () -> Unit, onPayWithCard: () -> Unit
 ) {
-    var showItems by remember { mutableStateOf(false) }
+    var showFields by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         delay(100)
-        showItems = true
+        showFields = true
     }
 
     Box(
@@ -338,8 +354,12 @@ fun CheckoutDialogContent(
                     .fillMaxWidth()
                     .padding(horizontal = 24.dp, vertical = 32.dp)
             ) {
-                if (showItems) {
-                    // Address field
+                AnimatedVisibility(
+                    visible = showFields, enter = slideInVertically(
+                        initialOffsetY = { it },
+                        animationSpec = tween(600, easing = FastOutSlowInEasing)
+                    ) + fadeIn()
+                ) {
                     Column {
                         Text(
                             text = "Delivery address",
@@ -371,10 +391,16 @@ fun CheckoutDialogContent(
                             )
                         )
                     }
+                }
 
-                    Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
-                    // Phone field
+                AnimatedVisibility(
+                    visible = showFields, enter = slideInVertically(
+                        initialOffsetY = { it },
+                        animationSpec = tween(600, delayMillis = 200, easing = FastOutSlowInEasing)
+                    ) + fadeIn()
+                ) {
                     Column {
                         Text(
                             text = "Number we can call",
@@ -406,19 +432,26 @@ fun CheckoutDialogContent(
                             )
                         )
                     }
+                }
 
-                    Spacer(modifier = Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(40.dp))
 
-                    // Buttons
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    AnimatedVisibility(
+                        visible = showFields,
+                        modifier = Modifier.weight(1f),
+                        enter = slideInHorizontally(
+                            initialOffsetX = { -it }, animationSpec = tween(
+                                700, delayMillis = 400, easing = FastOutSlowInEasing
+                            )
+                        ) + fadeIn()
                     ) {
                         OutlinedButton(
                             onClick = onPayOnDelivery,
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(56.dp),
+                            modifier = Modifier.height(56.dp),
                             shape = RoundedCornerShape(10.dp),
                             border = BorderStroke(1.dp, SecondaryColor)
                         ) {
@@ -430,14 +463,22 @@ fun CheckoutDialogContent(
                                 fontWeight = FontWeight.Medium
                             )
                         }
+                    }
 
-                        Spacer(modifier = Modifier.width(16.dp))
+                    Spacer(modifier = Modifier.width(16.dp))
 
+                    AnimatedVisibility(
+                        visible = showFields,
+                        modifier = Modifier.weight(1f),
+                        enter = slideInHorizontally(
+                            initialOffsetX = { it }, animationSpec = tween(
+                                700, delayMillis = 400, easing = FastOutSlowInEasing
+                            )
+                        ) + fadeIn()
+                    ) {
                         OutlinedButton(
                             onClick = onPayWithCard,
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(56.dp),
+                            modifier = Modifier.height(56.dp),
                             shape = RoundedCornerShape(10.dp),
                             border = BorderStroke(1.dp, SecondaryColor)
                         ) {
@@ -450,18 +491,21 @@ fun CheckoutDialogContent(
                             )
                         }
                     }
-                    Spacer(modifier = Modifier.height(15.dp))
                 }
+                Spacer(modifier = Modifier.height(15.dp))
             }
         }
 
-        // Close button
-        if (showItems) {
+        AnimatedVisibility(
+            visible = showFields,
+            enter = fadeIn(animationSpec = tween(500, delayMillis = 600)) + scaleIn(),
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .offset(y = (-70).dp)
+        ) {
             IconButton(
                 onClick = onDismiss,
                 modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .offset(y = (-70).dp)
                     .background(Color.White, CircleShape)
                     .size(48.dp)
             ) {
@@ -497,13 +541,18 @@ fun CardDetailsDialogContent(
             Column(
                 modifier = Modifier.fillMaxWidth()
             ) {
-                if (showItems) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 32.dp, start = 24.dp, end = 24.dp)
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 32.dp, start = 24.dp, end = 24.dp)
+                ) {
+                    // 1. اسم صاحب البطاقة + الحقل (المجموعة الأولى)
+                    AnimatedVisibility(
+                        visible = showItems, enter = slideInVertically(
+                            initialOffsetY = { it },
+                            animationSpec = tween(600, easing = FastOutSlowInEasing)
+                        ) + fadeIn()
                     ) {
-                        // Card Holder Name
                         Column {
                             Text(
                                 text = "Card Holders Name",
@@ -515,10 +564,18 @@ fun CardDetailsDialogContent(
                             Spacer(modifier = Modifier.height(16.dp))
                             CardTextField(placeholder = "Adolphus Chris")
                         }
+                    }
 
-                        Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
 
-                        // Card Number
+                    // 2. رقم البطاقة + الحقل (المجموعة الثانية - تظهر بعد 200ms)
+                    AnimatedVisibility(
+                        visible = showItems, enter = slideInVertically(
+                            initialOffsetY = { it }, animationSpec = tween(
+                                600, delayMillis = 200, easing = FastOutSlowInEasing
+                            )
+                        ) + fadeIn()
+                    ) {
                         Column {
                             Text(
                                 text = "Card Number",
@@ -530,10 +587,18 @@ fun CardDetailsDialogContent(
                             Spacer(modifier = Modifier.height(16.dp))
                             CardTextField(placeholder = "1234 5678 9012 1314")
                         }
+                    }
 
-                        Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
 
-                        // Date and CCV
+                    // 3. التاريخ و CCV (المجموعة الثالثة - تظهر بعد 400ms)
+                    AnimatedVisibility(
+                        visible = showItems, enter = slideInVertically(
+                            initialOffsetY = { it }, animationSpec = tween(
+                                600, delayMillis = 400, easing = FastOutSlowInEasing
+                            )
+                        ) + fadeIn()
+                    ) {
                         Row(modifier = Modifier.fillMaxWidth()) {
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(
@@ -560,10 +625,17 @@ fun CardDetailsDialogContent(
                             }
                         }
                     }
+                }
 
-                    Spacer(modifier = Modifier.height(45.dp))
+                Spacer(modifier = Modifier.height(45.dp))
 
-                    // Complete Order Button
+                // 4. زر إتمام الطلب (يظهر من الأسفل بعد 600ms)
+                AnimatedVisibility(
+                    visible = showItems, enter = slideInVertically(
+                        initialOffsetY = { it },
+                        animationSpec = tween(600, delayMillis = 600, easing = FastOutSlowInEasing)
+                    ) + fadeIn()
+                ) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -593,13 +665,17 @@ fun CardDetailsDialogContent(
             }
         }
 
-        // Close button
-        if (showItems) {
+        // 5. زر الإغلاق
+        AnimatedVisibility(
+            visible = showItems,
+            enter = fadeIn(animationSpec = tween(500, delayMillis = 800)) + scaleIn(),
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .offset(y = (-70).dp)
+        ) {
             IconButton(
                 onClick = onDismiss,
                 modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .offset(y = (-70).dp)
                     .background(Color.White, CircleShape)
                     .size(48.dp)
             ) {
