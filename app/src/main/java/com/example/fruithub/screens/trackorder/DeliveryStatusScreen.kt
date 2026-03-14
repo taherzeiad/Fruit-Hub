@@ -80,13 +80,13 @@ fun DeliveryStatusScreen(
         ) {
             viewModel.steps.forEachIndexed { index, step ->
 
-                if (index == 3 && animationProgress >= 0.80f) {
+                if (index == 3 && animationProgress >= 0.98f) {
                     OrderImageSection()
                 }
 
                 AnimatedVisibility(
-                    visible = animationProgress >= step.threshold,
-                    enter = slideInVertically(initialOffsetY = { if (index == 0) it else it / 2 }) + fadeIn()
+                    visible = animationProgress >= (0.95f + (index * 0.01f)),
+                    enter = slideInVertically(initialOffsetY = { it / 2 }) + fadeIn()
                 ) {
                     Column {
                         TimelineItem(

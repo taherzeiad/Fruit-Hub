@@ -48,14 +48,34 @@ fun OrderSuccessScreen(
 
     // 2. Texts Animation States
     val textAlpha by animateFloatAsState(if (state.showTexts) 1f else 0f, tween(600), label = "")
-    val textTranslationY by animateFloatAsState(if (state.showTexts) 0f else 40f, tween(600), label = "")
+    val textTranslationY by animateFloatAsState(
+        if (state.showTexts) 0f else 40f,
+        tween(600),
+        label = ""
+    )
 
     // 3. Buttons Animation States
-    val trackAlpha by animateFloatAsState(if (state.showTrackButton) 1f else 0f, tween(500), label = "")
-    val trackTranslationY by animateFloatAsState(if (state.showTrackButton) 0f else 40f, tween(500), label = "")
+    val trackAlpha by animateFloatAsState(
+        if (state.showTrackButton) 1f else 0f,
+        tween(500),
+        label = ""
+    )
+    val trackTranslationY by animateFloatAsState(
+        if (state.showTrackButton) 0f else 40f,
+        tween(500),
+        label = ""
+    )
 
-    val continueAlpha by animateFloatAsState(if (state.showContinueButton) 1f else 0f, tween(500), label = "")
-    val continueTranslationY by animateFloatAsState(if (state.showContinueButton) 0f else 40f, tween(500), label = "")
+    val continueAlpha by animateFloatAsState(
+        if (state.showContinueButton) 1f else 0f,
+        tween(500),
+        label = ""
+    )
+    val continueTranslationY by animateFloatAsState(
+        if (state.showContinueButton) 0f else 40f,
+        tween(500),
+        label = ""
+    )
 
     Column(
         modifier = Modifier

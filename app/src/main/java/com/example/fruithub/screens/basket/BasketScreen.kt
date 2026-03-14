@@ -27,7 +27,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.fruithub.R
 import com.example.fruithub.commonComponent.OrangeHeader
 import com.example.fruithub.ui.theme.BrandonGrotesque
 import com.example.fruithub.ui.theme.PrimaryColor
@@ -80,10 +79,10 @@ fun BasketScreen(
             ) {
                 Spacer(modifier = Modifier.height(24.dp))
 
-                if (animationProgress >= 0.4f) { // Threshold: showItems
+                if (animationProgress >= 0.95f) {
                     state.items.forEachIndexed { index, item ->
                         val isLeftToRight = index % 2 == 0
-                        val itemDelay = 500 + (index * 150)
+                        val itemDelay = (index * 100)
                         key(index) {
                             Column {
                                 BasketRow(item, index, isLeftToRight, animationProgress, itemDelay)
@@ -97,14 +96,12 @@ fun BasketScreen(
                 }
             }
 
-            // قسم المجموع والـ Checkout
-            if (animationProgress >= 0.5f) { // Threshold: showTotal
+            if (animationProgress >= 0.98f) {
                 TotalSection(
                     total = state.totalPrice,
                     onCheckoutClick = { viewModel.toggleCheckoutSheet(true) })
             }
         }
-
         OrangeHeader(
             title = "My Basket",
             headerHeight = headerHeight,
