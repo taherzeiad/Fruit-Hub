@@ -5,6 +5,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.*
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
@@ -328,11 +330,11 @@ fun HandleCheckoutSheets(
 fun CheckoutDialogContent(
     onDismiss: () -> Unit, onPayOnDelivery: () -> Unit, onPayWithCard: () -> Unit
 ) {
-    var showItems by remember { mutableStateOf(false) }
+    var showFields by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         delay(100)
-        showItems = true
+        showFields = true
     }
 
     Box(
@@ -352,8 +354,12 @@ fun CheckoutDialogContent(
                     .fillMaxWidth()
                     .padding(horizontal = 24.dp, vertical = 32.dp)
             ) {
-                if (showItems) {
-                    // Address field
+                AnimatedVisibility(
+                    visible = showFields, enter = slideInVertically(
+                        initialOffsetY = { it },
+                        animationSpec = tween(600, easing = FastOutSlowInEasing)
+                    ) + fadeIn()
+                ) {
                     Column {
                         Text(
                             text = "Delivery address",
@@ -385,10 +391,16 @@ fun CheckoutDialogContent(
                             )
                         )
                     }
+                }
 
-                    Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
-                    // Phone field
+                AnimatedVisibility(
+                    visible = showFields, enter = slideInVertically(
+                        initialOffsetY = { it },
+                        animationSpec = tween(600, delayMillis = 200, easing = FastOutSlowInEasing)
+                    ) + fadeIn()
+                ) {
                     Column {
                         Text(
                             text = "Number we can call",
@@ -420,19 +432,26 @@ fun CheckoutDialogContent(
                             )
                         )
                     }
+                }
 
-                    Spacer(modifier = Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(40.dp))
 
-                    // Buttons
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    AnimatedVisibility(
+                        visible = showFields,
+                        modifier = Modifier.weight(1f),
+                        enter = slideInHorizontally(
+                            initialOffsetX = { -it }, animationSpec = tween(
+                                700, delayMillis = 400, easing = FastOutSlowInEasing
+                            )
+                        ) + fadeIn()
                     ) {
                         OutlinedButton(
                             onClick = onPayOnDelivery,
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(56.dp),
+                            modifier = Modifier.height(56.dp),
                             shape = RoundedCornerShape(10.dp),
                             border = BorderStroke(1.dp, SecondaryColor)
                         ) {
@@ -444,14 +463,22 @@ fun CheckoutDialogContent(
                                 fontWeight = FontWeight.Medium
                             )
                         }
+                    }
 
-                        Spacer(modifier = Modifier.width(16.dp))
+                    Spacer(modifier = Modifier.width(16.dp))
 
+                    AnimatedVisibility(
+                        visible = showFields,
+                        modifier = Modifier.weight(1f),
+                        enter = slideInHorizontally(
+                            initialOffsetX = { it }, animationSpec = tween(
+                                700, delayMillis = 400, easing = FastOutSlowInEasing
+                            )
+                        ) + fadeIn()
+                    ) {
                         OutlinedButton(
                             onClick = onPayWithCard,
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(56.dp),
+                            modifier = Modifier.height(56.dp),
                             shape = RoundedCornerShape(10.dp),
                             border = BorderStroke(1.dp, SecondaryColor)
                         ) {
@@ -464,18 +491,21 @@ fun CheckoutDialogContent(
                             )
                         }
                     }
-                    Spacer(modifier = Modifier.height(15.dp))
                 }
+                Spacer(modifier = Modifier.height(15.dp))
             }
         }
 
-        // Close button
-        if (showItems) {
+        AnimatedVisibility(
+            visible = showFields,
+            enter = fadeIn(animationSpec = tween(500, delayMillis = 600)) + scaleIn(),
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .offset(y = (-70).dp)
+        ) {
             IconButton(
                 onClick = onDismiss,
                 modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .offset(y = (-70).dp)
                     .background(Color.White, CircleShape)
                     .size(48.dp)
             ) {
@@ -511,13 +541,18 @@ fun CardDetailsDialogContent(
             Column(
                 modifier = Modifier.fillMaxWidth()
             ) {
-                if (showItems) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 32.dp, start = 24.dp, end = 24.dp)
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 32.dp, start = 24.dp, end = 24.dp)
+                ) {
+                    // 1. اسم صاحب البطاقة + الحقل (المجموعة الأولى)
+                    AnimatedVisibility(
+                        visible = showItems, enter = slideInVertically(
+                            initialOffsetY = { it },
+                            animationSpec = tween(600, easing = FastOutSlowInEasing)
+                        ) + fadeIn()
                     ) {
-                        // Card Holder Name
                         Column {
                             Text(
                                 text = "Card Holders Name",
@@ -529,10 +564,18 @@ fun CardDetailsDialogContent(
                             Spacer(modifier = Modifier.height(16.dp))
                             CardTextField(placeholder = "Adolphus Chris")
                         }
+                    }
 
-                        Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
 
-                        // Card Number
+                    // 2. رقم البطاقة + الحقل (المجموعة الثانية - تظهر بعد 200ms)
+                    AnimatedVisibility(
+                        visible = showItems, enter = slideInVertically(
+                            initialOffsetY = { it }, animationSpec = tween(
+                                600, delayMillis = 200, easing = FastOutSlowInEasing
+                            )
+                        ) + fadeIn()
+                    ) {
                         Column {
                             Text(
                                 text = "Card Number",
@@ -544,10 +587,18 @@ fun CardDetailsDialogContent(
                             Spacer(modifier = Modifier.height(16.dp))
                             CardTextField(placeholder = "1234 5678 9012 1314")
                         }
+                    }
 
-                        Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
 
-                        // Date and CCV
+                    // 3. التاريخ و CCV (المجموعة الثالثة - تظهر بعد 400ms)
+                    AnimatedVisibility(
+                        visible = showItems, enter = slideInVertically(
+                            initialOffsetY = { it }, animationSpec = tween(
+                                600, delayMillis = 400, easing = FastOutSlowInEasing
+                            )
+                        ) + fadeIn()
+                    ) {
                         Row(modifier = Modifier.fillMaxWidth()) {
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(
@@ -574,10 +625,17 @@ fun CardDetailsDialogContent(
                             }
                         }
                     }
+                }
 
-                    Spacer(modifier = Modifier.height(45.dp))
+                Spacer(modifier = Modifier.height(45.dp))
 
-                    // Complete Order Button
+                // 4. زر إتمام الطلب (يظهر من الأسفل بعد 600ms)
+                AnimatedVisibility(
+                    visible = showItems, enter = slideInVertically(
+                        initialOffsetY = { it },
+                        animationSpec = tween(600, delayMillis = 600, easing = FastOutSlowInEasing)
+                    ) + fadeIn()
+                ) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -607,13 +665,17 @@ fun CardDetailsDialogContent(
             }
         }
 
-        // Close button
-        if (showItems) {
+        // 5. زر الإغلاق
+        AnimatedVisibility(
+            visible = showItems,
+            enter = fadeIn(animationSpec = tween(500, delayMillis = 800)) + scaleIn(),
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .offset(y = (-70).dp)
+        ) {
             IconButton(
                 onClick = onDismiss,
                 modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .offset(y = (-70).dp)
                     .background(Color.White, CircleShape)
                     .size(48.dp)
             ) {
