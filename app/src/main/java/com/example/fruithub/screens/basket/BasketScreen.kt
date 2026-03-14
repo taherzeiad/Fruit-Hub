@@ -22,6 +22,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -82,10 +83,14 @@ fun BasketScreen(
                 if (animationProgress >= 0.95f) {
                     state.items.forEachIndexed { index, item ->
                         val isLeftToRight = index % 2 == 0
-                        val itemDelay = (index * 100)
+                        val itemDelay = (index * 150)
                         key(index) {
                             Column {
-                                BasketRow(item, index, isLeftToRight, animationProgress, itemDelay)
+                                BasketRow(
+                                    item = item,
+                                    isLeftToRight = isLeftToRight,
+                                    itemDelay = itemDelay
+                                )
                                 HorizontalDivider(
                                     modifier = Modifier.padding(vertical = 16.dp),
                                     color = Color(0xFFF3F3F3)
@@ -102,6 +107,7 @@ fun BasketScreen(
                     onCheckoutClick = { viewModel.toggleCheckoutSheet(true) })
             }
         }
+
         OrangeHeader(
             title = "My Basket",
             headerHeight = headerHeight,
@@ -180,24 +186,35 @@ fun TotalSection(total: String, onCheckoutClick: () -> Unit) {
 
 @Composable
 fun BasketRow(
-    item: BasketItem, index: Int, isLeftToRight: Boolean, animationProgress: Float, itemDelay: Int
+    item: BasketItem, isLeftToRight: Boolean, itemDelay: Int
 ) {
+    // حالة لبدء أنميشن الصف داخلياً بعد التوقيت المحدد
+    var startAnimation by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        delay(itemDelay.toLong())
+        startAnimation = true
+    }
+
+    // أنميشن الإزاحة (السلايد)
     val slideOffset by animateDpAsState(
-        targetValue = 0.dp,
-        animationSpec = tween(1000, delayMillis = itemDelay, easing = FastOutSlowInEasing),
-        label = "BasketRowSlide_$index"
+        targetValue = if (startAnimation) 0.dp else if (isLeftToRight) (-150).dp else 150.dp,
+        animationSpec = tween(durationMillis = 800, easing = EaseOutQuart),
+        label = "slide"
     )
 
+    // أنميشن الشفافية
     val alpha by animateFloatAsState(
-        targetValue = 1f,
-        animationSpec = tween(800, delayMillis = itemDelay),
-        label = "BasketRowAlpha_$index"
+        targetValue = if (startAnimation) 1f else 0f,
+        animationSpec = tween(durationMillis = 600),
+        label = "alpha"
     )
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .offset(x = if (isLeftToRight) slideOffset else -slideOffset),
+            .offset(x = slideOffset)
+            .graphicsLayer(alpha = alpha),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
@@ -221,12 +238,12 @@ fun BasketRow(
                 fontFamily = BrandonGrotesque,
                 fontWeight = FontWeight.Medium,
                 fontSize = 16.sp,
-                color = PrimaryColor.copy(alpha = alpha)
+                color = PrimaryColor
             )
             Text(
                 text = item.quantity,
                 fontSize = 14.sp,
-                color = Color.Gray.copy(alpha = alpha),
+                color = Color.Gray,
                 fontFamily = BrandonGrotesque,
                 fontWeight = FontWeight.Normal
             )
@@ -237,7 +254,7 @@ fun BasketRow(
             fontFamily = BrandonGrotesque,
             fontWeight = FontWeight.Medium,
             fontSize = 16.sp,
-            color = PrimaryColor.copy(alpha = alpha)
+            color = PrimaryColor
         )
     }
 }
